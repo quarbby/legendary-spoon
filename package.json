@@ -1,0 +1,34 @@
+{
+  "name": "bigproject",
+  "version": "1.0.0",
+  "description": "very big project",
+  "main": "index.js",
+  "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/system": "^3.0.0-alpha.2",
+    "d3": "^5.9.1",
+    "jquery": "^3.3.1",
+    "material-ui-icons": "^1.0.0-beta.36",
+    "neovis.js": "^1.0.0",
+    "react": "^16.8.4",
+    "react-bootstrap": "^1.0.0-beta.5",
+    "react-dom": "^16.8.4",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1",
+    "vis": "^4.21.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "console.log(\"test\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quarbby/legendary-spoon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quarbby/legendary-spoon/issues"
+  },
+  "homepage": "https://github.com/quarbby/legendary-spoon#readme"
+}
