@@ -1,3 +1,6 @@
+"""
+Dictionary for processing data
+"""
 appos = {
 "aren't" : "are not",
 "can't" : "cannot",
