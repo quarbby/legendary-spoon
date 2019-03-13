@@ -11,10 +11,8 @@ import pandasticsearch
 import pandas as pd
 import numpy as np
 from pandasticsearch import Select
-from elasticsearch import Elasticsearch
+from config import es
 from indexes import indexes
-
-es = Elasticsearch([{'host' : 'localhost', 'port' : '9200'}])
 
 #convert query results to pandas dataframe
 def processing_hits(res):
@@ -57,7 +55,3 @@ Example on using this function:
 df = query('machine')
 print(df)
 """
-
-df = query('economics')
-print(df.iloc[1])
-# print(df)
