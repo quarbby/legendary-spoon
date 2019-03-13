@@ -1,8 +1,7 @@
-from elasticsearch import Elasticsearch
+from config import es
 from pprint import pprint
+from indexes import indexes
 
-es = Elasticsearch([{'host':'localhost', 'port':9200}])
-
-res = es.search(index = 'news', size=5, body={"query": {"match_all": {}}})
-print('%d hits' %res['hits']['total'])
-print(res)
+for i in range(len(indexes)):
+	res = es.search(index = str(indexes[i]), size=5, body={"query": {"match_all": {}}})
+	print('%d hits' %res['hits']['total'])
