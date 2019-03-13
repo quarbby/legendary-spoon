@@ -1,6 +1,12 @@
-from elasticsearch import Elasticsearch
+from config import es
 
-es = Elasticsearch([{'host': 'localhost', 'port' : '9200'}])
 
-#Delete indices. Rename index to whichever index you want to delete
-es.indices.delete(index = 'scholar', ignore = [400, 404])
+def delete_indices(index_name):
+	res = es.indices.get_alias().keys()
+	if str(index_name) in res:
+		#Delete index.
+		es.indices.delete(index = str(index_name), ignore = [400, 404])
+
+	else:
+
+		print('Index does not exist')
