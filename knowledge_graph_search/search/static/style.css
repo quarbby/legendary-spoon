@@ -1,0 +1,46 @@
+/* Style the search-form field */
+form.search-form input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  width: 70%;
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+/* Style the submit button */
+form.search-form button {
+  width: 10%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none; /* Prevent double borders */
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+form.search-form button:hover {
+  background: #0b7dda;
+}
+
+/* Clear floats */
+/*form.search-form::after {
+  content: "";
+  clear: both;
+  display: table;
+  }*/
+
+  .search-col{
+    text-align: center;
+    width: 100%;
+    margin-top: 10%;
+  }
+
+  h1 {
+    font-family: 'PT Sans Narrow', sans-serif;
+    text-align: center;
+    margin-top: 8%;
+    font-size: 50px;
+  }
