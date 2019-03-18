@@ -1,3 +1,7 @@
 Django
 Neo4j
 elasticsearch
+pandas
+numpy
+pandasticsearch==0.4.3
+plotly
