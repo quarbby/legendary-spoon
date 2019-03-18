@@ -11,7 +11,7 @@ import pandasticsearch
 import pandas as pd
 import numpy as np
 from pandasticsearch import Select
-from config import es
+from .config import es
 
 #convert query results to pandas dataframe
 def processing_hits(res):
