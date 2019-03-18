@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<!doctype html>
+<html>
+<head>
+
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+
+	<title>Search Page</title>
+
+</head>
+
+<body>
+	<!-- Global Search -->
+
+	<h1>A Very Powerful Knowledge Graph</h1>
+
+	<form class="search-form" action="/search" method="get">
+		<div class="search-col">
+			<input type="text" placeholder="Enter search query..." name="q">
+			<button type="submit">Search</button>
+		</div>
+	</form>
+</body>
+
+</html>
