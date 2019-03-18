@@ -1,29 +1,23 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .ElasticSearch import scroll_query
 from neo4j import GraphDatabase
-from elasticsearch import Elasticsearch
 # Create your views here.
 
-try:
-	uri = "bolt://localhost:7687/db/data/"
-	driver = GraphDatabase.driver(uri, auth=("neo4j", "123"))
-	
-except:
-	print("Not connected to Neo4j database! ")
-
-
+uri = "bolt://localhost:7687/db/data/"
+neo4jdriver = GraphDatabase.driver(uri, auth=("neo4j", "123"))
 def index(request):
 	return render(request, 'index.html')
 
 def search_word(request):
-	b = []
 	params = request.GET.get('q')
-	print(type(params))
-	with driver.session() as session:
-		result = session.run("MATCH (f:Field{fieldName:'" + params + "'})<-[:PART_OF_FIELD]-(f2:Field) RETURN f2.fieldName LIMIT 25")
+	query_result = scroll_query.query(params)
+	neo4jresult = []
+	with neo4jdriver.session() as session:
+		result = session.run("MATCH (f:Field{{fieldName:'{}'}})<-[:PART_OF_FIELD]-(f2:Field) RETURN f2.fieldName LIMIT 25".format(params))
 		print (type(result))
 		for record in result:
 			a = record['f2.fieldName']
-			b.append(a)
-	return HttpResponse('The related fields are: {}'.format(b))
+			neo4jresult.append(a)
+	return HttpResponse('Neo4j Stuff{} ElasticSearch Stuff{}'.format(neo4jresult,query_result), end ='')
 
