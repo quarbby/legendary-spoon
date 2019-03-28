@@ -92,7 +92,7 @@ def plot_neo4j_graph():
 	trace2=go.Scatter3d(x=Xn,
 	               y=Yn,
 	               z=Zn,
-	               mode='markers',
+	               mode='markers+text',
 	               name='actors',
 	               marker=dict(symbol='circle',
 	                             size = 10,
@@ -109,7 +109,8 @@ def plot_neo4j_graph():
 	          zeroline=False,
 	          showgrid=False,
 	          showticklabels=False,
-	          title=''
+	          title='',
+						showspikes=False
 	          )
 
 	layout = go.Layout(
@@ -131,6 +132,7 @@ def plot_neo4j_graph():
 
 	    ),
 	    hovermode='closest',
+
 	    # annotations=[
 	    #        dict(
 	    #        showarrow=False,
