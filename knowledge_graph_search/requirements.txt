@@ -4,4 +4,7 @@ elasticsearch
 pandas
 numpy
 pandasticsearch==0.4.3
-plotly
+nltk==3.4
+plotly==3.7
+sklearn
+textblob
