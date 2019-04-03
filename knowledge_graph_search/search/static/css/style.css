@@ -1,0 +1,106 @@
+/* Style the search-form field */
+form.search-form input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  width: 70%;
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+/* Style the submit button */
+form.search-form button {
+  width: 10%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none; /* Prevent double borders */
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+form.search-form button:hover {
+  background: #0b7dda;
+}
+
+/* Clear floats */
+/*form.search-form::after {
+  content: "";
+  clear: both;
+  display: table;
+  }*/
+
+  .search-col{
+    text-align: center;
+    width: 100%;
+    margin-top: 10%;
+  }
+
+  h1  {
+    font-family: 'PT Sans Narrow', sans-serif;
+    text-align: center;
+    margin-top: 8%;
+    font-size: 50px;
+  }
+
+
+}
+
+.card.text-center {
+  background: red;
+  background-image: -webkit-linear-gradient(-11deg, white, #17a2b8);
+  border: 3px #333 solid;
+}
+
+.scroll-menu {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.card-title {
+  color: black;
+}
+
+.no-format{ 
+  text-decoration: none !important;
+}
+
+.no-format:hover{ 
+  text-decoration: none !important;
+}
+
+.card:hover {
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.graph-frame {
+  height: 20em;
+}
+
+.graph-frame-weighted {
+  height: 20em;
+}
+
+iframe {
+  border: 0px;
+  width: auto;
+}
+
+.graph-frame-modal {
+  height: 40em;
+}
+
+.col-sm-3 {
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+
+.heading {
+  color: white;
+}
+
+.heading:hover {
+  color: white;
+}

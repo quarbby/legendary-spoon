@@ -1,0 +1,256 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+	<title>Search Results for {{searchTerm}}</title>
+
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-md p-3 navbar-dark bg-dark">
+		<a class="heading mb-0 h3 no-format" href="/">TEXT SCAN CHINA</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar5">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="navbar-collapse collapse" id="navbar5">
+			<form class="mx-3 my-auto navbar-right d-inline w-100" action="/search" method="get">
+				<div class="input-group">
+					<input type="text" class="form-control border border-right-0" placeholder="Search..." value="{{searchTerm}}" name="q">
+					<span class="input-group-append">
+						<button class="btn btn-outline-secondary border border-left-0" type="submit">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+			</form>
+		</div>
+	</nav>
+	<div class="row px-3">
+
+		{% if neo4j_field %}
+		<div class="card text-center m-3">
+			<h4 class="card-title my-3">Related Fields</h4>
+			<ul class="list-group list-group-flush">
+				{% for j in neo4j_field %}
+				<li class="list-group-item">
+					<a class="text-center no-format" href="/search/?q={{j.fieldName}}">
+						<h5 class="card-title">{{j.fieldName}}</h5>
+					</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+		{% if neo4j_author %}
+		<div class="card text-center m-3">
+			<h4 class="card-title my-3">Related Authors</h4>
+			<ul class="list-group list-group-flush">
+				{% for j in neo4j_author %}
+				<li class="list-group-item">
+					<a class="text-center no-format" href="/search/?q={{j.fieldName}}">
+						<h5 class="card-title">{{j.authorName}}</h5>
+					</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+
+		{% if neo4j_paper %}
+		<div class="card text-center m-3">
+			<h4 class="card-title my-3">Related Papers</h4>
+
+			<ul class="list-group list-group-flush">
+				{% for j in neo4j_paper %}
+				<li class="list-group-item">
+					<a class="text-center no-format" href="/search/?q={{j.fieldName}}">
+						<h5 class="card-title">{{j.paperName}}</h5>
+					</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+		<div class="card text-center m-3" data-toggle="modal" data-target="#graph-paper-weight-modal" >
+			<iframe src="{% url 'plotpy' %}" class="graph-frame"></iframe> 
+			<div class="card-body p-1">
+				<h5 class="card-title">Weighted volume published</h5>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="container-fluid col-sm-3">
+			<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-tweets-time-modal">
+				<iframe src="{% url 'plotlinetweets' %}" class="graph-frame" ></iframe> 
+				<div class="card-body">
+					<h5 class="card-title">Number of Weibos over time</h5>
+				</div>
+			</div>
+			{% for i in elasticSearchWeibo %}
+			<div class="card m-1 ml-3" >
+				<div class="card-body paper-card">
+					<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+					<!-- <h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6> -->
+					<p class="card-text">{{ i.summary }}</p>
+					<p class="card-text">Favourite Count: {{ i.favorite_count }}</p>
+					<p class="card-text">{{ i.published }}</p>
+					<!-- <p class="card-text">{{ i. }}</p> -->
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="container-fluid col-sm-3">
+
+			<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-paper-time-modal">
+				<iframe src="{% url 'plotlinescholar' %}" class="graph-frame" ></iframe> 
+				<div class="card-body">
+					<h5 class="card-title">Number of Papers published over time</h5>
+				</div>
+			</div>
+
+			{% for i in elasticSearchScholar %}
+			<div class="card my-1 mx-0" >
+				<div class="card-body paper-card">
+					<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+					<h6 class="card-subtitle mb-2 text-muted">Date Published: {{ i.published}}</h6>
+					<h6 class="card-subtitle mb-2 text-muted">Authors: {{i.authors}}</h6>
+					<p class="card-text">{{ i.summary }}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="container-fluid col-sm-3">
+
+			<div class="card text-center my-1 mx-0"  data-toggle="modal" data-target="#graph-news-time-modal">
+				<iframe src="{% url 'plotlinenews' %}" class="graph-frame" ></iframe> 
+				<div class="card-body">
+					<h5 class="card-title">Number of News articles over time</h5>
+				</div>
+			</div>
+
+			{% for i in elasticSearchNews %}
+			<div class="card my-1 mx-0" >
+				<div class="card-body paper-card">
+					<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+					<h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6>
+					<p class="card-text">{{ i.summary }}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="container-fluid col-sm-3">
+
+			<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-tweets-time-modal">
+				<iframe src="{% url 'plotlinetweets' %}" class="graph-frame" ></iframe> 
+				<div class="card-body">
+					<h5 class="card-title">Number of Tweets over time</h5>
+				</div>
+			</div>
+
+			{% for i in elasticSearchTweets %}
+			<div class="card my-1 mx-0" >
+				<div class="card-body paper-card">
+					<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_screen_name }}</a></h5>
+					<!-- <h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6> -->
+					<p class="card-text">{{ i.summary }}</p>
+					<p class="card-text">Retweet Count: {{ i.retweet_count }} Favourite Count: {{i.favorite_count}}</p>
+					<p class="card-text">Date tweeted: {{ i.published }} Stance: {{i.stance}}</p>
+					<!-- <p class="card-text">{{ i. }}</p> -->
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<!-- popups -->
+	<div class="modal fade" id="graph-paper-time-modal" tabindex="-1" role="dialog" aria-labelledby="graph-paper-time-modal-label" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="graph-paper-time-modal-label">Number of Papers published over time</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<iframe src="{% url 'plotlinescholar' %}" class="modal-body graph-frame-modal" ></iframe> 
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="graph-paper-weight-modal" tabindex="-1" role="dialog" aria-labelledby="graph-paper-weight-modal-label" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="graph-paper-time-modal-label">Weighted Volume Published</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<iframe src="{% url 'plotpy' %}" class="modal-body graph-frame-modal" ></iframe> 
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="graph-news-time-modal" tabindex="-1" role="dialog" aria-labelledby="graph-news-time-modal-label" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="graph-paper-time-modal-label">Number of news articles published over time</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<iframe src="{% url 'plotlinenews' %}" class="modal-body graph-frame-modal" ></iframe> 
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="graph-tweets-time-modal" tabindex="-1" role="dialog" aria-labelledby="graph-tweets-time-modal-label" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="graph-paper-time-modal-label">Number of tweets published over time</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<iframe src="{% url 'plotlinetweets' %}" class="modal-body graph-frame-modal" ></iframe> 
+			</div>
+		</div>
+	</div>
+
+
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$('p.card-text').each(function(index){
+			$(this).html(
+				$(this).text().replace(/(https:\/\/t.co\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)/g, '<a href=\"$1\">$1<\/a>')
+				)
+			$(this).html(
+				$(this).text().replace(/Stance: AGAINST/g, 'Stance: <span class="text-danger">AGAINST<\/span>').replace(/Stance: NONE/g, 'Stance: <span class="text-primary">NONE<\/span>').replace(/Stance: FAVOR/g, 'Stance: <span class="text-success">NONE<\/span>')
+				)
+
+		});
+
+	</script>
+
+</body>
+
+</html>
