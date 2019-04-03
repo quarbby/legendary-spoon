@@ -26,11 +26,54 @@ installation https://www.elastic.co/guide/en/elasticsearch/reference/6.7/windows
 
 
 
+_Download Java SE Development Kit_
+
+in `elasticsearch-6.7.0/bin/elasticsearch.bat`, under `SET params='%*'`add `SET "JAVA_HOME=C:\Program Files\Java\jdk-11.0.2"`
+
+```bash
+@echo off
+
+setlocal enabledelayedexpansion
+setlocal enableextensions
+
+SET params='%*'
+SET "JAVA_HOME=C:\Program Files\Java\jdk-11.0.2"
+
+:loop
+```
+
+set `JAVA_HOME=C:\Program Files\Java\jdk-11.0.2` 
 
 
 
+## Anaconda
 
-## Running TechScan 1.0
+<https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/>
+
+```
+conda -V
+conda update conda
+```
+
+Check your python version
+
+```
+conda search "^python$"
+```
+
+Create a conda environment for this project
+
+```
+conda create -n yourenvname python=x.x anaconda
+```
+
+
+
+# 
+
+
+
+# Running TechScan 1.0
 
 #### 1. Start Neo4J Server
 
