@@ -11,20 +11,18 @@
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
-
 	<title>Search Results for {{searchTerm}}</title>
 
 </head>
 
 <body>
-
-	<nav class="navbar navbar-expand-md p-3 navbar-dark bg-dark sticky-top">
-		<a class="heading mb-0 h3 no-format" href="/">TEXT SCAN CHINA</a>
+	<nav class="navbar navbar-expand-md p-3 navbar-dark bg-dark sticky-top"  id="navbar5">
+		<a class="heading mb-0 h3 no-format" href="/">TECH SCAN CHINA</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar5">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<div class="navbar-collapse collapse" id="navbar5">
-			<form class="mx-3 my-auto navbar-right d-inline w-100" action="/search" method="get">
+		<div class="navbar-collapse collapse">
+			<form class="mx-3 my-auto navbar-right d-inline w-100 my-0" action="/search" method="get">
 				<div class="input-group">
 					<input type="text" class="form-control border border-right-0" placeholder="Search..." value="{{searchTerm}}" name="q">
 					<span class="input-group-append">
@@ -34,131 +32,193 @@
 					</span>
 				</div>
 			</form>
-
-			<span style="color:white" class = "text-nowrap h4 m-0"> Translated word: {{chiKeyword}}</span>
+			<span style="color:white" class = "text-nowrap h4 m-0"> Translation: {{chiKeyword}}</span>
 		</div>
 
 	</nav>
 
 	<div class="row">
-		<div class="container-fluid col-sm-3 text-center mt-3">
-<!-- 			<div class="row">
-				{% if neo4j_field %}
-				<div class="card text-center col-7 p-0">
-					<h4 class="card-title my-3">Related Fields</h4>
-					<ul class="list-group list-group-flush">
-						{% for j in neo4j_field %}
-						<li class="list-group-item pt-2 pb-1 px-2">
-							<a class="text-center no-format" href="/search/?q={{j.fieldName}}">
-								<h5 class="card-title">{{j.fieldName}}</h5>
-							</a>
-						</li>
-						{% endfor %}
-					</ul>
-				</div>
-				{% endif %}
-				{% if neo4j_author %}
-				<div class="card text-center col-5 p-0">
-					<h4 class="card-title my-3">Related Authors</h4>
-					<ul class="list-group list-group-flush">
-						{% for j in neo4j_author %}
-						<li class="list-group-item pt-2 pb-1 px-2">
-							<a class="text-center no-format" href="/search/?q={{j.fieldName}}">
-								<h5 class="card-title">{{j.authorName}}</h5>
-							</a>
-						</li>
-						{% endfor %}
-					</ul>
-				</div>
-				{% endif %}
-			</div> -->
-			<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-neo4j-modal">
+		<div class="container-fluid col-sm-3 text-center mt-2">
+			<div class="card text-center my-1 ml-3 mr-0" data-toggle="modal" data-target="#graph-neo4j-modal">
 				<iframe src="{% url 'plotneo4jgraph' %}" class="graph-frame" ></iframe> 
 				<div class="card-body p-0">
-					<h5 class="card-title">Related Fields and Authors</h5>
+					<h5 class="card-title">Related Fields</h5>
 				</div>
 			</div>
-			<h3 class="mt-3"> Weibo </h3>
-			
-			{% for i in elasticSearchWeibo %}
-			<div class="card m-1 ml-3" >
-				<div class="card-body paper-card text-left">
-					<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
-					<!-- <h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6> -->
-					<p class="card-text">{{ i.summary }}</p>
-					<p class="card-text">Favourite Count: {{ i.favorite_count }}</p>
-					<p class="card-text">Date: {{ i.published }}</p>
-					<!-- <p class="card-text">{{ i. }}</p> -->
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-		<div class="container-fluid col-sm-6">
-			<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-paper-time-modal">
-				<iframe src="{% url 'plotlinescholar' %}" class="graph-frame" ></iframe> 
-				<div class="card-body">
-					<h5 class="card-title">Number of Papers published over time</h5>
-				</div>
-			</div>
-			<div class="row">
-				<div class="card col-6 p-0 text-left">
-					<h3 class="mt-3 text-center" col-6> Scholar </h3>
-					{% for i in elasticSearchScholar %}
-					<div class="card my-1 mx-0" >
-						<div class="card-body paper-card">
-							<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
-							<h6 class="card-subtitle mb-2 text-muted">Date Published: {{ i.published}}</h6>
-							<h6 class="card-subtitle mb-2 text-muted">Authors: {{i.authors}}</h6>
+			<div class="card" >
+				<h3 class="mt-3 text-center"> Weibo <img class="mb-2" src="{% static 'images/wb.png' %}"width="50" height="40" name="aaa" align="middle"> </h3>
+				
+				<div id="WeiboCard" class="card text-left col-12 p-0">
+					{% for i, j in elasticSearchWeibo %}
+					<div class="card m-1 ml-3" >
+						<div class="card-body paper-card text-left">
+							<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
 							<p class="card-text">{{ i.summary }}</p>
-						</div>
-					</div>
-					{% endfor %}
-				</div>
-				<div class="card text-left col-6 p-0">
-					<h3 class="mt-3 text-center" col-6> News </h3>
-					{% for i in elasticSearchNews %}
-					<div class="card my-1 mx-0" >
-						<div class="card-body paper-card">
-							<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
-							<h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6>
-							<p class="card-text">{{ i.summary }}</p>
-							<p class="card-text">Sentiment: {{ i.sentiment }}</p>
+							<p class="card-text">Favourite Count: {{ i.favorite_count }}</p>
+							<p class="card-text">Date: {{ i.published }}</p>
+							<div style="display: none;" id="hiddenText{{forloop.counter0}}">{{j}}}</div>
+							<a href="#" onclick="$('#hiddenText{{forloop.counter0}}').show(); return false;">Translate</a>
+							<!-- <p class="card-text">Translated: {{ j }}</p> -->
 						</div>
 					</div>
 					{% endfor %}
 				</div>
 			</div>
 		</div>
+		<div class="container-fluid col-sm-6 mt-2 p-0">
+			<ul class="nav nav-tabs">
+				<li class="active mx-2"><a data-toggle="tab" href="#weibo">WeiBo Graph</a></li>
+				<li class="mx-2"><a data-toggle="tab" href="#scholar">Scholar paper Graph</a></li>
+				<li class="mx-2"><a data-toggle="tab" href="#news">News article Graph</a></li>
+				<li class="mx-2"><a data-toggle="tab" href="#twitter">Twitter Graph</a></li>
+				<li class="mx-2"><a data-toggle="tab" href="#piechart">Pie Chart</a></li>
+			</ul>
 
-		<div class="container-fluid col-sm-3">
-			<div class="card text-center m-3" data-toggle="modal" data-target="#graph-paper-weight-modal" >
-				<iframe src="{% url 'plotpy' %}" class="graph-frame"></iframe> 
-				<div class="card-body p-1">
-					<h5 class="card-title">Weighted volume published</h5>
+			<div class="tab-content my-1 mx-0">
+
+				<div id="weibo" class="tab-pane show in active">
+					<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-weibo-time-modal">
+						<iframe src="{% url 'plotlineweibo' %}" class="graph-frame-line" ></iframe> 
+						<div class="card-body p-0">
+							<h5 class="card-title">Number of Weebs published over time</h5>
+						</div>
+					</div>
+				</div>
+
+				<div id="scholar" class="tab-pane show">
+					<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-paper-time-modal">
+						<iframe src="{% url 'plotlinescholar' %}" class="graph-frame-line" ></iframe> 
+						<div class="card-body p-0">
+							<h5 class="card-title">Number of Papers published over time</h5>
+						</div>
+					</div>
+				</div>
+
+				<div id="news" class="tab-pane show">
+					<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-news-time-modal">
+						<iframe src="{% url 'plotlinenews' %}" class="graph-frame-line" ></iframe> 
+						<div class="card-body p-0">
+							<h5 class="card-title">Number of News published over time</h5>
+						</div>
+					</div>
+				</div>
+				<div id="twitter" class="tab-pane show">
+					<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-tweets-time-modal">
+						<iframe src="{% url 'plotlinetweets' %}" class="graph-frame-line" ></iframe> 
+						<div class="card-body p-0">
+							<h5 class="card-title">Number of tweets posted over time</h5>
+						</div>
+					</div>
+				</div>
+				<div id="piechart" class="tab-pane show">
+					<div class="card text-center mt-1" data-toggle="modal" data-target="#graph-paper-weight-modal" >
+						<iframe src="{% url 'plotpy' %}" class="graph-frame-line"></iframe> 
+						<div class="card-body p-1">
+							<h5 class="card-title">Weighted volume published</h5>
+						</div>
+					</div>
 				</div>
 			</div>
-			<h2 class="card text-center mt-3"> Tweets </h2>
-			<div class="card text-center my-1 mx-0" data-toggle="modal" data-target="#graph-tweets-time-modal">
-				<iframe src="{% url 'plotlinetweets' %}" class="graph-frame" ></iframe> 
-				<div class="card-body">
-					<h5 class="card-title">Number of Tweets over time</h5>
+
+			<div class="row mx-0" >	
+				<div class="card col-6 p-0 text-left">
+					<h3 class="mt-3 text-center" col-6> Scholar Papers </h3>
+					<div id="ScholarCard">
+						{% for i in elasticSearchScholar %}
+						<div class="card my-1 mx-0" >
+							<div class="card-body paper-card">
+								<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+								<h6 class="card-subtitle mb-2 text-muted">Date Published: {{ i.published}}</h6>
+								<h6 class="card-subtitle mb-2 text-muted">Authors: {{i.authors}}</h6>
+								<p class="card-text">{{ i.summary }}</p>
+							</div>
+						</div>
+						{% endfor %}
+					</div>		
+				</div>
+
+				<div class="card text-left col-6 p-0">
+					<h3 class="mt-3 text-center" col-6> News Articles </h3>
+					<div id="NewsCard">
+						{% for i in elasticSearchNews %}
+						<div class="card my-1 mx-0" >
+							<div class="card-body paper-card">
+								<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+								<h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6>
+								<p class="card-text">{{ i.summary }}</p>
+								{% if i.stance == "For" %}
+                			<p class="PositiveSentiment"> Stance: {{i.stance}} {{searchTerm}}</p>
+                			{% elif i.stance == "Against" %} 
+                			<p class="NegativeSentiment">Stance: {{i.stance}} {{searchTerm}}</p>
+                			{% else %}
+                			<p class="NeutralSentiment">Stance: {{i.stance}} {{searchTerm}}</p>
+                			{% endif %}
+							</div>
+						</div>
+						{% endfor %}
+					</div>
 				</div>
 			</div>
-			{% for i in elasticSearchTweets %}
-			<div class="card my-1 mx-0" >
-				<div class="card-body paper-card">
-					<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_screen_name }}</a></h5>
-					<!-- <h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6> -->
-					<p class="card-text">{{ i.summary }}</p>
-					<p class="card-text">Retweet Count: {{ i.retweet_count }} Favourite Count: {{i.favorite_count}}</p>
-					<p class="card-text">Date tweeted: {{ i.published }} Sentiment: {{i.sentiment}}</p>
-					<!-- <p class="card-text">{{ i. }}</p> -->
-				</div>
+		</div>
+		<!-- VIDEO AND IMAGE -->
+		<div class="container-fluid col-sm-3 mt-2">
+			<div class="card text-center mx-0 my-1 pl-1">
+				<img src="{% static 'images/law.jpg' %}" height="300" name="lawrenceImage">
+				<h5 class="text-left pt-2 m-0">Transcript:</h5><p class="text-left pb-1 m-0"> Alibaba's new store tao cafe is now open in the eastern chinese city of HangZhou...</p>
 			</div>
-			{% endfor %}
+			<div class="card text-center mx-0 my-1">
+				<div class="row pl-3">
+					<img src="{% static 'images/wx2.jpg' %}" width="180" height="270" name="aaa">
+					<img src="{% static 'images/wx.jpg' %}"width="450" height="275" name="aaa">
+				</div>
+				<h5 class="text-center">Facial Recognition</h5>
+			</div>
+
+			<div class="card" >
+				<h3 class="mt-3 text-center"> Tweets <img class="mb-2 ml-2" src="{% static 'images/twitter.png' %}"width="50" height="40" name="aaa" align="middle"> </h3>
+				<div id="TweetCard" class="card text-left col-12 p-0">
+					{% for i in elasticSearchTweets %}
+					<div class="card my-1 mx-0" >
+						<div class="card-body paper-card">
+							<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_screen_name }}</a></h5>
+							<!-- <h6 class="card-subtitle mb-2 text-muted">{{i.authors}}</h6> -->
+							<p class="card-text">{{ i.summary }}</p>
+							<p class="card-text">Retweet Count: {{ i.retweet_count }} Favourite Count: {{i.favorite_count}}</p>
+							<p class="card-text">Date tweeted: {{ i.published }}</p>
+                			{% if i.sentiment == "Positive" %}
+                			<p class="PositiveSentiment"> Sentiment: {{i.sentiment}} </p>
+                			{% elif i.sentiment == "Negative" %} 
+                			<p class="NegativeSentiment">Sentiment: {{i.sentiment}}</p>
+                			{% else %} 
+                			<p class="NeutralSentiment">Sentiment: {{i.sentiment}}</p>
+                			{% endif %}
+						</div>
+					</div>
+					{% endfor %}
+				</div>	
+
+			</div>	
 		</div>
 	</div>
+
+
+
 	<!-- popups -->
+
+	<div class="modal" id="graph-weibo-time-modal" tabindex="-1" role="dialog" aria-labelledby="graph-weibo-time-modal-label" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="graph-weibo-time-modal-label">Number of Weebs published over time</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<iframe src="{% url 'plotlineweibo' %}" class="modal-body graph-frame-modal" ></iframe> 
+			</div>
+		</div>
+	</div>
+
 	<div class="modal" id="graph-paper-time-modal" tabindex="-1" role="dialog" aria-labelledby="graph-paper-time-modal-label" style="display: none;" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
 			<div class="modal-content">
@@ -191,7 +251,7 @@
 		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="graph-paper-time-modal-label">Related Fields and Authors</h5>
+					<h5 class="modal-title" id="graph-paper-time-modal-label">Related Fields</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">×</span>
 					</button>
@@ -200,6 +260,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="modal" id="graph-news-time-modal" tabindex="-1" role="dialog" aria-labelledby="graph-news-time-modal-label" style="display: none;" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
 			<div class="modal-content">
@@ -236,9 +297,9 @@
 			$(this).html(
 				$(this).text().replace(/(https:\/\/t.co\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)/g, '<a href=\"$1\">$1<\/a>')
 				)
-			$(this).html(
-				$(this).text().replace(/Sentiment: negative/g, 'Sentiment: <span class="text-danger">negative<\/span>').replace(/Sentiment: neutral/g, 'Sentiment: <span class="text-primary">neutral<\/span>').replace(/Sentiment: positive/g, 'Sentiment: <span class="text-success">positive<\/span>')
-				)
+			// $(this).html(
+			// 	$(this).text().replace(/Sentiment: Negative/g, 'Sentiment: <span class="text-danger">Negative<\/span>').replace(/Sentiment: Neutral/g, 'Sentiment: <span class="text-primary">Neutral<\/span>').replace(/Sentiment: Positive/g, 'Sentiment: <span class="text-success">Positive<\/span>')
+			// 	)
 
 		});
 
@@ -251,7 +312,6 @@
 				console.log(src);
 			});
 		});
-
 	</script>
 
 </body>
