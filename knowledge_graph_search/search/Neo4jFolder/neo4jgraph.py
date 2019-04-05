@@ -4,7 +4,7 @@ import ast
 from ..config import neo4jdriver
 
 
-ColorListArrays = ['rgb(0,0,0)','rgb(15,41,68)','rgb(254,144,4)','rgb(100,100,100)','rgb(300,0,214)','rgb(0,200,0)','rgb(0,0,100)','rgb(15,41,68)']
+# ColorListArrays = ['rgb(0,0,0)','rgb(15,41,68)','rgb(254,144,4)','rgb(100,100,100)','rgb(300,0,214)','rgb(0,200,0)','rgb(0,0,100)','rgb(15,41,68)']
 
 def search_field(Keyword):
 	result = []
@@ -95,34 +95,14 @@ def plotgraph(result):
     for l in range (len(TotalNode)):
       if IDList[w] in TotalNode[l]["id"]:
         LabelList.append(TotalNode[l]["name"])
-  #       IDList2.append(TotalNode[l]["id"])
-  # ############### Direct nodes with color ###############
-  # ListWithColor = []
-  # for i in range (len(LabelList)):
-  #   ListWithColor.append({"id": IDList2[i]["id"], "name": LabelList[i]["name"], "Colorlabel": ColorListArrays[i]})
-  # FinalNodes = []
-  # for j in range (len(ListWithColor)):
-  #   for w in range (len(relations)):
-  #     if relations[w]["target"] in ListWithColor[j]["id"]:
-  #       for l in range (len(TotalNode)):
-  #         if relations[w]["target"] in TotalNode[l]["id"]:
-  #           intermediate = {"id": TotalNode[l]["id"], "name": TotalNode[l]["id"], "color": ListWithColor[j]["Colorlabel"]}
-  #           if intermediate not in FinalNodes:
-  #             FinalNodes.append(intermediate)
-  #     elif relation[w]["source"] in ListWithColor[j]["id"]:
-  #       for l in range (len(TotalNode)):
-  #         if relations[w]["source"] in TotalNode[l]["id"]:
-  #           intermediate = {"id": TotalNode[l]["id"], "name": TotalNode[l]["id"], "color": ListWithColor[j]["Colorlabel"]}
-  #           if intermediate not in FinalNodes:
-  #             FinalNodes.append(intermediate)
 
-  # pprint(ListWithColor)
+  
 
   HELL=[]
   count1 = -1
   for i in range (len(TotalNode)):
     count1 += 1 
-    HELL.append({"group": count1, "name": TotalNode[i]['name'], "id": TotalNode[i]['id'], "labels":TotalNode[i]['color']})
+    HELL.append({"group": count1, "name": TotalNode[i]['name'], "id": TotalNode[i]['id'], "labels":TotalNode[i]['labels'], "Ranks": TotalNode[i]["Ranks"]})
 
   YEAH = []
   for j in range (len(relations)):
@@ -199,7 +179,7 @@ def plotgraph(result):
   trace1=go.Scatter3d(x=Xe,
                  y=Ye,
                  z=Ze,
-                 mode='lines+markers',
+                 mode='lines',
                  line=dict(color = edgesColor, width=1.5),
                  name = relname[0],
                  hoverinfo='none',
@@ -215,9 +195,9 @@ def plotgraph(result):
                  marker=dict(symbol='circle',
   	               				
   	                            size=ranking,
-  	                            color='rgb(0,300,0)',
+  	                            color=group,
   	                            # 'rgb(15,41,68)'
-  	                            colorscale='Bluered',
+  	                            colorscale='Viridis',
   	                            line=dict(color='rgb(254,144,4)', width=0)
   	                             ),
   	           text=label,
@@ -271,7 +251,7 @@ def plotgraph(result):
       #     ],  
             )
 
-  data=[trace1, trace2, trace]
+  data=[trace1, trace2,trace]
   fig=go.Figure(data=data, layout=layout)
 
   final_graph = plot(fig, filename = 'search/templates/neo4jgraph.html', auto_open=False)

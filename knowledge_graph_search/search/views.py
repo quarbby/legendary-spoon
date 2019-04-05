@@ -33,7 +33,7 @@ def search_word(request):
 		_,es_result_scholar = scroll_query.text_query(params,'scholar')
 		_,es_result_tweets = scroll_query.text_query(params,'tweets',15)
 		_,es_result_weibo = scroll_query.text_query(chi_keyword(params),'weibo',15)
-		# graph,_ = neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+		graph,_ = neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 		
 		eng_summary = [eng_keyword(list(es_result_weibo)[i]['summary']) for i in range(4)]
 
