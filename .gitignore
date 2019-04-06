@@ -1,2 +1,4 @@
+# Stuff to ignore
+
 *.cpython-36.pyc
 */__pycache__/*
