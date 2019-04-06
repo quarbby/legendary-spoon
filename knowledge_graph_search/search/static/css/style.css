@@ -48,11 +48,11 @@ form.search-form button:hover {
 
 }
 
-.card.text-center {
+/*.card.text-center {
   background: red;
   background-image: -webkit-linear-gradient(-11deg, white, #17a2b8);
   border: 3px #333 solid;
-}
+}*/
 
 .scroll-menu {
   overflow: auto;
@@ -71,17 +71,23 @@ form.search-form button:hover {
   text-decoration: none !important;
 }
 
+/*.tab-content {
+  display:none;
+}*/
+
+
 .card:hover {
   box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
 }
 
 .graph-frame {
+  height: 30em;
+}
+
+.graph-frame-line {
   height: 20em;
 }
 
-.graph-frame-weighted {
-  height: 20em;
-}
 
 iframe {
   border: 0px;
@@ -103,4 +109,65 @@ iframe {
 
 .heading:hover {
   color: white;
+}
+
+#navbar5 {
+  background-image: -webkit-linear-gradient(-77deg, #3e5063, #333) !important;
+}
+
+#WeiboCard {
+  height: 915px;
+  overflow-y: auto;
+}
+
+#ScholarCard, #NewsCard {
+  height: 1100px;
+  overflow-y: auto;
+}
+
+#TweetCard{
+  height: 762px;
+  overflow-y: auto;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ccc; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa; 
+}
+
+div {
+  display: block;
+}
+
+.NegativeSentiment {
+  color: #ff0000;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.PositiveSentiment {
+  color: #28a745;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.NeutralSentiment {
+  color:#000000;
+  font-size: 20px;
+  font-weight: bold;
 }

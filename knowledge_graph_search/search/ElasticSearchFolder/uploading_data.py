@@ -20,4 +20,4 @@ def upload_data(file_location, index_name):
 Example on how to use function:
 upload_data(location, 'news')
 """
-# upload_data(location, 'news')
+upload_data(location, 'tweets')

@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from neo4j import GraphDatabase
 
 
-location = 'data/news_sentiment.json'
+location = 'data/AI_tweets_SA_2.json'
 
 # Connect to ES
 es = Elasticsearch([{'host' : 'localhost', 'port' : 9200}])

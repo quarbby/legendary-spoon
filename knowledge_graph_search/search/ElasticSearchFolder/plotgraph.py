@@ -31,20 +31,33 @@ def plot_pie_chart(keyword):
 
 	trace = go.Pie(labels=labels, values=values, marker=dict(colors=colors, 
 						line=dict(color='#000000', width=2)))
+	# layout = go.Layout(width=500,
+ #    height=500,
+ #    margin=go.layout.Margin(
+ #        l=50,
+ #        r=50,
+ #        b=5,
+ #        t=5,
+ #        pad=4))
+	# legend=dict(orientation="h")
+	data = [trace]
+	fig = dict(data=data)
 	# plotly.offline.plot([trace], include_plotlyjs=False, output_type='div')
-	graph = plot([trace], filename = 'search/templates/basic_pie_chart.html', auto_open=False)
+	graph = plot(fig, filename = 'search/templates/basic_pie_chart.html', auto_open=False)
 
 def count_year(keyword, indexes):
 	df,_ = graph_query(str(keyword), indexes)
 	df['published_year'] = df['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
 	df = df['published_year'].value_counts()
 	df = df.sort_index(ascending = False)
+
 	trace = go.Scatter(
 		x = df.index,
 		dx = 5,
 		y = df.values,
 		mode = 'lines+markers',
-		name = 'number of papers by day')
+		name = 'number of papers by day',
+		)
 	data = [trace]
 	fig = dict(data=data)
 	plot(fig, filename = 'search/templates/basic_line_graph_{}.html'.format(indexes), auto_open=False)
@@ -64,30 +77,13 @@ def count_date(keyword, indexes):
 		name = 'number of papers by day')
 	data = [trace]
 
-	layout = dict(
-		title='Paper count by date',
-		xaxis=dict(rangeselector=dict(
-			buttons=list([
-				dict(count=1,
-					label='1m',
-					step='month',
-					stepmode='backward'),
-				dict(count=6,
-				label='6m',
-				step='month',
-				stepmode='backward'),
-				dict(count = 1,
-					label = '1yr',
-					step = 'year',
-					stepmode = 'backward'),
-				dict(step = 'all')
-				])
-			),
-		rangeslider=dict(
-			visible = True
-			),
-		type='date'
-		))
+	layout = go.Layout(
+    	margin=go.layout.Margin(
+        l=60,
+        r=60,
+        b=50,
+        t=50,
+        pad=4))
 	fig = dict(data=data, layout=layout)
 	plot(fig, filename = 'search/templates/basic_line_graph_{}.html'.format(indexes), auto_open=False)
 
@@ -109,6 +105,7 @@ def multi_year(keyword, index = "scholar"):
 	df['processed'] = df['processed'].apply(lambda x: ' '.join([word for word in x.split() if word not in stop_words]))
 	df['singular'] = df['processed'].apply(lambda x: ' '.join([word.singularize()
 		for word in TextBlob(x).words]))
+	df['singular'] = df['singular'].apply(lambda x: x.lower())
 	df['published_year'] = df['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
 
 
@@ -136,7 +133,7 @@ def multi_year(keyword, index = "scholar"):
 		name = "{}".format(str(keyword)))
 
 	
-	df0,_ = graph_query(tv.get_feature_names()[0],index)
+	df0,_ = graph_query(tv.get_feature_names()[2],index)
 	df0['published_year'] = df0['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
 	df0 = df0['published_year'].value_counts()
 	df0 = df0.sort_index(ascending = False)
@@ -146,19 +143,18 @@ def multi_year(keyword, index = "scholar"):
 		dx = 5,
 		y = df0.values,
 		mode = 'lines+markers',
-		name = "{}".format(str(tv.get_feature_names()[0])))
+		name = "{}".format(str(tv.get_feature_names()[2])))
 
-	df1,_ = graph_query(tv.get_feature_names()[1],index)
+	df1,_ = graph_query(tv.get_feature_names()[3],index)
 	df1['published_year'] = df1['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
 	df1 = df1['published_year'].value_counts()
 	df1 = df1.sort_index(ascending = False)
-
 	trace1 = go.Scatter(
 		x = df1.index,
 		dx = 5,
 		y = df1.values,
 		mode = 'lines+markers',
-		name = "{}".format(str(tv.get_feature_names()[1])))
+		name = "{}".format(str(tv.get_feature_names()[3])))
 
 	# df2,_ = graph_query(tv.get_feature_names()[2],index)
 	# df2 = processing_df(df2)
@@ -172,6 +168,13 @@ def multi_year(keyword, index = "scholar"):
 	# 	mode = 'lines+markers',
 	# 	name = "{}".format(str(tv.get_feature_names()[2])))
 
+	layout = go.Layout(
+    margin=go.layout.Margin(
+        l=60,
+        r=60,
+        b=40,
+        t=20,
+        pad=4))
 	data = [trace, trace0, trace1]
-	fig = dict(data=data)
+	fig = dict(data=data, layout = layout )
 	plot(fig, filename = "search/templates/basic_line_graph_scholar.html", auto_open=False)

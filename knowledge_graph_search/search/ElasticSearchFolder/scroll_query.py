@@ -31,7 +31,7 @@ def text_query(keyword, indexes = '_all', sizes = 5):
 			json_frame = df.to_dict('index').values()
 		return df, json_frame
 	except:
-		return ('s','ss')
+		return ('No Data','No Data')
 
 def graph_query(keyword, indexes = '_all'):
 
@@ -61,6 +61,7 @@ def graph_query(keyword, indexes = '_all'):
 	#reset the index and print the dataframe
 	df = df.reset_index(drop = True)
 	json_frame = df.to_dict('index').values()
+	
 	return df, json_frame
 
 
