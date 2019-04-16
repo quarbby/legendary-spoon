@@ -294,8 +294,11 @@ def get_related_table(keyword):
   neo4j = related_field(keyword)
   for d in neo4j:
     d['tweetsCount'] = main_functions.check(d['fieldName'], 'tweets')
+    d['tweetsPercentile'] = main_functions.percentile(d['fieldName'], 'tweets')
     d['weiboCount'] = main_functions.check(main_functions.chi_translation(d['fieldName']), 'weibo')
+    d['weiboPercentile'] = main_functions.percentile(d['fieldName'], 'weibo')
     d['zhihuCount'] = main_functions.check(main_functions.chi_translation(d['fieldName']), 'zhihu')
+    d['zhihuPercentile'] = main_functions.percentile(d['fieldName'], 'zhihu')
     d['scholarCount'] = main_functions.check(d['fieldName'], 'scholar')
     d['newsCount'] = main_functions.check(main_functions.chi_translation(d['fieldName']), 'news')
   return neo4j
