@@ -1,0 +1,47 @@
+{% load staticfiles %}
+<!doctype html>
+
+<html>
+<head>
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<!-- Bootstrap CSS-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<title>News</title>
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
+		<div class="container-fluid p-0">
+			<div class="row col-12">
+				<div class="col-sm-1"><a class="navbar-brand" href="/">Tech Scan China</a></div>
+				<form class="search-form col-sm-6 mx-5 mt-1" action="/main" method="get" id="srch-term">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Search..." name="q">
+						<span class="input-group-btn">
+							<button class="btn btn-secondary" type="submit">	
+								<i class="fa fa-search"></i>
+							</span>
+						</div>
+					</form>
+				</div>
+				</div>
+			</nav>
+			<!-- The sidebar -->
+			<div class="sidebar">
+				<a class="main-category" href="/main?q={{search_word}}">Main</a>
+				<a class="main-category" href="/overview?q={{search_word}}">Overview</a>
+				<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+				<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
+				<a class="active-sub-category" href="/news?q={{search_word}}">News</a>
+				<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
+				<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
+				<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
+				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
+			</div>
+			<div style="margin-left: 220px; padding-top: 0px;">
+				<h1>{{search_word}}</h1>
+				<div></div>
+			</div>
+		</body>

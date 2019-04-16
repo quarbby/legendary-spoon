@@ -1,0 +1,5 @@
+# Python stuff
+
+*.pyc
+*/__pycache__/*
+/techscan/es_folder/import-delete/data/*

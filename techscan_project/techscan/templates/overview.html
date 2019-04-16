@@ -1,0 +1,154 @@
+{% load staticfiles %}
+<!doctype html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes"> -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<!-- Bootstrap CSS-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<title>Overview</title>
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
+		<div class="container-fluid p-0">
+			<div class="row col-12">
+				<div class="col-sm-1"><a class="navbar-brand" href="/">Tech Scan China</a></div>
+				<form class="search-form col-sm-6 mx-5 mt-1" action="/overview" method="get" id="srch-term">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Search..." name="q">
+						<span class="input-group-btn">
+							<button class="btn btn-secondary" type="submit">	
+								<i class="fa fa-search"></i>
+							</span>
+						</div>
+					</form>
+				</div>
+				</div>
+			</nav>
+			<!-- The sidebar -->
+			<div class="sidebar">
+				<a class="main-category" href="/main?q={{search_word}}">Main</a>
+				<a class="active-main-category" href="/overview?q={{search_word}}">Overview</a>
+				<!-- <a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+				<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
+				<a class="sub-category" href="/news?q={{search_word}}">News</a>
+				<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
+				<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
+				<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
+				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
+			</div>
+			<div style="margin-left: 220px; padding-top: 0px;">
+
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-3 p-1">
+							<h2 class="text-center">Weibo</h2>
+							{% for i in weibo %}
+						<div class="card border-dark mb-2">
+							<div class="card-body text-dark">
+								<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+								<!-- <h5 class="card-title">{{i.user_name}}</h5> -->
+								<p class="card-text">{{i.summary}}</p>
+							<p class="card-text">Favourite Count: {{ i.favorite_count }}</p>
+
+							</div>
+						</div>
+						{% endfor %}
+						</div>
+						<div class="col-2 p-1">
+							<h2 class="text-center">Zhihu</h2>
+							{% for i in zhihu %}
+						<div class="card border-dark mb-2">
+							<div class="card-body text-dark">
+								<h5 class="card-title"><a href="{{i.headlineUrl}}">{{ i.headline }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+								<!-- <p class="card-text">{{i.published}}</p> -->
+								<p class="card-text">Upvotes: {{i.upvotes}}</p>
+
+
+							</div>
+						</div>
+						{% endfor %}
+						</div>
+						<div class="col-2 p-1">
+							<h2 class="text-center">News</h2>
+							{% for i in news %}
+						<!-- <div class="card border-dark mb-2">
+							<div class="card-body text-dark">
+								<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div> -->
+
+						{% if i.stance == "For" %}
+						<div class="card border-success mb-2">
+							<div class="card-body text-success">
+								<h5 class="card-title"><a href="{{i.url}}">@{{ i.title }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div>
+						{% elif i.stance == "Against" %}
+						<div class="card border-danger mb-2">
+							<div class="card-body text-danger">
+								<h5 class="card-title"><a href="{{i.url}}">@{{ i.title }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div>
+						{%else%}
+						<div class="card border-dark mb-2">
+							<div class="card-body text-dark">
+								<h5 class="card-title"><a href="{{i.url}}">@{{ i.title }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div>
+						{% endif %}
+						{% endfor %}
+						</div>
+						<div class="col-3 p-1">
+							<h2 class="text-center">Scholar</h2>
+							{% for i in scholar %}
+						<div class="card border-dark mb-2">
+							<div class="card-body text-dark">
+								<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div>
+						{% endfor %}
+						</div>
+						<div class="col-2 p-1">
+							<h2 class="text-center">Tweets</h2>
+							{% for i in tweets %}
+							{% if i.sentiment == "Positive" %}
+						<div class="card border-success mb-2 tw">
+							<div class="card-body text-success">
+								<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div>
+						{% elif i.sentiment == "Negative" %}
+						<div class="card border-danger mb-2 tw">
+							<div class="card-body text-danger">
+								<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div>
+						{%else%}
+						<div class="card border-dark mb-2 tw">
+							<div class="card-body text-dark">
+								<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+								<p class="card-text">{{i.summary}}</p>
+							</div>
+						</div>
+						{% endif %}
+						{% endfor %}
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</body>
