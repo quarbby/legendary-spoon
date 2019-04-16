@@ -1,14 +1,12 @@
 # Setup 
 
-- Git
 
-- Neo4j
-
-- Elasticsearch
-
-  
+- git
+- neo4j
+- elasticsearch
 
 ## Git Setup
+
 
 ```bash
 git clone git@github.com:quarbby/legendary-spoon.git TECHSCAN_BACKEND
@@ -25,6 +23,7 @@ Download from https://neo4j.com/download/
 Download from <https://www.elastic.co/downloads/elasticsearch>
 
 Installation https://www.elastic.co/guide/en/elasticsearch/reference/6.7/windows.html
+
 
 
 
@@ -69,7 +68,9 @@ Create a conda environment for this project
 conda create -n yourenvname python=x.x anaconda
 ```
 
+
 Pip install all dependencies from requirements.txt in the virtual environment
+
 
 
 
@@ -81,24 +82,26 @@ Pip install all dependencies from requirements.txt in the virtual environment
 
 Open Neo4j, start a new project and create new graph. Set the graph password to 123.
 
-
-
-#### 2. Start Elasticsearch server
+2. Start Elasticsearch server
 
 <https://www.elastic.co/guide/en/elasticsearch/reference/6.7/windows.html>
 
 ```bash
 cd c:\elastic-search-6.7.0
+
 .\bin\elasticsearch.bat
+
 ```
 
 
 
 #### 3. Run Python scripts
 
+
 In the root folder,  ``` python manage.py runserver``` 
 
 Django project is available at ```<http://localhost:8000/>```
+
 
 
 
