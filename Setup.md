@@ -7,12 +7,48 @@
 
 ## Git Setup
 
+- First, try 
 
-```bash
-git clone git@github.com:quarbby/legendary-spoon.git TECHSCAN_BACKEND
-```
+  ```
+  git clone git@github.com:quarbby/legendary-spoon.git TECHSCAN_BACKEND
+  ```
 
+- It will fail because permission have not been set. First we need to generate a key, and add your terminal to Github as a trusted source.
 
+- Generate a key
+
+  ```
+  generate ssh key ` ssh-keygen -t rsa -b 4096 -C "yourGithubEmail@email.com"
+  ```
+
+- ```eval $(ssh-agent -s)``` should print ```Agent pid ___```
+
+- copy SSH key `clip < ~/.ssh/id_rsa.pub`
+
+- go to *Github > account > settings > SSH and GPG keys > New SSH keys > New SSH key >* any title, paste into Key
+
+- this will work now: `git clone git@github.com:quarbby/legendary-spoon.git TECHSCAN_BACKEND`
+
+## Sourcetree Setup
+
+- Clone the project, `fetch`/`pull`/`push` won't work, same reason as before
+- `Tools`  > `Create or Import SSH Key` to open **PuTTy Key Generator**
+  - Generate key (move mouse over area to generate randomness)
+  - Under `Key`>`Public key for pasting into OpenSSH authorized_keys file:` copy entire public key (starts with `ssh-rsa...`)
+    - Like above, add to _**Github** > account > settings > SSH and GPG keys > New SSH keys > New SSH key >_ any title, paste into Key
+  - `Save public key` and `Save private key` in **PuTTy Key Generator**
+  - In the windows toolbar / system tray, open **Pagaent** (icon of computer wearing a hat), add in the *private key* file
+- Sourcetree should work now
+
+#### Basic Stuff
+
+- **FETCH** : Gets latest commits from the project, *SAFE to do*, please do so often
+- **PULL** : After fetching, if someone has added to your branch, *pull* to update your working copy to latest commit in the branch 
+- **COMMIT** :  Add your files from `unstaged` to `staged` first
+- **PUSH** : Push your commit **! NOTE** Untick all branches, and push ONLY to your branch
+- **MERGE** : right click any other branch, to *merge* into your current branch
+- **CHECKOUT** : Right click another branch to *checkout*. Make sure that there are no local unsaved changes first.
+- **STASH** : Stash *uncommited changes*
 
 ## Neo4J
 
