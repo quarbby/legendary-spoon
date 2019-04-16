@@ -67,3 +67,67 @@ def get_zh_author(keyword, graph = False):
 			return json_frame
 	else:
 		pass
+
+def percentile(keyword, indexes):
+
+	res = es.search(index = indexes , size = 5, scroll = '2m', body = {"query" : {
+			"match_all" : {}
+			}})
+	df = processing_hits(res)
+	#Get the scroll id
+	sid = res['_scroll_id']
+	scroll_size = len(res['hits']['hits'])
+
+	#Put first half of data into a dataframe
+	df = processing_hits(res)
+	# df = df.insert(index = indexes[i])
+
+	#Scroll and append into the dataframe
+	while scroll_size > 0 :
+		res = es.scroll(scroll_id = sid, scroll = '2m')
+		df = df.append(processing_hits(res), sort = True)
+		sid = res['_scroll_id']
+		scroll_size = len(res['hits']['hits'])
+		# df = df.insert(index, indexes[i])
+
+	#reset the index and print the dataframe
+	if df is not None:
+		df = df.reset_index(drop = True)
+
+		if indexes == 'tweets':	
+			total_favorite_count = df.favorite_count.tolist()
+			total_retweet_count = df.retweet_count.tolist()
+			favorite_percentile_value = np.percentile(total_favorite_count, 90)
+			retweet_percentile_value = np.percentile(total_retweet_count, 90)
+			df_keyword,_ = graph_query(keyword, 'tweets')
+
+			top = []
+			for i in range(len(df_keyword)):
+				if (df_keyword.favorite_count.iloc[i] >= favorite_percentile_value) or (df_keyword.retweet_count.iloc[i] >= retweet_percentile_value):
+					top.append(i)
+
+		elif indexes == 'weibo':	
+			total_favorite_count = df.favorite_count.tolist()
+			favorite_percentile_value = np.percentile(total_favorite_count, 90)
+			df_keyword,_ = graph_query(chi_translation(keyword), 'tweets')
+
+			top = []
+			for i in range(len(df_keyword)):
+				if (df_keyword.favorite_count.iloc[i] >= favorite_percentile_value):
+					top.append(i)
+
+		elif indexes == 'zhihu':
+			total_upvotes_count = df.upvotes.tolist()
+			upvotes_percentile_value = np.percentile(total_upvotes_count, 90)
+			df_keyword,_ = graph_query(chi_translation(keyword), 'tweets')
+
+			top = []
+			for i in range(len(df_keyword)):
+				if (df_keyword.favorite_count.iloc[i] >= favorite_percentile_value):
+					top.append(i)
+
+		if len(top) >= (0.2* len(df_keyword)):
+			return True
+
+		else:
+			return False
