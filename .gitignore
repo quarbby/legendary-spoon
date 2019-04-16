@@ -3,7 +3,7 @@
 
 *.pyc
 */__pycache__/*
-/techscan/es_folder/import-delete/data/*
+techscan_project/techscan/es_folder/import-delete/data/*
 =======
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
