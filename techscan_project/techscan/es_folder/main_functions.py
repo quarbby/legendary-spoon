@@ -6,7 +6,6 @@ from .scroll_query import graph_query, processing_hits
 import pandas as pd
 import numpy as np
 
-
 def chi_translation(keyword):
 	try:
 		word = TextBlob(str(keyword))
@@ -69,11 +68,11 @@ def get_zh_author(keyword, graph = False):
 	else:
 		pass
 
-def percentile(keyword, indexes):
 
+def get_percentile(indexes):
 	res = es.search(index = indexes , size = 5, scroll = '2m', body = {"query" : {
-		"match_all" : {}
-			}})
+		"match_all" : {}}})
+  
 	df = processing_hits(res)
 	#Get the scroll id
 	sid = res['_scroll_id']
@@ -81,7 +80,6 @@ def percentile(keyword, indexes):
 
 	#Put first half of data into a dataframe
 	df = processing_hits(res)
-	# df = df.insert(index = indexes[i])
 
 	#Scroll and append into the dataframe
 	while scroll_size > 0 :
@@ -89,46 +87,51 @@ def percentile(keyword, indexes):
 		df = df.append(processing_hits(res), sort = True)
 		sid = res['_scroll_id']
 		scroll_size = len(res['hits']['hits'])
-		# df = df.insert(index, indexes[i])
+	df.reset_index(drop = True)
+  
+	if indexes == 'tweets':
+		total_favorite_count = df.favorite_count.tolist()
+		total_retweet_count = df.retweet_count.tolist()
+		favorite_percentile_value = np.percentile(total_favorite_count, 90)
+		retweet_percentile_value = np.percentile(total_retweet_count, 90)
+		return retweet_percentile_value, favorite_percentile_value
 
-	#reset the index and print the dataframe
-	if df is not None:
-		df = df.reset_index(drop = True)
+	elif indexes == 'weibo':
+		total_favorite_count = df.favorite_count.tolist()
+		favorite_percentile_value = np.percentile(total_favorite_count, 90)
+		return favorite_percentile_value
 
-		if indexes == 'tweets':	
-			total_favorite_count = df.favorite_count.tolist()
-			total_retweet_count = df.retweet_count.tolist()
-			favorite_percentile_value = np.percentile(total_favorite_count, 90)
-			retweet_percentile_value = np.percentile(total_retweet_count, 90)
-			df_keyword,_ = graph_query(keyword, 'tweets')
+	elif indexes == 'zhihu':
+		total_upvotes_count = df.upvotes.tolist()
+		upvotes_percentile_value = np.percentile(total_upvotes_count, 90)
+		return upvotes_percentile_value
 
-			top = []
-			for i in range(len(df_keyword)):
-				if (df_keyword.favorite_count.iloc[i] >= favorite_percentile_value) or (df_keyword.retweet_count.iloc[i] >= retweet_percentile_value):
-					top.append(i)
+tweets_retweet_percentile, tweets_favorite_percentile = get_percentile('tweets')
+weibo_favorite_percentile = get_percentile('weibo')
+zhihu_upvote_percentile = get_percentile('zhihu')
 
-		elif indexes == 'weibo':	
-			total_favorite_count = df.favorite_count.tolist()
-			favorite_percentile_value = np.percentile(total_favorite_count, 90)
-			df_keyword,_ = graph_query(chi_translation(keyword), 'weibo')
+def percentile(keyword, indexes):
+	if indexes == 'tweets':	
+		df_keyword,_ = graph_query(str(keyword), indexes)
+		if df_keyword is not None:
+			df_positive = df_keyword[df_keyword.retweet_count >= tweets_retweet_percentile]
+			top = len(df_positive)
 
-			top = []
-			for i in range(len(df_keyword)):
-				if (df_keyword.favorite_count.iloc[i] >= favorite_percentile_value):
-					top.append(i)
+	elif indexes == 'weibo':	
+		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
+		if df_keyword is not None:
+			df_positive = df_keyword[df_keyword.favorite_count >= weibo_favorite_percentile]
+			top = len(df_positive)
 
-		elif indexes == 'zhihu':
-			total_upvotes_count = df.upvotes.tolist()
-			upvotes_percentile_value = np.percentile(total_upvotes_count, 90)
-			df_keyword,_ = graph_query(chi_translation(keyword), 'zhihu')
+	elif indexes == 'zhihu':
+		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
+		if df_keyword is not None:
+			df_positive = df_keyword[df_keyword.upvotes >= zhihu_upvote_percentile]
+			top = len(df_positive)
 
-			top = []
-			for i in range(len(df_keyword)):
-				if (df_keyword.upvotes.iloc[i] >= upvotes_percentile_value):
-					top.append(i)
+	if df_keyword is not None:
+		if top >= (0.2* len(df_keyword)):
+			return "True"
 
-		if len(top) >= (0.2* len(df_keyword)):
-			return 'a'
-
-		else:
-			return 'b'
+	else:
+		return "False"
