@@ -92,18 +92,18 @@ def get_percentile(indexes):
 	if indexes == 'tweets':
 		total_favorite_count = df.favorite_count.tolist()
 		total_retweet_count = df.retweet_count.tolist()
-		favorite_percentile_value = np.percentile(total_favorite_count, 90)
-		retweet_percentile_value = np.percentile(total_retweet_count, 90)
+		favorite_percentile_value = np.percentile(total_favorite_count, 85)
+		retweet_percentile_value = np.percentile(total_retweet_count, 85)
 		return retweet_percentile_value, favorite_percentile_value
 
 	elif indexes == 'weibo':
 		total_favorite_count = df.favorite_count.tolist()
-		favorite_percentile_value = np.percentile(total_favorite_count, 90)
+		favorite_percentile_value = np.percentile(total_favorite_count, 85)
 		return favorite_percentile_value
 
 	elif indexes == 'zhihu':
 		total_upvotes_count = df.upvotes.tolist()
-		upvotes_percentile_value = np.percentile(total_upvotes_count, 90)
+		upvotes_percentile_value = np.percentile(total_upvotes_count, 85)
 		return upvotes_percentile_value
 
 tweets_retweet_percentile, tweets_favorite_percentile = get_percentile('tweets')
@@ -130,7 +130,7 @@ def percentile(keyword, indexes):
 			top = len(df_positive)
 
 	if df_keyword is not None:
-		if top >= (0.2* len(df_keyword)):
+		if top >= (0.1* len(df_keyword)):
 			return "True"
 
 	else:
