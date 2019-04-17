@@ -4,6 +4,7 @@ from textblob import TextBlob
 from ..config import location, es
 from .scroll_query import graph_query, processing_hits
 import pandas as pd
+import numpy as np
 
 
 def chi_translation(keyword):
@@ -71,7 +72,7 @@ def get_zh_author(keyword, graph = False):
 def percentile(keyword, indexes):
 
 	res = es.search(index = indexes , size = 5, scroll = '2m', body = {"query" : {
-			"match_all" : {}
+		"match_all" : {}
 			}})
 	df = processing_hits(res)
 	#Get the scroll id
@@ -109,7 +110,7 @@ def percentile(keyword, indexes):
 		elif indexes == 'weibo':	
 			total_favorite_count = df.favorite_count.tolist()
 			favorite_percentile_value = np.percentile(total_favorite_count, 90)
-			df_keyword,_ = graph_query(chi_translation(keyword), 'tweets')
+			df_keyword,_ = graph_query(chi_translation(keyword), 'weibo')
 
 			top = []
 			for i in range(len(df_keyword)):
@@ -119,15 +120,15 @@ def percentile(keyword, indexes):
 		elif indexes == 'zhihu':
 			total_upvotes_count = df.upvotes.tolist()
 			upvotes_percentile_value = np.percentile(total_upvotes_count, 90)
-			df_keyword,_ = graph_query(chi_translation(keyword), 'tweets')
+			df_keyword,_ = graph_query(chi_translation(keyword), 'zhihu')
 
 			top = []
 			for i in range(len(df_keyword)):
-				if (df_keyword.favorite_count.iloc[i] >= favorite_percentile_value):
+				if (df_keyword.upvotes.iloc[i] >= upvotes_percentile_value):
 					top.append(i)
 
 		if len(top) >= (0.2* len(df_keyword)):
-			return True
+			return 'a'
 
 		else:
-			return False
+			return 'b'

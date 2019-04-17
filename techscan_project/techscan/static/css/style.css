@@ -33,6 +33,28 @@ input:-webkit-autofill:active  {
     -webkit-box-shadow: 0 0 0 30px #f8f9fa inset !important;
 }
 
+/*.form-element {
+  display: table-cell;
+  box-sizing: border-box;
+}
+
+.textfield {
+  width:100%
+}
+
+.textfield > input {
+  width:100%
+}*/
+
+.percentiletrue{
+  color: #3dc713;
+}
+
+.percentilefalse{
+  color: #dc3545;
+}
+
+
 .sidebar {
   margin: 0;
   padding: 0;
