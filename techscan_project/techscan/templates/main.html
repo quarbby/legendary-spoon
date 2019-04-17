@@ -42,7 +42,7 @@
 				<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
 				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
 			</div>
-			<div style="margin-left: 220px; padding-top: 0px;">
+			<div class = "content">
 
 				<div class="container p-3 ml-2 col-11">
 					<div class="row">
@@ -91,11 +91,35 @@
 				<tr>
 					<th scope="row">{{forloop.counter}}</th>
 					<td><a href="?q={{i.fieldName}}"> {{i.fieldName}} </a></td>
-					<td>{{i.weiboCount}}</td>
-					<td>{{i.zhihuCount}}</td>
+					<td>
+						{% if i.weiboPercentile == "True" %}
+						<div class = "percentileTrue">
+						{% else %}
+						<div class = "percentileFalse">
+						{% endif %}
+							{{i.weiboCount}}
+						</div>
+					</td>					
+					<td>
+						{% if i.zhihuPercentile == "True" %}
+						<div class = "percentileTrue">
+						{% else %}
+						<div class = "percentileFalse">
+						{% endif %}
+							{{i.zhihuCount}}
+						</div>
+					</td>
 					<td>{{i.scholarCount}}</td>
 					<td>{{i.newsCount}}</td>
-					<td>{{i.tweetsCount}}</td>
+					<td>
+						{% if i.tweetsPercentile == "True" %}
+						<div class = "percentileTrue">
+						{% else %}
+						<div class = "percentileFalse">
+						{% endif %}
+							{{i.tweetsCount}}
+						</div>
+					</td>
 				</tr>
 				{% endfor %}
 			</tbody>
