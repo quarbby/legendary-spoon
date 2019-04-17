@@ -18,6 +18,7 @@ urlpatterns = [
     path('plotneo4jgraph/', TemplateView.as_view(template_name="neo4jgraph.html"), name= 'plotneo4jgraph'),
     path('plotlinetweets/', TemplateView.as_view(template_name="basic_line_graph_tweets.html"),name='plotlinetweets'),
     path('heatmap/', TemplateView.as_view(template_name="heatmap.html"), name= 'heatmap'),
-    path('plotgraphall/',TemplateView.as_view(template_name="main_graph_all.html"), name= 'plotgraphall')
+    path('plotgraphall/',TemplateView.as_view(template_name="main_graph_all.html"), name= 'plotgraphall'),
+    
     
     ]

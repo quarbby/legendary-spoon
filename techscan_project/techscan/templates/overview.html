@@ -68,7 +68,7 @@
 			{% for i in zhihu %}
 			<div class="card border-dark mb-2">
 				<div class="card-body text-dark">
-				<h5 class="card-title"><a href="{{i.headlineUrl}}">{{ i.headline }}</a></h5>
+				<p class="card-title"><a href="{{i.headlineUrl}}">{{ i.headline }}</a></p>
 				<p class="card-text">{{i.summary}}</p>
 				<p class="card-text">Upvotes: {{i.upvotes}}</p>
 				</div>
@@ -82,7 +82,7 @@
 			{% for i in news %}
 			<div class="card border-dark mb-2">
 				<div class="card-body text-dark">
-				<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+				<p class="card-title"><a href="{{i.url}}">{{ i.title }}</a></p>
 				<p class="card-text">{{i.summary}}</p>
 				</div>
 			</div>
@@ -95,7 +95,7 @@
 			{% for i in scholar %}
 			<div class="card border-dark mb-2">
 				<div class="card-body text-dark">
-				<h5 class="card-title"><a href="{{i.url}}">{{ i.title }}</a></h5>
+				<p class="card-title"><a href="{{i.url}}">{{ i.title }}</a></p>
 				<p class="card-text">{{i.summary}}</p>
 			</div>
 			</div>
@@ -109,7 +109,7 @@
 			{% if i.sentiment == "Positive" %}
 			<div class="card border-success mb-2 tweeter-border">
 				<div class="card-body text-success">
-				<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+				<p class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></p>
 				<p class="card-text">{{i.summary}}</p>
 				</div>
 			</div>
@@ -117,14 +117,14 @@
 
 			<div class="card border-danger mb-2 tweeter-border">
 				<div class="card-body text-danger">
-				<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+				<p class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></p>
 				<p class="card-text">{{i.summary}}</p>
 				</div>
 			</div>
 			{%else%}
 			<div class="card border-dark mb-2 tweeter-border">
 				<div class="card-body text-dark">
-				<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+				<p class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></p>
 				<p class="card-text">{{i.summary}}</p>
 				</div>
 			</div>

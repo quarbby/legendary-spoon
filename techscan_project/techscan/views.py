@@ -40,7 +40,7 @@ def overview(request):
 
 def weibo(request):
 	params = request.GET.get('q')
-	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
+	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo', sizes =5)
 	context = {
 		"search_word": params,
 		"weibo":es_weibo,

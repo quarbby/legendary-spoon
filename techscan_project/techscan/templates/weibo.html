@@ -43,10 +43,27 @@
 				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
 			</div>
 		</div>
+
 		<div class="content category-content">
 			<h1><b>Weibo</b></h1>
-			<div class="card bg-light text-dark col-sm-6">
-				<div class="card-body">Light card</div>
+			{% for i in weibo %}
+			<div class="card bg-light text-dark col-8">
+				<div class="card-body"><a href="{{i.url}}">{{i.user_name}}</a></div>
+				<div class="card-body">{{i.summary}}</div>
+				<div class="card-body">Favorite count: {{i.favorite_count}}</div>
+			</div>
+			{%endfor%}
+
+
+		<div class="container p-3 ml-2 col-11 float-left">
+			<h3><b>Time Series Graph</b></h3>
+			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+				<iframe src="{% url 'plotgraphall' %}" class="graph-frame" ></iframe> 
 			</div>
 		</div>
+
+		</div>
+
+		
+		
 	</body>

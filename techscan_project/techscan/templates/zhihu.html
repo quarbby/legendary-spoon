@@ -16,7 +16,7 @@
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
 		<div class="row col-12" >
 			<a class="navbar-brand" href="/">Tech Scan China</a>
-			<form class="search-form col-sm-4 pt-1 px-0" action="/main" method="get" id="srch-term">
+			<form class="search-form col-sm-4 pt-1 px-0" action="/zhihu" method="get" id="srch-term">
 				<div class="input-group">
 					<input type="text" class="form-control" placeholder="Search..." name="q">
 					<span class="input-group-btn">
@@ -48,5 +48,29 @@
 			<div class="card bg-light text-dark">
 				<div class="card-body">Light card</div>
 			</div>
+
+			<table class="table table-hover col-5 ml-4">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Author</th>
+			<th scope="col">Total Upvotes</th>
+			<th scope="col">Count</th>
+			<th scope="col">Average upvotes per post</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for i in author_table %}
+		<tr>
+			<th scope="row">{{forloop.counter}}</th>
+			<td> {{i.author}}</td>
+			<td> {{i.max}}</td>
+			<td> {{i.size}}</td>
+			<td>{{i.average}}</td>		
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
 		</div>
 	</body>
