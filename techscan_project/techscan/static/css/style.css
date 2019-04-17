@@ -84,8 +84,6 @@ input:-webkit-autofill:active  {
   color: white;
 }
 
-
-
 .tweeter-border {
   border: 3px solid black !important;
 }
@@ -94,8 +92,11 @@ input:-webkit-autofill:active  {
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
   margin-left: 200px;
-  padding: 5px 15px;
   height: 1000px;
+}
+
+div.category-content{
+  padding: 5px 15px;
 }
 
 /* On screens that are less than 700px wide, make the sidebar into a topbar */
