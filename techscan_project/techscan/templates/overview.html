@@ -34,18 +34,18 @@
 			<div class="sidebar">
 				<a class="main-category" href="/main?q={{search_word}}">Main</a>
 				<a class="active-main-category" href="/overview?q={{search_word}}">Overview</a>
-				<!-- <a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+				<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
 				<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
 				<a class="sub-category" href="/news?q={{search_word}}">News</a>
 				<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
 				<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
 				<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
-				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
+				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
 			</div>
-			<div style="margin-left: 220px; padding-top: 0px;">
+			<div style="margin-left: 200px; padding-top: 0px;">
 
 				<div class="container-fluid">
-					<div class="row">
+					<div class="row px-2">
 						<div class="col-3 p-1">
 							<h2 class="text-center">Weibo</h2>
 							{% for i in weibo %}
@@ -124,21 +124,21 @@
 							<h2 class="text-center">Tweets</h2>
 							{% for i in tweets %}
 							{% if i.sentiment == "Positive" %}
-						<div class="card border-success mb-2 tw">
+						<div class="card border-success mb-2 tweeter-border">
 							<div class="card-body text-success">
 								<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
 								<p class="card-text">{{i.summary}}</p>
 							</div>
 						</div>
 						{% elif i.sentiment == "Negative" %}
-						<div class="card border-danger mb-2 tw">
+						<div class="card border-danger mb-2 tweeter-border">
 							<div class="card-body text-danger">
 								<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
 								<p class="card-text">{{i.summary}}</p>
 							</div>
 						</div>
 						{%else%}
-						<div class="card border-dark mb-2 tw">
+						<div class="card border-dark mb-2 tweeter-border">
 							<div class="card-body text-dark">
 								<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
 								<p class="card-text">{{i.summary}}</p>

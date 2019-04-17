@@ -296,7 +296,7 @@ def get_related_table(keyword):
     d['tweetsCount'] = main_functions.check(d['fieldName'], 'tweets')
     # d['tweetsPercentile'] = main_functions.percentile(d['fieldName'], 'tweets')
     d['weiboCount'] = main_functions.check(main_functions.chi_translation(d['fieldName']), 'weibo')
-    d['weiboPercentile'] = main_functions.percentile(d['fieldName'], 'weibo')
+    # d['weiboPercentile'] = main_functions.percentile(d['fieldName'], 'weibo')
     d['zhihuCount'] = main_functions.check(main_functions.chi_translation(d['fieldName']), 'zhihu')
     # d['zhihuPercentile'] = main_functions.percentile(d['fieldName'], 'zhihu')
     d['scholarCount'] = main_functions.check(d['fieldName'], 'scholar')

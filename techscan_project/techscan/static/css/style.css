@@ -33,19 +33,6 @@ input:-webkit-autofill:active  {
     -webkit-box-shadow: 0 0 0 30px #f8f9fa inset !important;
 }
 
-/*.form-element {
-  display: table-cell;
-  box-sizing: border-box;
-}
-
-.textfield {
-  width:100%
-}
-
-.textfield > input {
-  width:100%
-}*/
-
 .percentiletrue{
   color: #3dc713;
 }
@@ -76,7 +63,7 @@ input:-webkit-autofill:active  {
 
 /* Active/current link */
 .sidebar a.active-main-category {
-  background-color: #555;
+  background-color: #0c5460;
   color: white;
 }
 
@@ -85,45 +72,29 @@ input:-webkit-autofill:active  {
   color: white;
 }
 
-.sidebar a.main-category {
-  background-color: #f1f1f1;
-  color: black;
-}
-
-.sidebar a.sub-category {
-  background-color: #f1f1f1;
-  color: black;
-}
 
 /* Links on mouse-over */
+.sidebar a:hover:not(.sub-category) {
+  background-color: #0c5460;
+  color: white;
+}
+
 .sidebar a:hover:not(.main-category) {
   background-color: #555;
   color: white;
 }
 
-.sidebar a:hover:not(.sub-category) {
-  background-color: #555;
-  color: white;
-}
 
-.sidebar a:hover:not(.active-main-category) {
-  background-color: #555;
-  color: white;
-}
 
-.sidebar a:hover:not(.active-sub-category) {
-  background-color: #555;
-  color: white;
-}
-
-.tw {
+.tweeter-border {
   border: 3px solid black !important;
 }
+
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
   margin-left: 200px;
-  padding: 1px 16px;
+  padding: 5px 15px;
   height: 1000px;
 }
 

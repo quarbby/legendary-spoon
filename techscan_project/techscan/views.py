@@ -8,7 +8,7 @@ def index(request):
 
 def main(request):
 	params = request.GET.get('q')
-	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	# plotgraph.main_graph(params)
 
 	context = {
