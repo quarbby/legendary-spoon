@@ -15,10 +15,10 @@
 <body>
 
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
-		<div class="container-fluid p-0">
-			<div class="row col-12">
-				<div class="col-sm-1"><a class="navbar-brand" href="/">Tech Scan China</a></div>
-				<form class="search-form col-sm-6 mx-5 mt-1" action="/main" method="get" id="srch-term">
+		<!-- <div class="container-fluid p-0"> -->
+			<!-- <div class="row col-12"> -->
+				<div><a class="navbar-brand" href="/">Tech Scan China</a></div>
+				<form class="search-form" action="/main" method="get" id="srch-term">
 					<div class="input-group">
 						<input type="text" class="form-control" placeholder="Search..." name="q">
 						<span class="input-group-btn">
@@ -27,20 +27,20 @@
 							</span>
 						</div>
 					</form>
-				</div>
-				</div>
+<!-- 				</div>
+				</div> -->
 			</nav>
 			<!-- The sidebar -->
 			<div class="sidebar">
 				<a class="active-main-category" href="/main?q={{search_word}}">Main</a>
 				<a class="main-category" href="/overview?q={{search_word}}">Overview</a>
-				<!-- <a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+				<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
 				<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
 				<a class="sub-category" href="/news?q={{search_word}}">News</a>
 				<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
 				<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
 				<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
-				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
+				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
 			</div>
 			<div class = "content">
 
@@ -80,6 +80,8 @@
 					<th scope="col">#</th>
 					<th scope="col">Field</th>
 					<th scope="col">Weibo</th>
+					<th scope="col">true/false</th>
+
 					<th scope="col">Zhihu</th>
 					<th scope="col">Scholar</th>
 					<th scope="col">News</th>
@@ -110,6 +112,7 @@
 						</div>
 					</td>
 					<td>{{i.scholarCount}}</td>
+
 					<td>{{i.newsCount}}</td>
 					<td>
 						{% if i.tweetsPercentile == "True" %}

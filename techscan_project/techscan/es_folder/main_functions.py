@@ -5,8 +5,6 @@ from ..config import location, es
 from .scroll_query import graph_query, processing_hits
 import pandas as pd
 import numpy as np
-# from elasticsearch import Elasticsearch
-# es = Elasticsearch([{'host' : 'localhost', 'port' : 9200}])
 
 def chi_translation(keyword):
 	try:
@@ -73,8 +71,9 @@ def get_zh_author(keyword, graph = False):
 
 def get_percentile(indexes):
 	res = es.search(index = indexes , size = 5, scroll = '2m', body = {"query" : {
-		"match_all" : {}
-		}})
+		"match_all" : {}}})
+  
+	df = processing_hits(res)
 	#Get the scroll id
 	sid = res['_scroll_id']
 	scroll_size = len(res['hits']['hits'])
@@ -89,7 +88,7 @@ def get_percentile(indexes):
 		sid = res['_scroll_id']
 		scroll_size = len(res['hits']['hits'])
 	df.reset_index(drop = True)
-
+  
 	if indexes == 'tweets':
 		total_favorite_count = df.favorite_count.tolist()
 		total_retweet_count = df.retweet_count.tolist()
