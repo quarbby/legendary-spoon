@@ -81,12 +81,12 @@ input:-webkit-autofill:active  {
 
 
 /* Links on mouse-over */
-.sidebar a:hover:not(.sub-category) {
+.main-sidebar a:hover:not(.active-main-category) {
   background-color: #0c5460;
   color: white;
 }
 
-.sidebar a:hover:not(.main-category) {
+.sub-sidebar a:hover:not(.active-sub-category) {
   background-color: #555;
   color: white;
 }
