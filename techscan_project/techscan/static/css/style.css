@@ -11,6 +11,13 @@
   font-family: -webkit-body !important
 }
 
+.percentileTrue{
+  color: #50c732
+}
+.percentileFalse{
+  color: #ec1313
+}
+
 h1,h2,h3,h4,h5,td,p,th{
 	color: #556777;
   font-family: -webkit-body
@@ -116,3 +123,6 @@ div.content {
     float: none;
   }
 }
+
+
+
