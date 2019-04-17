@@ -14,133 +14,131 @@
 
 <body>
 
+	<!-- The navbar -->
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
-		<!-- <div class="container-fluid p-0"> -->
-			<!-- <div class="row col-12"> -->
-				<div><a class="navbar-brand" href="/">Tech Scan China</a></div>
-				<form class="search-form" action="/main" method="get" id="srch-term">
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search..." name="q">
-						<span class="input-group-btn">
-							<button class="btn btn-secondary" type="submit">	
-								<i class="fa fa-search"></i>
-							</span>
-						</div>
-					</form>
-<!-- 				</div>
-				</div> -->
-			</nav>
-			<!-- The sidebar -->
-			<div class="sidebar">
-				<a class="active-main-category" href="/main?q={{search_word}}">Main</a>
-				<a class="main-category" href="/overview?q={{search_word}}">Overview</a>
-				<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
-				<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
-				<a class="sub-category" href="/news?q={{search_word}}">News</a>
-				<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
-				<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
-				<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
-				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
+		<div class="row col-12" >
+		<a class="navbar-brand" href="/">Tech Scan China</a>
+		<form class="search-form col-sm-4 pt-1 px-0" action="/main" method="get" id="srch-term">
+			<div class="input-group">
+			<input type="text" class="form-control" placeholder="Search..." name="q">
+			<span class="input-group-btn">
+				<button class="btn btn-secondary" type="submit">	
+				<i class="fa fa-search"></i></span>
 			</div>
-			<div class = "content">
+		</form></div>
+	</nav>
 
-				<div class="container p-3 ml-2 col-11">
-					<div class="row">
-						<section class="col-sm-9" >
-							<h3><b>{{search_word}} ({{chi_translation}})</b></h3>
-							<h5 class="py-2 my-3" align="justify"> {{wiki_result}}<h5>
-							</section>
-							<div class="col-sm-3 pt-1 px-5">
-								<h3>Total Hits</h3>
-								<table class="table table-hover">
-									<tbody>
-										{% for i in hit_count %}
-										<tr>
-											<td scope="row">{{i.category}}</td>
-											<td>{{i.hit_count}}</td>
-										</tr>
-										{% endfor %}
-									</tbody>
-								</table>
-							</div>
+	<!-- The sidebar -->
+	<div class="sidebar">
+		<a class="active-main-category" href="/main?q={{search_word}}">Main</a>
+		<a class="main-category" href="/overview?q={{search_word}}">Overview</a>
+		<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+		<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
+		<a class="sub-category" href="/news?q={{search_word}}">News</a>
+		<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
+		<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
+		<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
+		<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
+	</div>
+	<div class = "content">
+
+		<div class="container p-3 ml-2 col-11">
+			<div class="row">
+				<section class="col-sm-9" >
+					<h3><b>{{search_word}} ({{chi_translation}})</b></h3>
+					<h5 class="py-2 my-3" align="justify"> {{wiki_result}}<h5>
+					</section>
+					<div class="col-sm-3 pt-1 px-5">
+						<h3>Total Hits</h3>
+						<table class="table table-hover">
+							<tbody>
+								{% for i in hit_count %}
+								<tr>
+									<td scope="row">{{i.category}}</td>
+									<td>{{i.hit_count}}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
 					</div>
+			</div>
+		</div>
+	
+		<div class="container p-3 ml-2 col-12">
+			<h3><b>Related Fields</b></h3>
+
+			<div class="row">
+			<div class="embed-responsive embed-responsive-16by9 col-sm-7 p-2">
+				<iframe src="{% url 'plotneo4jgraph' %}" class="graph-frame" ></iframe> 
+			</div>
+		
+				<table class="table table-hover col-sm-4 ml-4">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Field</th>
+			<th scope="col">Weibo</th>
+			<th scope="col">Zhihu</th>
+			<th scope="col">Scholar</th>
+			<th scope="col">News</th>
+			<th scope="col">Tweets</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for i in related_table %}
+		<tr>
+			<th scope="row">{{forloop.counter}}</th>
+			<td><a href="?q={{i.fieldName}}"> {{i.fieldName}} </a></td>
+			<td>
+				{% if i.weiboPercentile == "True" %}
+				<div class = "percentileTrue">
+				{% else %}
+				<div class = "percentileFalse">
+				{% endif %}
+					{{i.weiboCount}}
 				</div>
-			
-				<div class="container p-3 ml-2 col-12">
-					<h3><b>Related Fields</b></h3>
+			</td>					
+			<td>
+				{% if i.zhihuPercentile == "True" %}
+				<div class = "percentileTrue">
+				{% else %}
+				<div class = "percentileFalse">
+				{% endif %}
+					{{i.zhihuCount}}
+				</div>
+			</td>
+			<td>{{i.scholarCount}}</td>
 
-					<div class="row">
-					<div class="embed-responsive embed-responsive-16by9 col-sm-7 p-2">
-						<iframe src="{% url 'plotneo4jgraph' %}" class="graph-frame" ></iframe> 
-					</div>
-				
-						<table class="table table-hover col-sm-4 ml-4">
-			<thead>
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">Field</th>
-					<th scope="col">Weibo</th>
-					<th scope="col">Zhihu</th>
-					<th scope="col">Scholar</th>
-					<th scope="col">News</th>
-					<th scope="col">Tweets</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for i in related_table %}
-				<tr>
-					<th scope="row">{{forloop.counter}}</th>
-					<td><a href="?q={{i.fieldName}}"> {{i.fieldName}} </a></td>
-					<td>
-						{% if i.weiboPercentile == "True" %}
-						<div class = "percentileTrue">
-						{% else %}
-						<div class = "percentileFalse">
-						{% endif %}
-							{{i.weiboCount}}
-						</div>
-					</td>					
-					<td>
-						{% if i.zhihuPercentile == "True" %}
-						<div class = "percentileTrue">
-						{% else %}
-						<div class = "percentileFalse">
-						{% endif %}
-							{{i.zhihuCount}}
-						</div>
-					</td>
-					<td>{{i.scholarCount}}</td>
-
-					<td>{{i.newsCount}}</td>
-					<td>
-						{% if i.tweetsPercentile == "True" %}
-						<div class = "percentileTrue">
-						{% else %}
-						<div class = "percentileFalse">
-						{% endif %}
-							{{i.tweetsCount}}
-						</div>
-					</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-			</div>
+			<td>{{i.newsCount}}</td>
+			<td>
+				{% if i.tweetsPercentile == "True" %}
+				<div class = "percentileTrue">
+				{% else %}
+				<div class = "percentileFalse">
+				{% endif %}
+					{{i.tweetsCount}}
+				</div>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+	</div>
 </div>
 
-				<div class="container p-3 ml-2 col-11">
-					<h3><b>Heatmap</b></h3>
-					<div class="embed-responsive embed-responsive-21by9">
-						<iframe src="{% url 'heatmap' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-
-				<div class="container p-3 ml-2 col-10">
-					<h3><b>Time Series Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-						<iframe src="{% url 'plotgraphall' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-
+		<div class="container p-3 ml-2 col-11">
+			<h3><b>Heatmap</b></h3>
+			<div class="embed-responsive embed-responsive-21by9">
+				<iframe src="{% url 'heatmap' %}" class="graph-frame" ></iframe> 
 			</div>
-		</body>
+		</div>
+
+		<div class="container p-3 ml-2 col-10">
+			<h3><b>Time Series Graph</b></h3>
+			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+				<iframe src="{% url 'plotgraphall' %}" class="graph-frame" ></iframe> 
+			</div>
+		</div>
+
+	</div>
+</body>

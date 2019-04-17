@@ -16,7 +16,7 @@
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
 		<div class="row col-12" >
 		<a class="navbar-brand" href="/">Tech Scan China</a>
-		<form class="search-form col-sm-4 pt-1 px-0" action="/main" method="get" id="srch-term">
+		<form class="search-form col-sm-4 pt-1 px-0" action="/overview" method="get" id="srch-term">
 			<div class="input-group">
 			<input type="text" class="form-control" placeholder="Search..." name="q">
 			<span class="input-group-btn">
@@ -45,7 +45,7 @@
 		<div class="row px-2">
 
 		<!-- Weibo Card -->
-		<div class="col-3 p-1">
+		<div class="col-sm-3 p-1">
 			<h2 class="text-center">Weibo</h2>
 			{% for i in weibo %}
 			<div class="card border-dark mb-2">
@@ -59,7 +59,7 @@
 		</div>
 
 		<!-- Zhihu Card -->
-		<div class="col-2 p-1">
+		<div class="col-sm-2 p-1">
 			<h2 class="text-center">Zhihu</h2>
 			{% for i in zhihu %}
 			<div class="card border-dark mb-2">
@@ -73,7 +73,7 @@
 		</div>
 
 		<!-- News Card -->
-		<div class="col-2 p-1">
+		<div class="col-sm-2 p-1">
 			<h2 class="text-center">News</h2>
 			{% for i in news %}
 			<div class="card border-dark mb-2">
@@ -86,7 +86,7 @@
 		</div>
 
 		<!-- Scholar Card -->
-		<div class="col-3 p-1">
+		<div class="col-sm-3 p-1">
 			<h2 class="text-center">Scholar</h2>
 			{% for i in scholar %}
 			<div class="card border-dark mb-2">
@@ -99,7 +99,7 @@
 		</div>
 
 		<!-- Tweets Card -->
-		<div class="col-2 p-1">
+		<div class="col-sm-2 p-1">
 			<h2 class="text-center">Tweets</h2>
 			{% for i in tweets %}
 			{% if i.sentiment == "Positive" %}
