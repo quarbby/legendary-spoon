@@ -6,7 +6,7 @@ from ..es_folder import main_functions
 
 def related_field(keyword):
   with neo4jdriver.session() as session:
-    relatedField = session.run("MATCH (f:Field)<-[:PART_OF_FIELD]-(f1:Field) WHERE f.fieldName =~ '(?i).*{}.*' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
+    relatedField = session.run("MATCH (f:Field:SubGraphCS)<-[:PART_OF_FIELD]-(f1:Field:SubGraphCS) WHERE f.fieldName =~ '(?i).*{}.*' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
   return [{"fieldName" : record['f1.fieldName']} for record in relatedField]
 
 # ColorListArrays = ['rgb(0,0,0)','rgb(15,41,68)','rgb(254,144,4)','rgb(100,100,100)','rgb(300,0,214)','rgb(0,200,0)','rgb(0,0,100)','rgb(15,41,68)']
@@ -14,7 +14,7 @@ def related_field(keyword):
 def search_field(Keyword):
 	result = []
 	with neo4jdriver.session() as session:
-		output = session.run('MATCH f=(f1:Field)<-[r1:PART_OF_FIELD]-(q:Field) WHERE f1.fieldName =~ "(?i).*{}.*" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e LIMIT 50'.format(Keyword))
+		output = session.run('MATCH f=(f1:Field:SubGraphCS)<-[r1:PART_OF_FIELD]-(q:Field:SubGraphCS) WHERE f1.fieldName =~ "(?i).*{}.*" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
 		for record in output:
 			result.append(record)
 	return result
