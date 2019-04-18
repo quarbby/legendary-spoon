@@ -45,32 +45,43 @@
 		</div>
 		<div class="content category-content">
 			<h1><b>Zhihu</b></h1>
-			<div class="card bg-light text-dark">
-				<div class="card-body">Light card</div>
-			</div>
+			<div class="row px-2">
+				<div class="col p-1">
+					{% for i in zhihu %}
+					<div class="card bg-light text-dark col-12">
+						<div class="zhihu-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
+						<div class="zhihu-card-body py-2">{{i.summary}}</div>
+						<div class="row px-2">
+							<div class="zhihu-card-others p-2"><a href="{{i.authorUrl}}">{{i.author}}</a></div>
+							<div class="zhihu-card-others p-2">Upvote count: {{i.upvotes}}</div>
+						</div>
+					</div>
+					{%endfor%}
+				</div>
 
-			<table class="table table-hover col-5 ml-4">
-	<thead>
-		<tr>
-			<th scope="col">#</th>
-			<th scope="col">Author</th>
-			<th scope="col">Total Upvotes</th>
-			<th scope="col">Count</th>
-			<th scope="col">Average upvotes per post</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for i in author_table %}
-		<tr>
-			<th scope="row">{{forloop.counter}}</th>
-			<td> {{i.author}}</td>
-			<td> {{i.max}}</td>
-			<td> {{i.size}}</td>
-			<td>{{i.average}}</td>		
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+				<table class="table table-hover pt-2 col-5 mx-3">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Author</th>
+							<th scope="col">Total Upvotes</th>
+							<th scope="col">Count</th>
+							<th scope="col">Average upvotes per post</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for i in author_table %}
+						<tr>
+							<th scope="row">{{forloop.counter}}</th>
+							<td><a href="{{i.authorUrl}}">{{i.author}}</a></td>
+							<td> {{i.max}}</td>
+							<td> {{i.size}}</td>
+							<td>{{i.average}}</td>		
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 
 		</div>
 	</body>
