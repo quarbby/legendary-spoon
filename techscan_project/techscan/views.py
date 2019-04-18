@@ -76,7 +76,7 @@ def tweets(request):
 
 def zhihu(request):
 	params = request.GET.get('q')
-	_,es_zhihu = scroll_query.text_query(params,'tweets')
+	_,es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu', sizes = 5)
 	context = {
 		"search_word": params,
 		"zhihu":es_zhihu,
