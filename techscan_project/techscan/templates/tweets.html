@@ -48,5 +48,13 @@
 			<div class="card bg-light text-dark">
 				<div class="card-body">Light card</div>
 			</div>
+			
+			<div class="container p-3 ml-2 col-11 float-left">
+				<h3><b>Top 10 Hashtag</b></h3>
+				<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+					<iframe src="{% url 'twitter_hashtag_bubble' %}" class="graph-frame" ></iframe> 
+				</div>
+			</div>
+
 		</div>
 	</body>

@@ -85,6 +85,26 @@ def get_zh_author(keyword, graph = False):
 	else:
 		pass
 
+def weibo_author(keyword):
+
+	df,_ = graph_query(keyword, 'weibo')
+	if df is not None:
+		favorite_count = df.groupby(['user_name']).sum().reset_index().sort_values('favorite_count', ascending=False)
+
+		post_freq = df.groupby(['user_name']).size().rename('size').reset_index().sort_values('size', ascending = False)
+		post_freq.rename(columns={'user_name': 'user_name_1'}, inplace=True)
+
+		df_new = pd.concat([favorite_count, post_freq], axis = 1).drop(columns = ['user_name_1'])
+		df_new['average'] = (df_new['favorite_count']/df_new['size']).astype(int)
+		df_new['max'] = df.groupby('user_name', as_index=False)['favorite_count'].max()['favorite_count']
+		df_new['weighted'] = (0.6 * df_new['max']) + (0.15*df_new['favorite_count']) + (0.25*df_new['average'])
+
+		df_new = df_new.sort_values('weighted',ascending = False).reset_index()[:10]
+		json_frame = df_new.to_dict('index').values()
+		return json_frame
+	else:
+		pass
+
 
 # def get_percentile(indexes):
 # 	res = es.search(index = indexes , size = 5, scroll = '2m', body = {"query" : {

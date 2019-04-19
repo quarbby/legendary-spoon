@@ -63,16 +63,16 @@
 						<tr>
 							<th scope="col">#</th>
 							<th scope="col">Author</th>
-							<th scope="col">Total Upvotes</th>
+							<th scope="col">Total Favorites</th>
 							<th scope="col">Count</th>
-							<th scope="col">Average upvotes per post</th>
+							<th scope="col">Average favorites per post</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for i in author_table %}
+						{% for i in weibo_table %}
 						<tr>
 							<th scope="row">{{forloop.counter}}</th>
-							<td><a href="{{i.authorUrl}}">{{i.author}}</a></td>
+							<td><a href="{{i.url}}">{{i.user_name}}</a></td>
 							<td> {{i.max}}</td>
 							<td> {{i.size}}</td>
 							<td>{{i.average}}</td>		

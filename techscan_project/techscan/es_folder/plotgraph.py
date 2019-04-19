@@ -15,7 +15,7 @@ import re
 import pandas as pd
 from .main_functions import chi_translation
 from collections import Counter
-
+import math
 
 def plot_pie_chart(keyword):
 
@@ -317,3 +317,93 @@ def top_hashtag(keyword):
 
 	fig = dict(data = data , layout=layout)
 	plot(fig, filename='techscan/templates/weibo_hashtag_count.html', auto_open=False)
+
+def twitter_bubble(keyword):
+	df,_ = graph_query(keyword, 'tweets')
+	df2 = df.groupby(['hashtags']).sum().reset_index().sort_values('retweet_count', ascending = False)
+	df2 = df2.drop(columns = ['_score'])
+	df2 = df2[df2['retweet_count'] >= 10]
+	df2 = df2[df2['hashtags'] != '[]']
+	df2['hashtags'] = df2['hashtags'].apply(lambda x: re.sub("['\]\[']", '', x.lower()))
+	df2['hashtags'] = df2['hashtags'].apply(lambda x: x.replace("ai", "artificial intelligence"))
+	df2['hashtags'] = df2['hashtags'].apply(lambda x: x.split(', '))
+	if len(df2) > 20:
+		df2 = df2.head(10)
+
+	hashtag_used = {}
+	for i in range(len(df2)):
+		for hashtag in df2['hashtags'].iloc[i]:
+			if hashtag in hashtag_used:
+				count['favorite_count'] = count['favorite_count'] + df2.favorite_count.iloc[i]
+				count['retweet_count'] = count['retweet_count'] + df2.retweet_count.iloc[i]
+
+			else:
+				count = {}
+				count['favorite_count'] = df2.favorite_count.iloc[i]
+				count['retweet_count'] = df2.retweet_count.iloc[i]
+				hashtag_used[hashtag] = count
+
+
+	slope = 2.666051223553066e-05
+	hover_text = []
+	bubble_size = []
+	favorite_count = []
+	retweet_count = []
+
+	for key in hashtag_used.keys():
+		hover_text.append(('Hashtag: {hashtag}<br>' +
+			'Retweet Count: {retweet}<br>' +
+			'Favorite Count: {favorite}').format(hashtag=key,
+				retweet=hashtag_used[key]['retweet_count'],
+				favorite=hashtag_used[key]['favorite_count']))
+		bubble_size.append(math.sqrt((hashtag_used[key]['favorite_count'] + hashtag_used[key]['retweet_count'])*slope))
+		favorite_count.append(hashtag_used[key]['favorite_count'])
+		retweet_count.append(hashtag_used[key]['retweet_count'])
+
+	sizeref = 2.*max(bubble_size)/(100**2)
+
+	trace0 = go.Scatter(
+		x = retweet_count,
+		y = favorite_count,
+		mode = 'markers',
+		text = hover_text,
+		marker = dict(
+			symbol = 'circle',
+			sizemode = 'area',
+			sizeref = sizeref,
+			size = bubble_size,
+			line = dict(
+				width = 2
+				),
+			)
+		)
+	data = [trace0]
+	layout = go.Layout(
+		xaxis = dict(
+			title = 'Retweet Count',
+			titlefont=dict(
+				family = '-webkit-body',
+				size=16,
+				color='rgb(107, 107, 107)'
+				),
+			gridcolor = 'rgb(255, 255, 255)',
+			zerolinewidth = 1,
+			ticklen = 5,
+			gridwidth = 2,
+			),
+		yaxis = dict(
+			title = 'Favorite Count',
+			titlefont=dict(
+				family = '-webkit-body',
+				size=16,
+				color='rgb(107, 107, 107)'
+				),
+			gridcolor = 'rgb(255, 255, 255)',
+			zerolinewidth = 1,
+			ticklen = 5,
+			gridwidth = 2,
+			),
+		)
+
+	fig = dict(data=data, layout=layout)
+	plot(fig, filename='techscan/templates/twitter_hashtag_bubble.html', auto_open=False)

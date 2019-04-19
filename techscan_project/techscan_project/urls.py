@@ -21,5 +21,6 @@ urlpatterns = [
 	path('plotgraphall/',TemplateView.as_view(template_name="main_graph_all.html"), name= 'plotgraphall'),
 	path('zhihu_graph/', TemplateView.as_view(template_name="zhihu_author_bar.html"), name='zhihu_graph'),
 	path('weibo_hashtag_graph/', TemplateView.as_view(template_name="weibo_hashtag_count.html"), name='weibo_hashtag_graph'),
-	
+	path('twitter_hashtag_bubble/', TemplateView.as_view(template_name="twitter_hashtag_bubble.html"), name='twitter_hashtag_bubble'),
+
 	]
