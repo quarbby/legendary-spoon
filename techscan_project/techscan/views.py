@@ -40,7 +40,8 @@ def overview(request):
 
 def weibo(request):
 	params = request.GET.get('q')
-	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo', sizes =5)
+	plotgraph.top_hashtag(params)
+	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo', sizes = 5)
 	context = {
 		"search_word": params,
 		"weibo":es_weibo,
@@ -58,7 +59,7 @@ def scholar(request):
 
 def news(request):
 	params = request.GET.get('q')
-	_,es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
+	_,es_news = scroll_query.text_query(main_functions.chi_translation(params),'news', sizes = 5)
 	context = {
 		"search_word": params,
 		"news": es_news,

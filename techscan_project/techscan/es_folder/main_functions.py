@@ -5,6 +5,9 @@ from ..config import location, es
 from .scroll_query import graph_query, processing_hits
 import pandas as pd
 import numpy as np
+import plotly.plotly as py
+import plotly.graph_objs as go
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot
 
 def chi_translation(keyword):
 	try:
@@ -60,7 +63,21 @@ def get_zh_author(keyword, graph = False):
 			            y=df_new['author'],
 			            orientation = 'h',
 			)]
-			plot(data, filename='search/templates/zhihu_author_bar.html',auto_open=False)
+
+			layout = go.Layout(
+				yaxis = go.layout.YAxis(
+					title = go.layout.yaxis.Title(
+						text = 'User',
+						font = dict(
+							family = '-webkit-body',
+							size = 18,
+							)
+						)
+					)
+				)
+
+			fig = dict(data = data, layout = layout)
+			plot(fig, filename='techscan/templates/zhihu_author_bar.html', auto_open=False)
 		else:
 			# df_new = df_new.reset_index(drop = True)
 			json_frame = df_new.to_dict('index').values()

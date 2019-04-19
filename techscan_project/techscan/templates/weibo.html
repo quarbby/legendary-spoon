@@ -43,24 +43,52 @@
 				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
 			</div>
 		</div>
-
+		<!-- Contents -->
 		<div class="content category-content">
-			<h1><b>Weibo</b></h1>
-			{% for i in weibo %}
-			<div class="card bg-light text-dark col-8">
-				<div class="card-body"><a href="{{i.url}}">{{i.user_name}}</a></div>
-				<div class="card-body">{{i.summary}}</div>
-				<div class="card-body">Favorite count: {{i.favorite_count}}</div>
+			<div class="row px-2 py-2">
+				<div class="col p-1">
+					{% for i in weibo %}
+					<div class="card bg-light text-dark col-12">
+						<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
+						<div class="sub-card-body py-2">{{i.summary}}</div>
+						<div class="row px-2">
+							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+						</div>
+					</div>
+					{%endfor%}
+				</div>
+
+				<table class="table table-hover pt-2 col-5 mx-3">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Author</th>
+							<th scope="col">Total Upvotes</th>
+							<th scope="col">Count</th>
+							<th scope="col">Average upvotes per post</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for i in author_table %}
+						<tr>
+							<th scope="row">{{forloop.counter}}</th>
+							<td><a href="{{i.authorUrl}}">{{i.author}}</a></td>
+							<td> {{i.max}}</td>
+							<td> {{i.size}}</td>
+							<td>{{i.average}}</td>		
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 			</div>
-			{%endfor%}
 
 
-		<div class="container p-3 ml-2 col-11 float-left">
-			<h3><b>Time Series Graph</b></h3>
-			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-				<iframe src="{% url 'plotgraphall' %}" class="graph-frame" ></iframe> 
+			<div class="container p-3 ml-2 col-11 float-left">
+				<h3><b>Hashtag Frequency Graph</b></h3>
+				<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+					<iframe src="{% url 'weibo_hashtag_graph' %}" class="graph-frame" ></iframe> 
+				</div>
 			</div>
-		</div>
 
 		</div>
 

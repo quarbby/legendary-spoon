@@ -127,19 +127,19 @@ div.category-content{
   }
 }
 
-.zhihu-card-title{
+.sub-card-title{
   color: #556777;
   font-family: -webkit-body;
   font-size: 22px
 }
 
-.zhihu-card-body{
+.sub-card-body{
   color: #556777;
   font-family: -webkit-body;
   font-size: 16px
 }
 
-.zhihu-card-others{
+.sub-card-others{
   color: #556777;
   font-family: -webkit-body;
   font-size: 14px

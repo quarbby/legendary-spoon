@@ -14,6 +14,7 @@ from textblob.inflect import singularize as _singularize
 import re
 import pandas as pd
 from .main_functions import chi_translation
+from collections import Counter
 
 
 def plot_pie_chart(keyword):
@@ -178,101 +179,141 @@ def multi_year(keyword, index = "scholar"):
 		pass
 
 def main_graph(keyword):
- df_english,_ = graph_query(str(keyword))
- df_chinese,_ = graph_query(str(chi_translation(keyword)))
- df = pd.concat([df_english,df_chinese], ignore_index = True)
- dates = ['2017', '2018', '2019']
- df = df[df.published.str.contains('|'.join(dates))]
+	df_english,_ = graph_query(str(keyword))
+	df_chinese,_ = graph_query(str(chi_translation(keyword)))
+	df = pd.concat([df_english,df_chinese], ignore_index = True)
+	dates = ['2017', '2018', '2019']
+	df = df[df.published.str.contains('|'.join(dates))]
 
- if df is not None:
-  df['published_date'] = df['published'].apply(lambda x:  x[:7])
-  df_2017 = df[df.published_date.str.contains('2017')]
-  df_2017 = df_2017['published_date'].value_counts()
-  df_2017 = df_2017.sort_index(ascending = False)
-  df_2018 = df[df.published_date.str.contains('2018')]
-  df_2018 = df_2018['published_date'].value_counts()
-  df_2018 = df_2018.sort_index(ascending = False)
-  df_2019 = df[df.published_date.str.contains('2019')]
-  df_2019 = df_2019['published_date'].value_counts()
-  df_2019 = df_2019.sort_index(ascending = False)
-  df = df['published_date'].value_counts()
-  df = df.sort_index(ascending = False)
-  # trace = go.Bar(
-  #  showlegend = True,
-  #  x = df.index,
-  #  dx = 5,
-  #  y = df.values,
-  #  visible = True,
-  #  name = "Total count")
-  trace_2017 = go.Bar(
-   showlegend = True,
-   x = df_2017.index,
-   dx = 5,
-   y = df_2017.values,
-   visible = True,
-   name = "Total count (2017)",
-   marker=dict(
-    color='rgb(158,225,219)'))
-  trace_2018 = go.Bar(
-   showlegend = True,
-   x = df_2018.index,
-   dx = 5,
-   y = df_2018.values,
-   visible = True,
-   name = "Total count (2018)",
-   marker=dict(
-    color='rgb(160,225,158)'))
-  trace_2019 = go.Bar(
-   showlegend = True,
-   x = df_2019.index,
-   dx = 5,
-   y = df_2019.values,
-   visible = True,
-   name = "Total count (2019)",
-   marker=dict(
-    color='rgb(225,170,158)'))
-  data = [trace_2017, trace_2018, trace_2019]
+	if df is not None:
+		df['published_date'] = df['published'].apply(lambda x:  x[:7])
+		df_2017 = df[df.published_date.str.contains('2017')]
+		df_2017 = df_2017['published_date'].value_counts()
+		df_2017 = df_2017.sort_index(ascending = False)
+		df_2018 = df[df.published_date.str.contains('2018')]
+		df_2018 = df_2018['published_date'].value_counts()
+		df_2018 = df_2018.sort_index(ascending = False)
+		df_2019 = df[df.published_date.str.contains('2019')]
+		df_2019 = df_2019['published_date'].value_counts()
+		df_2019 = df_2019.sort_index(ascending = False)
+		df = df['published_date'].value_counts()
+		df = df.sort_index(ascending = False)
+		# trace = go.Bar(
+		#  showlegend = True,
+		#  x = df.index,
+		#  dx = 5,
+		#  y = df.values,
+		#  visible = True,
+		#  name = "Total count")
+		trace_2017 = go.Bar(
+			showlegend = True,
+			x = df_2017.index,
+			dx = 5,
+			y = df_2017.values,
+			visible = True,
+			name = "Total count (2017)",
+			marker=dict(
+				color='rgb(158,225,219)'))
+		trace_2018 = go.Bar(
+			showlegend = True,
+			x = df_2018.index,
+			dx = 5,
+			y = df_2018.values,
+			visible = True,
+			name = "Total count (2018)",
+			marker=dict(
+				color='rgb(160,225,158)'))
+		trace_2019 = go.Bar(
+			showlegend = True,
+			x = df_2019.index,
+			dx = 5,
+			y = df_2019.values,
+			visible = True,
+			name = "Total count (2019)",
+			marker=dict(
+				color='rgb(225,170,158)'))
+		data = [trace_2017, trace_2018, trace_2019]
 
-  layout = go.Layout(
-   margin=go.layout.Margin(
-    l=60,
-    r=60,
-    b=50,
-    t=50,
-    pad=4),
-   legend = dict(x = -.1, y = 1.1, orientation = "h"),
-   updatemenus = list([
-    dict(
-     buttons = list([
-      dict(
-       args = [{'visible': [True,True,True]},
-       {'title' : "Total Count"}],
-       label = "All",
-       method = "update",
-       ),
-      dict(
-       args = [{'visible':[True,False,False]},
-       {'title' : "Total Count for 2017"}],
-       label = "2017",
-       method = "update",
-       ),
-      dict(
-       args = [{'visible':[False,True,False]},
-       {'title' : "Total Count for 2018"}],
-       label = "2018",
-       method = "update",
-       ),
-      dict(
-       args = [{'visible':[False,False,True]},
-       {'title' : "Total Count for 2019"}],
-       label = "2019",
-       method = "update",
-       )
-      ])
-     )
-    ])
-   )
-  fig = dict(data=data, layout=layout)
-  plot(fig, filename = 'techscan/templates/main_graph_all.html', auto_open=False)
- else:
-  pass
+		layout = go.Layout(
+			margin=go.layout.Margin(
+				l=60,
+				r=60,
+				b=50,
+				t=50,
+				pad=4),
+			legend = dict(x = -.1, y = 1.1, orientation = "h"),
+			updatemenus = list([
+				dict(
+					buttons = list([
+						dict(
+							args = [{'visible': [True,True,True]},
+							{'title' : "Total Count"}],
+							label = "All",
+							method = "update",
+							),
+						dict(
+							args = [{'visible':[True,False,False]},
+							{'title' : "Total Count for 2017"}],
+							label = "2017",
+							method = "update",
+							),
+						dict(
+							args = [{'visible':[False,True,False]},
+							{'title' : "Total Count for 2018"}],
+							label = "2018",
+							method = "update",
+							),
+						dict(
+							args = [{'visible':[False,False,True]},
+							{'title' : "Total Count for 2019"}],
+							label = "2019",
+							method = "update",
+							)
+						])
+					)
+				])
+			)
+		fig = dict(data=data, layout=layout)
+		plot(fig, filename = 'techscan/templates/main_graph_all.html', auto_open=False)
+	else:
+		pass
+
+def top_hashtag(keyword):
+	df,_ = graph_query(chi_translation(keyword),'weibo')
+	df ['hashtags']= df['hashtags'].apply(lambda x:''.join(x))
+	df = df[df['hashtags']!='']
+	records = df.to_dict('records')
+	hashtag_count = Counter(hashtag['hashtags'] for hashtag in records)
+	tophashtags = hashtag_count.most_common(15)
+	hashtag=[]
+	counts=[]
+	for i in tophashtags:
+		hashtag.append(i[0])
+		counts.append(i[1])
+
+	data = [go.Bar(
+		x = hashtag,
+		y = counts,
+		marker=dict(
+			color='rgb(12,84,96)')
+		)]
+	layout = go.Layout(
+		yaxis=dict(
+			title='Frequency of Hashtags',
+			titlefont=dict(
+				family = '-webkit-body',
+				size=16,
+				color='rgb(107, 107, 107)'
+				)
+			),
+		legend=dict(
+			x=0,
+			y=1.0,
+			bgcolor='rgba(255, 255, 255, 0)',
+			bordercolor='rgba(255, 255, 255, 0)'
+			),
+		bargap=0.15,
+		)
+
+	fig = dict(data = data , layout=layout)
+	plot(fig, filename='techscan/templates/weibo_hashtag_count.html', auto_open=False)

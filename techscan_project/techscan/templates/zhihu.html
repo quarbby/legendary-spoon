@@ -43,29 +43,30 @@
 				<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
 			</div>
 		</div>
+		<!-- Contents -->
 		<div class="content category-content">
 			<h1><b>Zhihu</b></h1>
-			<div class="row px-2">
+			<div class="row px-2 py-2">
 				<div class="col p-1">
 					{% for i in zhihu %}
 					<div class="card bg-light text-dark col-12">
-						<div class="zhihu-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
-						<div class="zhihu-card-body py-2">{{i.summary}}</div>
+						<div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
+						<div class="sub-card-body py-2">{{i.summary}}</div>
 						<div class="row px-2">
-							<div class="zhihu-card-others p-2"><a href="{{i.authorUrl}}">{{i.author}}</a></div>
-							<div class="zhihu-card-others p-2">Upvote count: {{i.upvotes}}</div>
+							<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">{{i.author}}</a></div>
+							<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
 						</div>
 					</div>
 					{%endfor%}
 				</div>
 
-				<table class="table table-hover pt-2 col-5 mx-3">
+				<table class="table table-hover pt-2 col-5 mx-3 text-center">
 					<thead>
 						<tr>
 							<th scope="col">#</th>
 							<th scope="col">Author</th>
 							<th scope="col">Total Upvotes</th>
-							<th scope="col">Count</th>
+							<th scope="col">Posts Count</th>
 							<th scope="col">Average upvotes per post</th>
 						</tr>
 					</thead>
@@ -81,6 +82,12 @@
 						{% endfor %}
 					</tbody>
 				</table>
+			</div>
+			<div class="container p-3 ml-2 col-11 float-left">
+			<h3><b>Post Frequency Graph</b></h3>
+				<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+					<iframe src="{% url 'zhihu_graph' %}" class="graph-frame" ></iframe> 
+				</div>
 			</div>
 
 		</div>
