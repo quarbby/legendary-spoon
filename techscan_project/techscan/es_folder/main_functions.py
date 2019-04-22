@@ -59,10 +59,11 @@ def get_zh_author(keyword, graph = False):
 		if graph == True:
 			df_new.sort_values('weighted',ascending = True)
 			data = [go.Bar(
-			            x=df_new['size'],
-			            y=df_new['author'],
-			            orientation = 'h',
-			)]
+				marker=dict(color='rgb(85,118,154)'),
+				x=df_new['size'],
+				y=df_new['author'],
+				orientation = 'h',
+				)]
 
 			layout = go.Layout(
 				yaxis = go.layout.YAxis(
