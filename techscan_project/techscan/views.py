@@ -41,7 +41,7 @@ def overview(request):
 def weibo(request):
 	params = request.GET.get('q')
 	# plotgraph.top_hashtag(params)
-	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo', sizes = 5)
+	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
 		"weibo":es_weibo,
@@ -70,7 +70,7 @@ def news(request):
 def tweets(request):
 	params = request.GET.get('q')
 	# plotgraph.twitter_bubble(params)
-	_,es_tweets = scroll_query.text_query(params,'tweets')
+	_,es_tweets = scroll_query.sub_query(params,'tweets')
 	context = {
 		"search_word": params,
 		"tweets": es_tweets,
@@ -79,7 +79,7 @@ def tweets(request):
 
 def zhihu(request):
 	params = request.GET.get('q')
-	_,es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu', sizes = 5)
+	_,es_zhihu = scroll_query.sub_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
 		"zhihu":es_zhihu,
