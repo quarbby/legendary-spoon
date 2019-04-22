@@ -1,18 +1,16 @@
-<<<<<<< HEAD
-# Python stuff
-
-*.pyc
-*/__pycache__/*
-techscan_project/techscan/es_folder/import-delete/data/*
-=======
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 
 # Stuff to ignore
+
+# Python stuff
 /__pycache__
+*/__pycache__/*
 *.pyc
 *.pyo
 
+# Data
+techscan_project/techscan/es_folder/import-delete/data/*
 
 # Django stuff
 *.log
@@ -32,4 +30,4 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
->>>>>>> 5c2d00d70d29a25f5ba30947b9335348cb5a3870
+
