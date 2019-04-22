@@ -410,7 +410,7 @@ def twitter_bubble(keyword):
 	plot(fig, filename='techscan/templates/graph/twitter_hashtag_bubble.html', auto_open=False)
 
 def plot_stocks():
-	res = es.search(index = 'stockmarket_10years', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})
+	res = es.search(index = 'stock', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})
 	company = []
 	date = []
 	closing_price = []
