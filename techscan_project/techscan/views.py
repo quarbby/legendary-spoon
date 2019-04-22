@@ -78,6 +78,7 @@ def tweets(request):
 	params = request.GET.get('q')
 	# plotgraph.twitter_bubble(params)
 	# plotgraph.twitter_graph(params)
+	# plotgraph.wordcloud((params), indexes = 'tweets')
 	_,es_tweets = scroll_query.sub_query(params,'tweets')
 	context = {
 		"search_word": params,
