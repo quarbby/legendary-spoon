@@ -22,6 +22,8 @@ from .main_functions import chi_translation
 from .scroll_query import graph_query, processing_hits
 from sklearn.feature_extraction.text import TfidfVectorizer
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+import plotly.figure_factory as ff
+
 
 def plot_pie_chart(keyword):
 
@@ -535,86 +537,12 @@ def plot_stocks():
 def twitter_graph(keyword):
 	df,_ = graph_query(keyword, 'tweets')
 	df_new = df.groupby(['user_screen_name']).sum().reset_index()
-	rng = []
-	max_range = 15500
-	for i in range (int(max_range/50)):
-		rng.append(str(i*50) + '-' + str((i+1)*50))
-	AuthorList = []
-	Totalcount = []
-	for j in range (len(rng)):
-		x , y = count_range_in_list(df_new['user_screen_name'],df_new['favorite_count'], j*50, (j+1)*50)
-		AuthorList.append(x)
-		Totalcount.append(y)
-	# print (AuthorList)
-	# print(Totalcount)
-
-	x = percentile(AuthorList,Totalcount, df_new)
-	# print(x)
-
-	chunks_count_lower = Totalcount.copy()
-	chunks_Author_lower = AuthorList.copy()
-	chunks_count_upper = Totalcount.copy()
-	chunks_Author_upper = AuthorList.copy()
-
-	for i in range (x, len(Totalcount)):
-		chunks_count_lower[i] = 0
-		chunks_Author_lower[i] = []
-
-	for i in range (x):
-		chunks_count_upper[i] = 0
-		chunks_Author_upper[i] = []
-	# print(len(chunks_Author_upper))
-	# print(len(rng))
-	trace1 = go.Bar(
-		hoverinfo = "text",	
-		x=rng,
-		y=chunks_count_lower,	
-		text = chunks_Author_lower,
-		name = 'Lower 99th Percentile '
-		)
-	trace2 = go.Bar(
-		hoverinfo = "text",	
-		x=rng,
-		y=chunks_count_upper,
-		text = chunks_Author_upper,
-		name = 'Upper 1st percentile'
-		)
-	layout = go.Layout(barmode='stack',
-		xaxis = dict(
-			dtick=10	,
-			) ,
-		yaxis =  dict(
-			range = [0,100]
-			),
-		bargap=0,
-		bargroupgap=0.01,
-		showlegend = True,
-		title = go.layout.Title(
-			text = 'tweets: favorite counts for usernames')
-		)
-	data = [trace1,trace2]
-	fig = go.Figure(data = data, layout=layout)
-
+	final = [df_new['favorite_count'].tolist()]
+	name_List = [df_new['user_screen_name'].tolist()]
+	group_label = ['Favorite Count']
+	fig = ff.create_distplot(final, group_label,bin_size = .1, curve_type='normal',rug_text = name_List,show_hist=False)
+	fig['layout'].update(title='Distplot with Normal Distribution')
 	plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
-
-def percentile (Authorlist,countlist, df):
-	initial = 0
-	for i in range (len(countlist)):
-		if initial < math.floor(len(df)*9.9/10):
-			initial = initial + countlist[i] 
-		else :
-			val = i
-			break
-	return val
-
-def count_range_in_list (author, li, min, max):
-	ctr = 0
-	place_names = []
-	for k in range(len(li)):
-		if min <= li[k] < max:
-			place_names.append(author[k])
-			ctr += 1
-	return place_names, ctr
 
 def wordcloud(keyword, indexes = 'weibo'):
 	df,_ = graph_query(keyword,indexes)
