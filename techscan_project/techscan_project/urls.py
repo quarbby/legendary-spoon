@@ -24,4 +24,6 @@ urlpatterns = [
 	path('twitter_hashtag_bubble/', TemplateView.as_view(template_name="graph/twitter_hashtag_bubble.html"), name='twitter_hashtag_bubble'),
 	path('stock_graph/', TemplateView.as_view(template_name="graph/stock_graph.html"), name='stock_graph'),
 	path('twitter_graph/', TemplateView.as_view(template_name="graph/twitter_graph.html"),name='twitter_graph'),
+	path('twitter_wordcloud/', TemplateView.as_view(template_name="graph/twitter_wordcloud.png"),name='twitter_wordcloud'),
+	path('weibo_wordcloud/', TemplateView.as_view(template_name="graph/weibo_wordcloud.png"),name='weibo_wordcloud'),
 	]

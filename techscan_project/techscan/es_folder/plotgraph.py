@@ -1,6 +1,6 @@
 import re
 import plotly
-import codecs
+# import codecs
 import jieba
 import nltk
 import math
@@ -547,7 +547,8 @@ def twitter_graph(keyword):
 def wordcloud(keyword, indexes = 'weibo'):
 	df,_ = graph_query(keyword,indexes)
 	if indexes == 'weibo' or indexes == 'zhihu':
-		stopword = codecs.open('techscan/static/word_cloud/stopword.txt', 'r', 'utf-8').read()
+		with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
+			stopword = f.read()
 		df['summary'] = df['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword]))
 	else:
 		stopword = stopwords.words('english')
@@ -563,8 +564,8 @@ def wordcloud(keyword, indexes = 'weibo'):
 		mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
 			
 	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
-	wordcloud = WordCloud( background_color="white",collocations = False, max_words=100,font_path=font_path,
-		max_font_size=100, random_state=42, width=1000, height=860, margin=2, mask =mask).generate(summary_string)
+	wordcloud = WordCloud( background_color = "white",collocations = False, max_words = 100,font_path=font_path,
+		max_font_size = 100, random_state = 42, width = 1000, height = 860, margin = 2, mask = mask).generate(summary_string)
 	
-	wordcloud.to_file("techscan/templates/graph/{}_wordcloud.png".format(indexes))
+	wordcloud.to_file("techscan/static/word_cloud/{}_wordcloud.png".format(indexes))
 

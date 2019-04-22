@@ -44,6 +44,7 @@ def overview(request):
 def weibo(request):
 	params = request.GET.get('q')
 	# plotgraph.top_hashtag(params)
+	# plotgraph.wordcloud(main_functions.chi_translation(params))
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
@@ -76,7 +77,7 @@ def news(request):
 def tweets(request):
 	params = request.GET.get('q')
 	# plotgraph.twitter_bubble(params)
-	plotgraph.twitter_graph(params)
+	# plotgraph.twitter_graph(params)
 	_,es_tweets = scroll_query.sub_query(params,'tweets')
 	context = {
 		"search_word": params,
