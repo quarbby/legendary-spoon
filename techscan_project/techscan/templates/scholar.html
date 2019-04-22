@@ -46,8 +46,17 @@
 	</div>
 	<div class="content category-content">
 		<h1><b>Scholar</b></h1>
-		<div class="card bg-light text-dark">
-			<div class="card-body">Light card</div>
-		</div>
+		<div class="col p-1">
+				{% for i in scholar %}
+				<div class="card bg-light text-dark col-12">
+					<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
+					<div class="sub-card-body py-2">{{i.summary}}</div>
+					<div class="row px-2">
+						<div class="sub-card-others p-2">Authors: {{i.authors}}</div>
+						<div class="sub-card-others p-2">Published date: {{i.published}}</div>
+					</div>
+				</div>
+				{%endfor%}
+			</div>
 	</div>
 </body>

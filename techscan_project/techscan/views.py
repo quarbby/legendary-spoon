@@ -55,7 +55,7 @@ def weibo(request):
 
 def scholar(request):
 	params = request.GET.get('q')
-	_,es_scholar = scroll_query.text_query(params,'scholar')
+	_,es_scholar = scroll_query.sub_query(params,'scholar')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -76,6 +76,7 @@ def news(request):
 def tweets(request):
 	params = request.GET.get('q')
 	# plotgraph.twitter_bubble(params)
+	plotgraph.twitter_graph(params)
 	_,es_tweets = scroll_query.sub_query(params,'tweets')
 	context = {
 		"search_word": params,
