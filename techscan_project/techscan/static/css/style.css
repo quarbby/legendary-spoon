@@ -95,7 +95,9 @@ input:-webkit-autofill:active  {
   border: 3px solid black !important;
 }
 
-
+hr {
+  border: 1px solid #0c5460 !important;
+}
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
