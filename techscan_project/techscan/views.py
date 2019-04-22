@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .es_folder import main_functions, scroll_query, plotgraph
 from .neo4j_folder import neo4jgraph
+from django.views.generic import RedirectView
 
 def index(request):
 	return render(request, 'index.html')
