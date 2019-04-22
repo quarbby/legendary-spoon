@@ -77,7 +77,7 @@ def get_zh_author(keyword, graph = False):
 				)
 
 			fig = dict(data = data, layout = layout)
-			plot(fig, filename='techscan/templates/zhihu_author_bar.html', auto_open=False)
+			plot(fig, filename='techscan/templates/graph/zhihu_author_bar.html', auto_open=False)
 		else:
 			# df_new = df_new.reset_index(drop = True)
 			json_frame = df_new.to_dict('index').values()

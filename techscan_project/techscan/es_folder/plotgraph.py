@@ -35,7 +35,7 @@ def plot_pie_chart(keyword):
 							line=dict(color='#000000', width=2)))
 		data = [trace]
 		fig = dict(data=data)
-		graph = plot(fig, filename = 'search/templates/basic_pie_chart.html', auto_open=False)
+		graph = plot(fig, filename = 'search/templates/graph/basic_pie_chart.html', auto_open=False)
 	else:
 		pass
 
@@ -54,7 +54,7 @@ def count_year(keyword, indexes):
 		)
 	data = [trace]
 	fig = dict(data=data)
-	plot(fig, filename = 'search/templates/basic_line_graph_{}.html'.format(indexes), auto_open=False)
+	plot(fig, filename = 'search/templates/graph/basic_line_graph_{}.html'.format(indexes), auto_open=False)
 		# chart = plot(fig, include_plotlyjs=False, output_type='div')
 	# , filename = "Paper count by year.html"
 
@@ -79,7 +79,7 @@ def count_date(keyword, indexes):
 	        t=50,
 	        pad=4))
 		fig = dict(data=data, layout=layout)
-		plot(fig, filename = 'search/templates/basic_line_graph_{}.html'.format(indexes), auto_open=False)
+		plot(fig, filename = 'search/templates/graph/basic_line_graph_{}.html'.format(indexes), auto_open=False)
 	else:
 		pass
 
@@ -174,7 +174,7 @@ def multi_year(keyword, index = "scholar"):
 	        pad=4))
 		data = [trace, trace0, trace1]
 		fig = dict(data=data, layout = layout )
-		plot(fig, filename = "search/templates/basic_line_graph_scholar.html", auto_open=False)
+		plot(fig, filename = "search/templates/graph/basic_line_graph_scholar.html", auto_open=False)
 	else:
 		pass
 
@@ -274,7 +274,7 @@ def main_graph(keyword):
 				])
 			)
 		fig = dict(data=data, layout=layout)
-		plot(fig, filename = 'techscan/templates/main_graph_all.html', auto_open=False)
+		plot(fig, filename = 'techscan/templates/graph/main_graph_all.html', auto_open=False)
 	else:
 		pass
 
@@ -316,7 +316,7 @@ def top_hashtag(keyword):
 		)
 
 	fig = dict(data = data , layout=layout)
-	plot(fig, filename='techscan/templates/weibo_hashtag_count.html', auto_open=False)
+	plot(fig, filename='techscan/templates/graph/weibo_hashtag_count.html', auto_open=False)
 
 def twitter_bubble(keyword):
 	df,_ = graph_query(keyword, 'tweets')
@@ -407,7 +407,7 @@ def twitter_bubble(keyword):
 		)
 
 	fig = dict(data=data, layout=layout)
-	plot(fig, filename='techscan/templates/twitter_hashtag_bubble.html', auto_open=False)
+	plot(fig, filename='techscan/templates/graph/twitter_hashtag_bubble.html', auto_open=False)
 
 def plot_stocks():
 	res = es.search(index = 'stockmarket_10years', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})
@@ -524,4 +524,4 @@ def plot_stocks():
 		}}
 		
 	fig = dict(data=data, layout=layout)
-	plot(fig, filename = 'techscan/templates/stock_graph.html', auto_open=False)
+	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)

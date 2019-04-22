@@ -14,73 +14,73 @@
 
 <body>
 
+	<!-- The navbar -->
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
-		<div class="row col-12" >
-			<a class="navbar-brand" href="/">Tech Scan China</a>
-			<form class="search-form col-sm-4 pt-1 px-0" action="/main" method="get" id="srch-term">
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Search..." name="q">
-					<span class="input-group-btn">
-						<button class="btn btn-secondary" type="submit">	
-							<i class="fa fa-search"></i>
-						</span>
+		<a class="navbar-brand" href="/">Tech Scan China</a>
+		<form class="search-form col-sm-4" action="/overview" method="get" id="srch-term">
+			<div class="input-group">
+			<input type="text" class="form-control" placeholder="Search..." name="q">
+			<span class="input-group-btn">
+				<button class="btn btn-secondary" type="submit">	
+				<i class="fa fa-search"></i></span>
+			</div></form>
+		<h4 class="px-3 m-1">Search Word: {{search_word}}</h4>
+        <h4 class="px-3 m-1">Translation: {{chi_translation}}<h4>
+	</nav>
+	
+	<!-- The sidebar -->
+	<div class="sidebar">
+	<div class="main-sidebar">
+		<a class="main-category" href="/main?q={{search_word}}">Main</a>
+		<a class="main-category" href="/overview?q={{search_word}}">Overview</a><hr>
+	</div>
+	<div class="sub-sidebar">
+		<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+		<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
+		<a class="active-sub-category" href="/news?q={{search_word}}">News</a>
+		<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
+		<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
+		<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
+		<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
+	</div>
+</div>
+	<div class="content category-content">
+		<h1><b>News</b></h1>
+		<div class="row px-2 py-2">
+			<div class="col p-1">
+				{% for i in news %}
+				<div class="card bg-light text-dark col-12">
+					<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
+					<div class="sub-card-body py-2">{{i.summary}}</div>
+					<div class="row px-2">
+						<div class="sub-card-others p-2">Author: {{i.authors}}</div>
 					</div>
-				</form>
+				</div>
+				{%endfor%}
 			</div>
-		</nav>
-		<!-- The sidebar -->
-		<div class="sidebar">
-		<div class="main-sidebar">
-			<a class="main-category" href="/main?q={{search_word}}">Main</a>
-			<a class="main-category" href="/overview?q={{search_word}}">Overview</a><hr>
-		</div>
-		<div class="sub-sidebar">
-			<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
-			<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
-			<a class="active-sub-category" href="/news?q={{search_word}}">News</a>
-			<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
-			<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
-			<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
-			<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
+
+			<table class="table table-hover pt-2 col-5 mx-3 text-center">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Author</th>
+						<th scope="col">Total Upvotes</th>
+						<th scope="col">Posts Count</th>
+						<th scope="col">Average upvotes per post</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in author_table %}
+					<tr>
+						<th scope="row">{{forloop.counter}}</th>
+						<td><a href="{{i.authorUrl}}">{{i.author}}</a></td>
+						<td> {{i.max}}</td>
+						<td> {{i.size}}</td>
+						<td>{{i.average}}</td>		
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
 		</div>
 	</div>
-		<div class="content category-content">
-			<h1><b>News</b></h1>
-			<div class="row px-2 py-2">
-				<div class="col p-1">
-					{% for i in news %}
-					<div class="card bg-light text-dark col-12">
-						<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
-						<div class="sub-card-body py-2">{{i.summary}}</div>
-						<div class="row px-2">
-							<div class="sub-card-others p-2">Author: {{i.authors}}</div>
-						</div>
-					</div>
-					{%endfor%}
-				</div>
-
-				<table class="table table-hover pt-2 col-5 mx-3 text-center">
-					<thead>
-						<tr>
-							<th scope="col">#</th>
-							<th scope="col">Author</th>
-							<th scope="col">Total Upvotes</th>
-							<th scope="col">Posts Count</th>
-							<th scope="col">Average upvotes per post</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for i in author_table %}
-						<tr>
-							<th scope="row">{{forloop.counter}}</th>
-							<td><a href="{{i.authorUrl}}">{{i.author}}</a></td>
-							<td> {{i.max}}</td>
-							<td> {{i.size}}</td>
-							<td>{{i.average}}</td>		
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</body>
+</body>

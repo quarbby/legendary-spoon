@@ -31,6 +31,7 @@ def overview(request):
 
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 		"weibo":es_weibo,
 		"news":es_news,
 		"scholar":es_scholar,
@@ -45,6 +46,7 @@ def weibo(request):
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 		"weibo":es_weibo,
 		"weibo_table":main_functions.weibo_author(main_functions.chi_translation(params)),
 	}
@@ -55,6 +57,7 @@ def scholar(request):
 	_,es_scholar = scroll_query.text_query(params,'scholar')
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 		"scholar":es_scholar,
 	}
 	return render(request, 'scholar.html', context)
@@ -64,6 +67,7 @@ def news(request):
 	_,es_news = scroll_query.text_query(main_functions.chi_translation(params),'news', sizes = 5)
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 		"news": es_news,
 	}
 	return render(request, 'news.html', context)
@@ -74,6 +78,7 @@ def tweets(request):
 	_,es_tweets = scroll_query.sub_query(params,'tweets')
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 		"tweets": es_tweets,
 	}
 	return render(request, 'tweets.html', context)
@@ -83,6 +88,7 @@ def zhihu(request):
 	_,es_zhihu = scroll_query.sub_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 		"zhihu":es_zhihu,
 		"author_table":main_functions.get_zh_author(main_functions.chi_translation(params)),
 	}
@@ -92,6 +98,7 @@ def facial_recognition(request):
 	params = request.GET.get('q')
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 	}
 	return render(request, 'facial_recognition.html', context)
 
@@ -99,5 +106,6 @@ def speech_text(request):
 	params = request.GET.get('q')
 	context = {
 		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
 	}
 	return render(request, 'speech_text.html', context)
