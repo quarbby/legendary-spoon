@@ -70,12 +70,35 @@ def graph_query(keyword, indexes = '_all'):
 		# json_frame = df.to_dict('index').values()
 		return (df,[])
 
+def sub_query(keyword, indexes = '_all', sizes = 100):
 
-# def text_query(keyword):
-# 	df = query(str(keyword))
-# 	json_frame = df.to_dict('index')
-# 	return(json_frame)
+	#Query from all indexes available
 
+	# res = es.search(index = str(indexes) , size = 10, scroll = '2m', body = {"query" : {
+	# 	"match" : {"summary" : keyword}
+		# }})
+	
+	res = es.search(index = str(indexes) , size = int(sizes), scroll = '2m', body = {"query" : {
+		"match" : {"summary" : keyword}
+		}})
+	df = processing_hits(res)
+	if df is None:
+		return ([],[])
+	if indexes == 'weibo' or indexes == 'tweets':
+		df = df.sort_values(['favorite_count'], ascending = False)
+		df = df.reset_index(drop = True)
+		df = df[:5]
+		json_frame = df.to_dict('index').values()
+	elif indexes == 'zhihu':
+		df = df.sort_values(['upvotes'], ascending = False)
+		df = df.reset_index(drop = True)
+		df = df[:5]
+		json_frame = df.to_dict('index').values()
+	else:
+		df = df.reset_index(drop = True)
+		df = df[:5]
+		json_frame = df.to_dict('index').values()
+	return df, json_frame
 
 """
 Example on using this function:
