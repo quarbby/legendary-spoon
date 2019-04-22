@@ -549,8 +549,7 @@ def twitter_graph(keyword):
 	chunks_Author_lower = AuthorList.copy()
 	chunks_count_upper = Totalcount.copy()
 	chunks_Author_upper = AuthorList.copy()
-	# print (chunks_count_lower)
-	# print(chunks_count_upper)
+
 	for i in range (x, len(Totalcount)):
 		chunks_count_lower[i] = 0
 		chunks_Author_lower[i] = []
@@ -561,45 +560,36 @@ def twitter_graph(keyword):
 	print(len(chunks_Author_upper))
 	print(len(rng))
 	trace1 = go.Bar(
-		# histfunc ="sum",
-		# autobinx = False,
 		hoverinfo = "text",	
-	    x=rng,
-	    y=chunks_count_lower,	
-	    text = chunks_Author_lower,
-	    # marker=dict( color= ColorList[0]),
-	    name = 'Lower 99th Percentile '
-	    )
+		x=rng,
+		y=chunks_count_lower,	
+		text = chunks_Author_lower,
+		name = 'Lower 99th Percentile '
+		)
 	trace2 = go.Bar(
-		# histfunc ="sum",
-		# autobinx = False,
 		hoverinfo = "text",	
-	    x=rng,
-	    y=chunks_count_upper,
-	    text = chunks_Author_upper,
-	    # marker=dict( color= ColorList[100]),
-	    name = 'Upper 1st percentile'
-	    )
+		x=rng,
+		y=chunks_count_upper,
+		text = chunks_Author_upper,
+		name = 'Upper 1st percentile'
+		)
 	layout = go.Layout(barmode='stack',
 		xaxis = dict(
 			dtick=10	,
-			# range = [0,30]
 			) ,
 		yaxis =  dict(
 			range = [0,200]
-			# dtick=100
 			),
 		bargap=0,
-	    bargroupgap=0.01,
-	    showlegend = True,
-	    title = go.layout.Title(
-	            text = 'tweets: favorite counts for usernames')
-	    # violinmode = "group"
+		bargroupgap=0.01,
+		showlegend = True,
+		title = go.layout.Title(
+			text = 'tweets: favorite counts for usernames')
 		)
 	data = [trace1,trace2]
 	fig = go.Figure(data = data, layout=layout)
 
-	plot(fig, filename='search/templates/graph/twitter_graph.html', auto_open=False)
+	plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
 
 def percentile (Authorlist,countlist):
 	initial = 0
