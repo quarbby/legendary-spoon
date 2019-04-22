@@ -1,21 +1,27 @@
+import re
 import plotly
-from .processing_dataframe import processing_df
+import codecs
+import jieba
+import nltk
+import math
+import numpy as np
+import pandas as pd
+from PIL import Image
 import plotly.plotly as py
 import plotly.graph_objs as go
-from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-from .scroll_query import graph_query, processing_hits
-from ..config import location, es
-import nltk
-from nltk.tokenize import sent_tokenize
-from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import TfidfVectorizer
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 from textblob import TextBlob
 from textblob.inflect import singularize as _singularize
-import re
-import pandas as pd
-from .main_functions import chi_translation
 from collections import Counter
-import math
+from nltk.corpus import stopwords
+from nltk.tokenize import sent_tokenize
+from ..config import location, es
+from .processing_dataframe import processing_df
+from .main_functions import chi_translation
+from .scroll_query import graph_query, processing_hits
+from sklearn.feature_extraction.text import TfidfVectorizer
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 
 def plot_pie_chart(keyword):
 
@@ -578,7 +584,7 @@ def twitter_graph(keyword):
 			dtick=10	,
 			) ,
 		yaxis =  dict(
-			range = [0,200]
+			range = [0,100]
 			),
 		bargap=0,
 		bargroupgap=0.01,
@@ -609,3 +615,28 @@ def count_range_in_list (author, li, min, max):
 			place_names.append(author[k])
 			ctr += 1
 	return place_names, ctr
+
+def wordcloud(keyword, indexes = 'weibo'):
+	df,_ = graph_query(keyword,indexes)
+	if indexes == 'weibo' or indexes == 'zhihu':
+		stopword = codecs.open('techscan/static/word_cloud/stopword.txt', 'r', 'utf-8').read()
+		df['summary'] = df['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword]))
+	else:
+		stopword = stopwords.words('english')
+		df['summary'] = df['summary'].apply(lambda x: re.sub('[\W]', '', x))
+		df['summary'] = df['summary'].apply(lambda x: ''.join([word for word in x.split(' ') if word not in stopword]))
+	
+	df = df[df['summary']!='']
+	summary_list = df['summary'].tolist()
+	summary_string = ''.join(summary_list)
+	if indexes == 'weibo' or indexes == 'zhihu':
+		mask = np.array(Image.open('techscan/static/word_cloud/circle.png'))
+	else:
+		mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
+			
+	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+	wordcloud = WordCloud( background_color="white",collocations = False, max_words=100,font_path=font_path,
+		max_font_size=100, random_state=42, width=1000, height=860, margin=2, mask =mask).generate(summary_string)
+	
+	wordcloud.to_file("techscan/templates/graph/{}_wordcloud.png".format(indexes))
+
