@@ -527,7 +527,7 @@ def plot_stocks():
 	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)
 
 def twitter_graph(keyword):
-	df,_ = graph_query(keyword, tweets)
+	df,_ = graph_query(keyword, 'tweets')
 	df_new = df.groupby(['user_screen_name']).sum().reset_index()
 	rng = []
 	max_range = 15500
@@ -539,11 +539,11 @@ def twitter_graph(keyword):
 		x , y = count_range_in_list(df_new['user_screen_name'],df_new['favorite_count'], j*50, (j+1)*50)
 		AuthorList.append(x)
 		Totalcount.append(y)
-	print (AuthorList)
-	print(Totalcount)
+	# print (AuthorList)
+	# print(Totalcount)
 
-	x = percentile(AuthorList,Totalcount)
-	print(x)
+	x = percentile(AuthorList,Totalcount, df_new)
+	# print(x)
 
 	chunks_count_lower = Totalcount.copy()
 	chunks_Author_lower = AuthorList.copy()
@@ -557,8 +557,8 @@ def twitter_graph(keyword):
 	for i in range (x):
 		chunks_count_upper[i] = 0
 		chunks_Author_upper[i] = []
-	print(len(chunks_Author_upper))
-	print(len(rng))
+	# print(len(chunks_Author_upper))
+	# print(len(rng))
 	trace1 = go.Bar(
 		hoverinfo = "text",	
 		x=rng,
@@ -591,10 +591,10 @@ def twitter_graph(keyword):
 
 	plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
 
-def percentile (Authorlist,countlist):
+def percentile (Authorlist,countlist, df):
 	initial = 0
 	for i in range (len(countlist)):
-		if initial < math.floor(len(df_new)*9.9/10):
+		if initial < math.floor(len(df)*9.9/10):
 			initial = initial + countlist[i] 
 		else :
 			val = i
