@@ -295,7 +295,7 @@ def top_hashtag(keyword):
 		x = hashtag,
 		y = counts,
 		marker=dict(
-			color='rgb(12,84,96)')
+			color='rgb(246,156,99)')
 		)]
 	layout = go.Layout(
 		yaxis=dict(
@@ -368,6 +368,7 @@ def twitter_bubble(keyword):
 		mode = 'markers',
 		text = hover_text,
 		marker = dict(
+			color = 'rgb(41,129,113)',
 			symbol = 'circle',
 			sizemode = 'area',
 			sizeref = sizeref,
