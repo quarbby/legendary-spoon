@@ -127,7 +127,7 @@ for i in range(len(limits)):
 
 layout = go.Layout(
         title = go.layout.Title(
-            text = 'China News Reports on AI (asia perspective)'
+            text = 'China News Reports on AI'
         ),
         showlegend = True,
         font = go.layout.Font(size = 25),
