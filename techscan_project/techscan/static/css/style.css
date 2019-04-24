@@ -200,7 +200,7 @@ div.category-content{
 
 a {
   position: relative;
-  color: #17a2b8 !important;
+  color: #333 !important;
   text-decoration: none;
 }
 
@@ -247,4 +247,9 @@ a:hover:before{
 .sidebar a.active-sub-category:hover,
 .sidebar a.sub-category:hover {
   color: white !important;
+}
+
+.table td, .table th {
+    padding: .3rem !important;
+    font-size: 1.2em !important;
 }
