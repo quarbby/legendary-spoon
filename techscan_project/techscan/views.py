@@ -41,6 +41,14 @@ def overview(request):
 	}
 	return render(request, 'overview.html', context)
 
+def overview2(request):
+	params = request.GET.get('q')
+	context = {
+		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
+	}
+	return render(request, 'overview2.html', context)
+
 def weibo(request):
 	params = request.GET.get('q')
 	# plotgraph.top_hashtag(params)
