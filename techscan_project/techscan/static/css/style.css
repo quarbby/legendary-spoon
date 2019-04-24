@@ -1,14 +1,16 @@
 #main-heading{
     line-height: 7;
     font-size: 46px;
-    font-family: 'Trebuchet MS';   
+    font-family: 'Roboto';   
     /*color: #556777;*/
 }
 
 .navbar-brand{
   font-size: 1.5rem !important;
   color: #556777 !important;
-  font-family: -webkit-body !important
+  white-space: nowrap;
+  font-family: "Franklin Gothic" !important;
+  letter-spacing: -2px;
 }
 
 .percentileTrue{
@@ -20,7 +22,7 @@
 
 h1,h2,h3,h4,h5,td,p,th{
 	color: #556777;
-  font-family: -webkit-body
+  font-family: 'Roboto'; 
 }
 
 .form-control:hover,active,focus {
@@ -64,7 +66,7 @@ input:-webkit-autofill:active  {
   display: block;
   color: black;
   padding: 16px;
-  font-family: -webkit-body;
+  font-family: 'Roboto'; 
   font-size: 1.15rem;
 }
 
@@ -131,18 +133,18 @@ div.category-content{
 
 .sub-card-title{
   color: #556777;
-  font-family: -webkit-body;
+  font-family: 'Roboto'; 
   font-size: 22px
 }
 
 .sub-card-body{
   color: #556777;
-  font-family: -webkit-body;
+  font-family: 'Roboto'; 
   font-size: 16px
 }
 
 .sub-card-others{
   color: #556777;
-  font-family: -webkit-body;
+  font-family: 'Roboto'; 
   font-size: 14px
 }
