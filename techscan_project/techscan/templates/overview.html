@@ -18,8 +18,8 @@
 
 	<!-- The navbar -->
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
-		<form class="search-form col-sm-4" action="/overview2" method="get" id="srch-term">
 		<a class="navbar-brand" href="/">Tech Scan <span class="small-logo" id="china">China</span></a>
+		<form class="search-form col-sm-4" action="/overview" method="get" id="srch-term">
 			<div class="input-group">
 				<input type="text" class="form-control" placeholder="Search..." name="q">
 				<span class="input-group-btn">
@@ -33,10 +33,9 @@
 					<!-- The sidebar -->
 					<div class="sidebar">
 						<div class="main-sidebar">
-							<a class="main-category" href="/main?q={{search_word}}">Main</a>
-							<a class="active-main-category" href="/overview?q={{search_word}}">Overview</a>
+							<a class="main-category" href="/main?q={{search_word}}">Overview</a>
+							<a class="active-main-category" href="/overview?q={{search_word}}">Details</a>
 							<!-- <a class="main-category" href="/overview2?q={{search_word}}">Overview 2</a> -->
-							<hr>
 						</div>
 						<div class="sub-sidebar">
 							<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
@@ -44,7 +43,7 @@
 							<a class="sub-category" href="/news?q={{search_word}}">News</a>
 							<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
 							<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
-							<!-- <a class="active-sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
+				<!-- 			<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
 							<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
 						</div>
 					</div>
