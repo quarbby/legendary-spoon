@@ -1,8 +1,24 @@
 #main-heading{
-    line-height: 7;
-    font-size: 46px;
-    font-family: 'Roboto';   
-    /*color: #556777;*/
+  font-size: 66px;
+  color: #556777;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: -0.05em;
+  margin: 40vh 0 1vh;
+}
+
+#china {
+  color: #dc3545;
+  letter-spacing: -4px;
+  font-family: Franklin Gothic;
+  text-transform: uppercase;
+  background: -webkit-linear-gradient(13deg, #ef7534, #dc3545);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-right: 5px;
+}
+
+#china.small-logo {
+  letter-spacing: -1px;
 }
 
 .navbar-brand{
