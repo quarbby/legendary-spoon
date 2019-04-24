@@ -142,18 +142,6 @@ input:-webkit-autofill:active  {
   color: white !important;
 }
 
-
-/* Links on mouse-over */
-/*.main-sidebar a:hover:not(.active-main-category) {
-  background-color: #0c5460;
-  color: white;
-}
-
-.sub-sidebar a:hover:not(.active-sub-category) {
-  background-color: #555;
-  color: white;
-}*/
-
 .tweeter-border {
   border: 3px solid black !important;
 }
@@ -194,19 +182,19 @@ div.category-content{
 
 .sub-card-title{
   color: #556777;
-  font-family: 'Roboto'; 
+  font-family: 'Roboto', sans-serif; 
   font-size: 22px
 }
 
 .sub-card-body{
   color: #556777;
-  font-family: 'Roboto'; 
+  font-family: 'Roboto', sans-serif; 
   font-size: 16px
 }
 
 .sub-card-others{
   color: #556777;
-  font-family: 'Roboto'; 
+  font-family: 'Roboto', sans-serif; 
   font-size: 14px
 }
 
