@@ -59,6 +59,7 @@ def overview2(request):
 		"scholar":es_scholar,
 		"tweets":es_tweets,
 		"zhihu":es_zhihu,
+		"author_table":main_functions.overview_table(params)
 	}
 	return render(request, 'overview2.html', context)
 
