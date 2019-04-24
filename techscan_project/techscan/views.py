@@ -43,9 +43,19 @@ def overview(request):
 
 def overview2(request):
 	params = request.GET.get('q')
+	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
+	_,es_scholar = scroll_query.sub_query(params,'scholar')
+	_,es_news = scroll_query.sub_query(main_functions.chi_translation(params),'news')
+	_,es_tweets = scroll_query.sub_query(params,'tweets')
+	_,es_zhihu = scroll_query.sub_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
+		"weibo": es_weibo,
+		"news":es_news,
+		"scholar":es_scholar,
+		"tweets":es_tweets,
+		"zhihu":es_zhihu,
 	}
 	return render(request, 'overview2.html', context)
 
