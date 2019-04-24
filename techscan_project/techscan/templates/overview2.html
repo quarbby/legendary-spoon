@@ -9,6 +9,9 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="shortcut icon" href="{%  static 'images/favicon.ico' %}">
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<title>Overview</title>
 </head>
 
@@ -46,7 +49,53 @@
 		</div>
 	</div>
 	<div class="content category-content">
-		<h1><b>Overview</b></h1>
+
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a class="card border-bottom-0 rounded-top" data-toggle="tab" href="#weibo">
+					<div class="px-2 m-2">Weibo</div>
+				</a>
+			</li>
+			<li>
+				<a class="card border-top-0 border-right-0 border-left-0 rounded-0" data-toggle="tab" href="#tweets">
+					<div class="px-2 m-2">Twitter</div>
+				</a>
+			</li>
+			<li>
+				<a class="card border-top-0 border-right-0 border-left-0 rounded-0" data-toggle="tab" href="#zhihu">
+					<div class="px-2 m-2">Zhihu</div>
+				</a>
+			</li>
+		</ul>
+
+		<div class="tab-content border-0">
+			<div id="weibo" class="tab-pane active">
+				<div class="container mt-2 col-12">
+					<h3><b>Weibo Hashtag Frequency Graph</b></h3>
+					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+						<iframe src="{% url 'weibo_hashtag_graph' %}" class="graph-frame" ></iframe> 
+					</div>
+				</div>
+			</div>
+			<div id="tweets" class="tab-pane">
+				<div class="container mt-2 col-12">
+					<h3><b>Twitter Hashtag Popularity Graph</b></h3>
+					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+						<iframe src="{% url 'twitter_hashtag_bubble' %}" class="graph-frame" ></iframe> 
+					</div>
+				</div>
+			</div>
+			<div id="zhihu" class="tab-pane">
+				<div class="container mt-2 col-12">
+					<h3><b>Zhihu Post Frequency Graph</b></h3>
+					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+						<iframe src="{% url 'zhihu_graph' %}" class="graph-frame" ></iframe> 
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Post Row -->
 		<div class="row">
 
 			<!-- Weibo Cards -->

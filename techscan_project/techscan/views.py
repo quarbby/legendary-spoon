@@ -43,6 +43,9 @@ def overview(request):
 
 def overview2(request):
 	params = request.GET.get('q')
+	# plotgraph.top_hashtag(params)
+	# plotgraph.twitter_bubble(params)
+
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
 	_,es_scholar = scroll_query.sub_query(params,'scholar')
 	_,es_news = scroll_query.sub_query(main_functions.chi_translation(params),'news')
