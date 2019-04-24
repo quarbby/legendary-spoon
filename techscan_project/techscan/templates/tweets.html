@@ -46,9 +46,20 @@
 	</div>
 	<div class="content category-content">
 		<h1><b>Tweets</b></h1>
-		<div class="card bg-light text-dark">
-			<div class="card-body">Light card</div>
-		</div>
+		<div class="col p-1">
+				{% for i in tweets %}
+				<div class="card bg-light text-dark col-12">
+					<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_screen_name}}</a></div>
+					<div class="sub-card-body py-2">{{i.summary}}</div>
+					<div class="row px-2">
+						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+						<div class="sub-card-others p-2">Sentiment Count: {{i.sentiment}}</div>
+						<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+					</div>
+				</div>
+				{%endfor%}
+			</div>
 		
 		<div class="container p-3 ml-2 col-11 float-left">
 			<h3><b>Top 10 Hashtag</b></h3>

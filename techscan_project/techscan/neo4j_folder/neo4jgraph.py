@@ -273,7 +273,7 @@ def plotgraph(result):
     data=[trace1, trace2,trace]
     fig=go.Figure(data=data, layout=layout)
 
-    final_graph = plot(fig, filename = 'techscan/templates/neo4jgraph.html', auto_open=False)
+    final_graph = plot(fig, filename = 'techscan/templates/graph/neo4jgraph.html', auto_open=False)
 
     # IDList = [] 
     # LabelList = []

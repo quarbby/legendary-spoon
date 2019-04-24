@@ -9,7 +9,7 @@ def index(request):
 
 def main(request):
 	params = request.GET.get('q')
-	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	# plotgraph.main_graph(params)
 	# plotgraph.plot_stocks()
 
@@ -22,7 +22,7 @@ def main(request):
 	}
 	return render(request, 'main.html', context)
 
-def overview(request):
+def overview2(request):
 	params = request.GET.get('q')
 	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	_,es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
@@ -39,9 +39,9 @@ def overview(request):
 		"tweets":es_tweets,
 		"zhihu":es_zhihu,
 	}
-	return render(request, 'overview.html', context)
+	return render(request, 'overview2.html', context)
 
-def overview2(request):
+def overview(request):
 	params = request.GET.get('q')
 	# plotgraph.top_hashtag(params)
 	# plotgraph.twitter_bubble(params)
@@ -61,7 +61,7 @@ def overview2(request):
 		"zhihu":es_zhihu,
 		"author_table":main_functions.overview_table(params)
 	}
-	return render(request, 'overview2.html', context)
+	return render(request, 'overview.html', context)
 
 def weibo(request):
 	params = request.GET.get('q')

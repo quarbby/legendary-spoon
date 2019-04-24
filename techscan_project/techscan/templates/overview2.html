@@ -5,12 +5,9 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
-	<!-- Bootstrap CSS-->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="shortcut icon" href="{%  static 'images/favicon.ico' %}">
-	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<title>Overview</title>
 </head>
 
@@ -19,266 +16,126 @@
 	<!-- The navbar -->
 	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
 		<a class="navbar-brand" href="/">Tech Scan China</a>
-		<form class="search-form col-sm-4" action="/overview2" method="get" id="srch-term">
+		<form class="search-form col-sm-4" action="/overview" method="get" id="srch-term">
 			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Search..." name="q">
-				<span class="input-group-btn">
-					<button class="btn btn-secondary" type="submit">	
-						<i class="fa fa-search"></i></span>
-					</div></form>
-					<h4 class="px-3 m-1">Search Word: {{search_word}}</h4>
-					<h4 class="px-3 m-1">Translation: {{chi_translation}}<h4>
-					</nav>
+			<input type="text" class="form-control" placeholder="Search..." name="q">
+			<span class="input-group-btn">
+				<button class="btn btn-secondary" type="submit">	
+				<i class="fa fa-search"></i></span>
+			</div></form>
+		<h4 class="px-3 m-1">Search Word: {{search_word}}</h4>
+        <h4 class="px-3 m-1">Translation: {{chi_translation}}<h4>
+	</nav>
 
-					<!-- The sidebar -->
-					<div class="sidebar">
-						<div class="main-sidebar">
-							<a class="main-category" href="/main?q={{search_word}}">Main</a>
-							<a class="main-category" href="/overview?q={{search_word}}">Overview</a>
-							<a class="active-main-category" href="/overview2?q={{search_word}}">Overview 2</a><hr>
-						</div>
-						<div class="sub-sidebar">
-			<!-- <a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+	<!-- The sidebar -->
+	<div class="sidebar">
+		<div class="main-sidebar">
+			<a class="main-category" href="/main?q={{search_word}}">Main</a>
+			<a class="active-main-category" href="/overview?q={{search_word}}">Overview</a>
+			<a class="main-category" href="/overview2?q={{search_word}}">Overview2</a>
+			<hr>
+		</div>
+		<div class="sub-sidebar">
+			<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
 			<a class="sub-category" href="/scholar?q={{search_word}}">Scholar</a>
 			<a class="sub-category" href="/news?q={{search_word}}">News</a>
 			<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
 			<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
-			<a class="active-sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
-			<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
+			<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
+			<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a>
 		</div>
 	</div>
-	<div class="content category-content">
-		<table class="table table-hover pt-2 mx-3" style="text-align: center">
-			<h3><b>Top Authors</b></h3>
-			<thead>
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">Author</th>
-					<th scope="col">Source</th>
-					<th scope="col">Total Favorites</th>
-					<th scope="col">Total Retweet</th>
-					<th scope="col">Total Upvotes</th>					
-					<th scope="col">Post Count</th>
-					<th scope="col">Average favorites/upvotes/retweets per post</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for i in author_table %}
-				<tr>
-					<th scope="row">{{forloop.counter}}</th>
-					<td> {{i.author}}</td>
-					<td> {{i.source}}</td>					
-					<td> {{i.favorite_count}}</td>
-					<td> {{i.retweet_count}}</td>
-					<td> {{i.upvotes}}</td>
-					<td> {{i.size}}</td>
-					<td> {{i.average}}</td>		
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<ul class="nav nav-tabs" role="tablist">
-			<li class="nav-item active">
-				<a class="nav-link" href="#Weibo" role="tab" data-toggle="tab">Weibo</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link " href="#Twitter" role="tab" data-toggle="tab">Twitter</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="#Zhihu" role="tab" data-toggle="tab">Zhihu</a>
-			</li>
-		</ul>
 
+<!-- The content -->
+<div class="content">
+	<div class="container-fluid">
+		<div class="row px-2">
 
-
-		<div class="tab-content">
-			<div role="Weibo" class="tab-pane active" id="Weibo">
-				<div class="container mt-2 col-12">
-					<h3><b>Weibo Hashtag Frequency Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
-						<iframe src="{% url 'weibo_hashtag_graph' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-
-
-			<div role="Twitter" class="tab-pane hide" id="Twitter">
-				<div class="container mt-2 col-12">
-					<h3><b>Twitter Hashtag Popularity Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
-						<iframe src="{% url 'twitter_hashtag_bubble' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-
-
-			<div role="Zhihu" class="tab-pane hide" id="Zhihu">
-				<div class="container mt-2 col-12">
-					<h3><b>Zhihu Post Frequency Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
-						<iframe src="{% url 'zhihu_graph' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-		</div>
-
-<!-- 
-		<ul class="nav nav-tabs">
-			<li class="active">
-				<a class="card border-bottom-0 rounded-top" data-toggle="tab" href="#weibo">
-					<div class="px-2 m-2">Weibo</div>
-				</a>
-			</li>
-			<li>
-				<a class="card border-top-0 border-right-0 border-left-0 rounded-0" data-toggle="tab" href="#tweets">
-					<div class="px-2 m-2">Twitter</div>
-				</a>
-			</li>
-			<li>
-				<a class="card border-top-0 border-right-0 border-left-0 rounded-0" data-toggle="tab" href="#zhihu">
-					<div class="px-2 m-2">Zhihu</div>
-				</a>
-			</li>
-		</ul>
-
-		<div class="tab-content border-0">
-			<div id="weibo" class="tab-pane active">
-				<div class="container mt-2 col-12">
-					<h3><b>Weibo Hashtag Frequency Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-						<iframe src="{% url 'weibo_hashtag_graph' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-			<div id="tweets" class="tab-pane">
-				<div class="container mt-2 col-12">
-					<h3><b>Twitter Hashtag Popularity Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-						<iframe src="{% url 'twitter_hashtag_bubble' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-			<div id="zhihu" class="tab-pane">
-				<div class="container mt-2 col-12">
-					<h3><b>Zhihu Post Frequency Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-						<iframe src="{% url 'zhihu_graph' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-		</div>
-	-->
-	<!-- Post Row -->
-	<div class="row">
-
-		<!-- Weibo Cards -->
-		<div class="col p-1">
-			<h3><b>Weibo</b></h3>
+		<!-- Weibo Card -->
+		<div class="col-sm-3 p-1">
+			<h2 class="text-center">Weibo</h2>
 			{% for i in weibo %}
-			<div class="card bg-light text-dark col-12">
-				<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
-				<div class="sub-card-body py-2">{{i.summary}}</div>
-				<div class="row px-2">
-					<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-					<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+			<div class="card border-dark mb-2">
+				<div class="card-body text-dark">
+					<h5 class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></h5>
+					<p class="card-text">{{i.summary}}</p>
+					<p class="card-text">Favourite Count: {{ i.favorite_count }}</p>
 				</div>
 			</div>
-			{%endfor%}
+			{% endfor %}
 		</div>
 
-		<!-- Twitter Cards -->
-		<div class="col p-1">
-			<h3><b>Tweets</b></h3>
+		<!-- Zhihu Card -->
+		<div class="col-sm-2 p-1">
+			<h2 class="text-center">Zhihu</h2>
+			{% for i in zhihu %}
+			<div class="card border-dark mb-2">
+				<div class="card-body text-dark">
+				<p class="card-title"><a href="{{i.headlineUrl}}">{{ i.headline }}</a></p>
+				<p class="card-text">{{i.summary}}</p>
+				<p class="card-text">Upvotes: {{i.upvotes}}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<!-- News Card -->
+		<div class="col-sm-2 p-1">
+			<h2 class="text-center">News</h2>
+			{% for i in news %}
+			<div class="card border-dark mb-2">
+				<div class="card-body text-dark">
+				<p class="card-title"><a href="{{i.url}}">{{ i.title }}</a></p>
+				<p class="card-text">{{i.summary}}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<!-- Scholar Card -->
+		<div class="col-sm-3 p-1">
+			<h2 class="text-center">Scholar</h2>
+			{% for i in scholar %}
+			<div class="card border-dark mb-2">
+				<div class="card-body text-dark">
+				<p class="card-title"><a href="{{i.url}}">{{ i.title }}</a></p>
+				<p class="card-text">{{i.summary}}</p>
+			</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<!-- Tweets Card -->
+		<div class="col-sm-2 p-1">
+			<h2 class="text-center">Tweets</h2>
 			{% for i in tweets %}
 			{% if i.sentiment == "Positive" %}
 			<div class="card border-success mb-2 tweeter-border">
-				<div class="card-body bg-light text-success col-12">
-					<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-					<div class="sub-card-body">{{i.summary}}</div>
-					<div class="row px-2">
-						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-						<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
-						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-					</div>
+				<div class="card-body text-success">
+				<p class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></p>
+				<p class="card-text">{{i.summary}}</p>
 				</div>
 			</div>
 			{% elif i.sentiment == "Negative" %}
 
 			<div class="card border-danger mb-2 tweeter-border">
-				<div class="card-body bg-light text-danger col-12">
-					<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-					<div class="sub-card-body">{{i.summary}}</div>
-					<div class="row px-2">
-						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-						<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
-						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-					</div>
+				<div class="card-body text-danger">
+				<p class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></p>
+				<p class="card-text">{{i.summary}}</p>
 				</div>
 			</div>
 			{%else%}
 			<div class="card border-dark mb-2 tweeter-border">
-				<div class="card-body bg-light text-dark col-12">
-					<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-					<div class="sub-card-body">{{i.summary}}</div>
-					<div class="row px-2">
-						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-						<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
-						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-					</div>
+				<div class="card-body text-dark">
+				<p class="card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></p>
+				<p class="card-text">{{i.summary}}</p>
 				</div>
 			</div>
 			{% endif %}
 			{% endfor %}
 		</div>
-
-		<!-- Zhihu Cards -->
-		<div class="col p-1">
-			<h3><b>Zhihu</b></h3>
-			{% for i in zhihu %}
-			<div class="card bg-light text-dark col-12">
-				<div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
-				<div class="sub-card-body py-2">{{i.summary}}</div>
-				<div class="row px-2">
-					<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">
-					{{i.author}}</a></div>
-					<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
-					<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-				</div>
-			</div>
-			{%endfor%}
 		</div>
-
-		<!-- News Card -->
-		<div class="col p-1">
-			<h3><b>News</b></h3>
-			{% for i in news %}
-			<div class="card bg-light text-dark col-12">
-				<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
-				<div class="sub-card-body py-2">{{i.summary}}</div>
-				<div class="row px-2">
-					<div class="sub-card-others p-2">{{i.authors}}</div>
-					<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-				</div>
-			</div>
-			{%endfor%}
-		</div>
-
-		<!-- Scholar Cards -->
-		<div class="col p-1">
-			<h3><b>Scholar</b></h3>
-			{% for i in scholar %}
-			<div class="card bg-light text-dark col-12">
-				<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
-				<div class="sub-card-body py-2">{{i.summary}}</div>
-				<div class="row px-2">
-					<div class="sub-card-others p-2">{{i.authors}}</div>
-					<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-				</div>
-			</div>
-			{%endfor%}
-		</div>
-
 	</div>
-
+	
 </div>
 </body>
