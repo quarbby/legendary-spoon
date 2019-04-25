@@ -196,6 +196,15 @@ def overview_table(keyword):
 		df_zhihu_new['weighted'] = (0.6 * df_zhihu_new['max']) + (0.15*df_zhihu_new['upvotes']) + (0.25*df_zhihu_new['average'])
 		df_zhihu_new = df_zhihu_new.sort_values('weighted',ascending = False).reset_index()[:3]
 		df_zhihu_new['source'] = 'Zhihu'
+		#Get a list of the URL
+		author_list = df_zhihu_new['author'].values.tolist()
+		author_list2 = [[i] for i in author_list]
+		zhihu_url = []
+		for i in range(len(author_list2)):
+			temp_zhihu_url = set(df_zhihu[df_zhihu['author'].isin(list(author_list2[i]))].authorUrl.values.tolist())
+			if list(temp_zhihu_url)[0] not in zhihu_url:
+				zhihu_url.append(list(temp_zhihu_url)[0])
+		df_zhihu_new['url'] = zhihu_url
 
 	if df_weibo is not None:
 		weibo_favorite_count = df_weibo.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
@@ -207,6 +216,16 @@ def overview_table(keyword):
 		df_weibo_new['weighted'] = (0.6 * df_weibo_new['max']) + (0.15*df_weibo_new['favorite_count']) + (0.25*df_weibo_new['average'])
 		df_weibo_new = df_weibo_new.sort_values('weighted',ascending = False).reset_index()[:3]
 		df_weibo_new['source'] = 'Weibo'
+		#Get a list of URL
+		author_list = df_weibo_new['author'].values.tolist()
+		author_list2 = [[i] for i in author_list]
+		weibo_id = []
+		for i in range(len(author_list2)):
+			temp_weibo_id = set(df_weibo[df_weibo['author'].isin(list(author_list2[i]))].user_id.values.tolist())
+			if list(temp_weibo_id)[0] not in weibo_id:
+				weibo_id.append(list(temp_weibo_id)[0])
+		df_weibo_new['id'] = weibo_id
+		df_weibo_new['url'] = 'https://www.weibo.com/' + df_weibo_new['id']
 
 	if df_twitter is not None:
 		twitter_fav_retweet = df_twitter.groupby(['author']).sum().reset_index().sort_values('fav_retweet', ascending=False)
@@ -218,6 +237,7 @@ def overview_table(keyword):
 		df_twitter_new['weighted'] = (0.6 * df_twitter_new['max']) + (0.15*df_twitter_new['fav_retweet']) + (0.25*df_twitter_new['average'])
 		df_twitter_new = df_twitter_new.sort_values('weighted',ascending = False).reset_index()[:3]
 		df_twitter_new['source'] = 'Twitter'
+		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
 
 	df_all = pd.concat([df_twitter_new, df_weibo_new, df_zhihu_new], axis = 0, ignore_index = True)
 	df_all = df_all.fillna('N.A')
