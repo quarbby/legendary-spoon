@@ -107,6 +107,7 @@ def tweets(request):
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"tweets": es_tweets,
+		"author_table": main_functions.twitter_author(params)
 	}
 	return render(request, 'tweets.html', context)
 
