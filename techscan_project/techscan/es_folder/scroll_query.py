@@ -2,6 +2,7 @@ import pandasticsearch
 import pandas as pd
 import numpy as np
 from pandasticsearch import Select
+import re
 from ..config import es
 
 #convert query results to pandas dataframe
@@ -82,21 +83,33 @@ def sub_query(keyword, indexes = '_all', sizes = 100):
 		"match" : {"summary" : keyword}
 		}})
 	df = processing_hits(res)
+	sid = res['_scroll_id']
+	scroll_size = len(res['hits']['hits'])
+
+	while scroll_size > 0 :
+		res = es.scroll(scroll_id = sid, scroll = '2m')
+		df = df.append(processing_hits(res), sort = True)
+		sid = res['_scroll_id']
+		scroll_size = len(res['hits']['hits'])
+
 	if df is None:
 		return ([],[])
 	if indexes == 'weibo' or indexes == 'tweets':
 		df = df.sort_values(['favorite_count'], ascending = False)
 		df = df.reset_index(drop = True)
 		df = df[:5]
+		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	elif indexes == 'zhihu':
 		df = df.sort_values(['upvotes'], ascending = False)
 		df = df.reset_index(drop = True)
 		df = df[:5]
+		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	else:
 		df = df.reset_index(drop = True)
 		df = df[:5]
+		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	return df, json_frame
 
