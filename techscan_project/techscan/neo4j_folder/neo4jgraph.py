@@ -21,13 +21,16 @@ def related_field(keyword):
 # ColorListArrays = ['rgb(0,0,0)','rgb(15,41,68)','rgb(254,144,4)','rgb(100,100,100)','rgb(300,0,214)','rgb(0,200,0)','rgb(0,0,100)','rgb(15,41,68)']
 
 def search_field(Keyword):
-	result = []
-	with neo4jdriver.session() as session:
-		output = session.run('MATCH f=(f1:Field:SubGraphCS)<-[r1:PART_OF_FIELD]-(q:Field:SubGraphCS) WHERE f1.fieldName =~ "(?i).*{}.*" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
-		for record in output:
-			result.append(record)
-	return result
-
+  with neo4jdriver.session() as session:
+    output = session.run('MATCH f=(f1:Field:SubGraphCS)<-[r1:PART_OF_FIELD]-(q:Field:SubGraphCS) WHERE f1.fieldName =~ "(?i){}" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
+    result = [record for record in output]
+    if result != []:
+      return result
+    else:
+      output = session.run('MATCH f=(f1:Field:SubGraphCS)<-[r1:PART_OF_FIELD]-(q:Field:SubGraphCS) WHERE f1.fieldName =~ "(?i).*{}.*" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
+      result = [record for record in output]
+      return result
+      
 def plotgraph(result):
   try:
     TotalNode = []
