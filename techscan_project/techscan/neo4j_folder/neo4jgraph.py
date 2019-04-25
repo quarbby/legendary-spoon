@@ -4,11 +4,20 @@ import ast
 from ..config import neo4jdriver
 from ..es_folder import main_functions
 
+# def related_field(keyword):
+#   with neo4jdriver.session() as session:
+#     relatedField = session.run("MATCH (f:Field:SubGraphCS)<-[:PART_OF_FIELD]-(f1:Field:SubGraphCS) WHERE f.fieldName =~ '(?i).*{}.*' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
+#   return [{"fieldName" : record['f1.fieldName']} for record in relatedField]
 def related_field(keyword):
   with neo4jdriver.session() as session:
-    relatedField = session.run("MATCH (f:Field:SubGraphCS)<-[:PART_OF_FIELD]-(f1:Field:SubGraphCS) WHERE f.fieldName =~ '(?i).*{}.*' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
-  return [{"fieldName" : record['f1.fieldName']} for record in relatedField]
-
+    relatedField = session.run("MATCH (f:Field)<-[:PART_OF_FIELD]-(f1:Field) WHERE f.fieldName =~ '(?i){}' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
+    related_field_list = [{"fieldName" : record['f1.fieldName']} for record in relatedField]
+    if related_field_list != []:
+      return related_field_list
+    else:
+      relatedField = session.run("MATCH (f:Field)<-[:PART_OF_FIELD]-(f1:Field) WHERE f.fieldName =~ '(?i).*{}.*' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
+      related_field_list = [{"fieldName" : record['f1.fieldName']} for record in relatedField]
+      return related_field_list
 # ColorListArrays = ['rgb(0,0,0)','rgb(15,41,68)','rgb(254,144,4)','rgb(100,100,100)','rgb(300,0,214)','rgb(0,200,0)','rgb(0,0,100)','rgb(15,41,68)']
 
 def search_field(Keyword):
