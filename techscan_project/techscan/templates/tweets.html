@@ -44,7 +44,8 @@
 	</div>
 	<div class="content category-content">
 		<h1><b>Tweets</b></h1>
-		<div class="col p-1">
+		<div class="row">
+			<div class="col-7 p-1">
 				{% for i in tweets %}
 				<div class="card bg-light text-dark col-12">
 					<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_screen_name}}</a></div>
@@ -52,12 +53,47 @@
 					<div class="row px-2">
 						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
 						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-						<div class="sub-card-others p-2">Sentiment Count: {{i.sentiment}}</div>
+						<div class="sub-card-others p-2">Sentiment: {{i.sentiment}}</div>
 						<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
 					</div>
 				</div>
 				{%endfor%}
 			</div>
+			<div class="col-5">
+				<table class="table table-hover pt-2" style="text-align: center">
+					<h3><b>Top Authors</b></h3>
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Author</th>
+							<th scope="col">Total Favorites</th>
+							<th scope="col">Total Retweets</th>
+							<th scope="col">Post Count</th>
+							<th scope="col">Average Favorites/Retweets per post</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for i in author_table %}
+						<tr>
+							<th scope="row">{{forloop.counter}}</th>
+							<td><a href="{{i.url}}"> {{i.user_screen_name}} </a></td>					
+							<td> {{i.favorite_count}}</td>
+							<td> {{i.retweet_count}}</td>
+							<td> {{i.size}}</td>
+							<td> {{i.average}}</td>		
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+				<!-- <div class="container p-3 ml-2 centered">
+					<h3><b>Wordcloud</b></h3>
+					<div style="text-align: left">
+						<img src="{% static 'word_cloud/tweets_wordcloud.png' %}" class="graph-frame" style="width:400px; height:300px"></img>
+					</div>
+				</div> -->
+			</div>
+		</div>
 		
 		<div class="container p-3 ml-2 col-11 float-left">
 			<h3><b>Top 10 Hashtag</b></h3>
@@ -66,18 +102,13 @@
 			</div>
 		</div>
 		<div class="container p-3 ml-2 col-11 float-left">
-			<h3><b>Twitter Graph</b></h3>
+			<h3><b>Twitter Favorite Distribution Graph</b></h3>
 			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
 				<iframe src="{% url 'twitter_graph' %}" class="graph-frame" ></iframe> 
 			</div>
 		</div>
 
-		<div class="container p-3 ml-2 centered">
-			<h3><b>Wordcloud</b></h3>
-			<div style="text-align: left">
-				<img src="{% static 'word_cloud/tweets_wordcloud.png' %}" class="graph-frame" style="width:400px; height:300px"></img>
-			</div>
-		</div>
+
 
 	</div>
 </body>
