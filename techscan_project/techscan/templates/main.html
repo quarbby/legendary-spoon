@@ -60,7 +60,7 @@
 							<tbody>
 								{% for i in hit_count %}
 								<tr>
-									<td scope="row">{{i.category}}</td>
+									<td scope="row"> <a href="/{% filter lower %}{{i.category}}{% endfilter %}?q={{search_word}}">{{i.category}} </a></td>
 									<td>{{i.hit_count}}</td>
 								</tr>
 								{% endfor %}

@@ -45,7 +45,7 @@ def details(request):
 	params = request.GET.get('q')
 	# plotgraph.top_hashtag(params)
 	# plotgraph.twitter_bubble(params)
-	main_functions.get_zh_author(main_functions.chi_translation(params), graph = True)
+	# main_functions.get_zh_author(main_functions.chi_translation(params), graph = True)
 
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
 	_,es_scholar = scroll_query.sub_query(params,'scholar')
