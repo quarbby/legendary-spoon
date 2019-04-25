@@ -17,6 +17,14 @@ def chi_translation(keyword):
 	except:
 		return ('Translation not available')
 
+def eng_translation(keyword):
+	try:
+		word = TextBlob(str(keyword))
+		english = word.translate(to = 'en')
+		return (str(english))
+	except:
+		return ('Translation not available')
+
 def get_wiki_data(keyword):
 	try:
 		result = requests.get('https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles={}&exsentences=5'.format(keyword), verify=False).json()
@@ -176,31 +184,35 @@ def twitter_author(keyword):
 # weibo_favorite_percentile = get_percentile('weibo')
 # zhihu_upvote_percentile = get_percentile('zhihu')
 
-# def percentile(keyword, indexes):
-# 	if indexes == 'tweets':	
-# 		df_keyword,_ = graph_query(str(keyword), indexes)
-# 		if df_keyword is not None:
-# 			df_positive = df_keyword[df_keyword.retweet_count >= tweets_retweet_percentile]
-# 			top = len(df_positive)
+def percentile(keyword, indexes):
+	if indexes == 'tweets':	
+		df_keyword,_ = graph_query(str(keyword), indexes)
+		if df_keyword is not None:
+			df_keyword = df_keyword.groupby(['user_screen_name']).sum().reset_index().sort_values('favorite_count', ascending=False)
+			df_keyword['fav_retweet'] = df_keyword['favorite_count'] + df_keyword['retweet_count']
+			df_positive = df_keyword[df_keyword.fav_retweet >= 20]
+			top = len(df_positive)
 
-# 	elif indexes == 'weibo':	
-# 		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
-# 		if df_keyword is not None:
-# 			df_positive = df_keyword[df_keyword.favorite_count >= weibo_favorite_percentile]
-# 			top = len(df_positive)
+	elif indexes == 'weibo':	
+		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
+		if df_keyword is not None:
+			df_keyword = df_keyword.groupby(['user_name']).sum().reset_index().sort_values('favorite_count', ascending=False)
+			df_positive = df_keyword[df_keyword.favorite_count >= 20]
+			top = len(df_positive)
 
-# 	elif indexes == 'zhihu':
-# 		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
-# 		if df_keyword is not None:
-# 			df_positive = df_keyword[df_keyword.upvotes >= zhihu_upvote_percentile]
-# 			top = len(df_positive)
+	elif indexes == 'zhihu':
+		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
+		if df_keyword is not None:
+			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('upvotes', ascending=False)
+			df_positive = df_keyword[df_keyword.upvotes >= 128]
+			top = len(df_positive)
 
-# 	if df_keyword is not None:
-# 		if top >= (0.1* len(df_keyword)):
-# 			return "True"
+	if df_keyword is not None:
+		if top >= (0.1* len(df_keyword)):
+			return "True"
 
-# 	else:
-# 		return "False"
+	else:
+		return "False"
 
 def overview_table(keyword):
 	df_twitter,_ = graph_query(str(keyword), 'tweets')

@@ -10,7 +10,7 @@ def index(request):
 def main(request):
 	params = request.GET.get('q')
 	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
-	# plotgraph.main_graph(params)
+	plotgraph.main_graph(params)
 	# plotgraph.plot_stocks()
 	heatmap.heatmap(params)
 	context = {
@@ -66,13 +66,15 @@ def details(request):
 
 def weibo(request):
 	params = request.GET.get('q')
-	# plotgraph.top_hashtag(params)
-	# plotgraph.wordcloud(main_functions.chi_translation(params))
+	plotgraph.top_hashtag(params)
+	plotgraph.wordcloud(main_functions.chi_translation(params))
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
+	# eng_summary = [main_functions.eng_translation(list(es_weibo)[i]['summary']) for i in range(4)]
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"weibo":es_weibo,
+		# "weibo":zip(es_weibo,eng_summary),
 		"weibo_table":main_functions.weibo_author(main_functions.chi_translation(params)),
 	}
 	return render(request, 'weibo.html', context)
