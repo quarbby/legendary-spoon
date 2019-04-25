@@ -62,7 +62,7 @@ def details(request):
 		"zhihu":es_zhihu,
 		"author_table":main_functions.overview_table(params)
 	}
-	return render(request, 'overview.html', context)
+	return render(request, 'details.html', context)
 
 def weibo(request):
 	params = request.GET.get('q')
