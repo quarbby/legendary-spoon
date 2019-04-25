@@ -41,7 +41,7 @@ def overview2(request):
 	}
 	return render(request, 'overview2.html', context)
 
-def overview(request):
+def details(request):
 	params = request.GET.get('q')
 	# plotgraph.top_hashtag(params)
 	# plotgraph.twitter_bubble(params)
