@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .es_folder import main_functions, scroll_query, plotgraph
+from .es_folder import main_functions, scroll_query, plotgraph, heatmap
 from .neo4j_folder import neo4jgraph
 from django.views.generic import RedirectView
 
@@ -12,7 +12,7 @@ def main(request):
 	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	# plotgraph.main_graph(params)
 	# plotgraph.plot_stocks()
-
+	heatmap.heatmap(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),

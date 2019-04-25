@@ -10,4 +10,4 @@ def delete_indices(index_name):
 	else:
 		print('Index does not exist')
 
-# delete_indices('weibo')
+delete_indices('heatmap')

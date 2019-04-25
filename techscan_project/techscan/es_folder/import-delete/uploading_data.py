@@ -7,7 +7,7 @@ import json
 from elasticsearch import Elasticsearch
 
 
-location = 'data/Weibo_ML.json'
+location = 'data/heatmap.json'
 
 es = Elasticsearch([{'host' : 'localhost', 'port' : 9200}])
 
@@ -25,4 +25,4 @@ def upload_data(file_location, index_name):
 Example on how to use function:
 upload_data(location, 'news')
 """
-# upload_data(location, 'weibo')
+# upload_data(location, 'heatmap')

@@ -1,7 +1,7 @@
 import requests
 from pprint import pprint
 from textblob import TextBlob
-from ..config import location, es
+from ..config import es
 from .scroll_query import graph_query, processing_hits
 import pandas as pd
 import numpy as np
