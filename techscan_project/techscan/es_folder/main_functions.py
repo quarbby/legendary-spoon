@@ -9,6 +9,9 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot
 
+# from elasticsearch import Elasticsearch
+# es = Elasticsearch([{'host' : 'localhost', 'port' : 9200}])
+
 def chi_translation(keyword):
 	try:
 		word = TextBlob(str(keyword))
@@ -225,7 +228,9 @@ def overview_table(keyword):
 		'user_name':'author',
 		'url':'authorUrl'
 		})
-
+	Final_List_author = []
+	Final_List_size = []
+	Color_List = []
 	if df_zhihu is not None:
 		upvotes_count = df_zhihu.groupby(['author']).sum().reset_index().sort_values('upvotes', ascending=False)
 		post_freq = df_zhihu.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
@@ -245,6 +250,7 @@ def overview_table(keyword):
 			if list(temp_zhihu_url)[0] not in zhihu_url:
 				zhihu_url.append(list(temp_zhihu_url)[0])
 		df_zhihu_new['url'] = zhihu_url
+		df_zhihu_new['color'] = 'rgb(85,118,154)'
 
 	if df_weibo is not None:
 		weibo_favorite_count = df_weibo.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
@@ -266,6 +272,7 @@ def overview_table(keyword):
 				weibo_id.append(list(temp_weibo_id)[0])
 		df_weibo_new['id'] = weibo_id
 		df_weibo_new['url'] = 'https://www.weibo.com/' + df_weibo_new['id']
+		df_weibo_new['color'] = 'rgb(246,156,99)'
 
 	if df_twitter is not None:
 		twitter_fav_retweet = df_twitter.groupby(['author']).sum().reset_index().sort_values('fav_retweet', ascending=False)
@@ -278,9 +285,48 @@ def overview_table(keyword):
 		df_twitter_new = df_twitter_new.sort_values('weighted',ascending = False).reset_index()[:3]
 		df_twitter_new['source'] = 'Twitter'
 		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
+		df_twitter_new['color'] = 'rgb(106,167,156)'
 
 	df_all = pd.concat([df_twitter_new, df_weibo_new, df_zhihu_new], axis = 0, ignore_index = True)
+	df_all = df_all.sort_values(['favorite_count'], ascending = False)
+	df_graph = df_all.sort_values(['size'], ascending = False)
 	df_all = df_all.fillna('N.A')
 	json_frame = df_all.to_dict('index').values()
+	
+	#Graph portion
+	color_list = df_graph['color'].tolist()
+	size_list = df_graph['size'].tolist()
+	author_list = df_graph['author'].tolist()
+	hover_text = df_graph['source'].tolist()
+	trace = go.Bar(
+			marker = dict(color = color_list),
+			x = size_list,
+			y = author_list,
+			text = hover_text,
+			orientation = 'h',
+			)
+
+	data = [trace]
+	layout = go.Layout(
+		barmode = "group",
+		yaxis = dict(
+			title = go.layout.yaxis.Title(
+				font = dict(
+					family = 'roboto',
+					size = 18,
+					)
+				)
+			),
+		legend = dict(
+			x = 0,
+			y = 1.0,
+			bgcolor = 'rgba(255, 255, 255, 0)',
+			bordercolor = 'rgba(255, 255, 255, 0)'
+			),
+		)
+
+	fig = dict(data = data, layout = layout)
+	plot(fig, filename='techscan/templates/graph/detail_post_frequency.html', auto_open=False)
+
 
 	return json_frame

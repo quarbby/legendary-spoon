@@ -24,5 +24,8 @@ urlpatterns = [
 	path('weibo_hashtag_graph/', TemplateView.as_view(template_name="graph/weibo_hashtag_count.html"), name='weibo_hashtag_graph'),
 	path('twitter_hashtag_bubble/', TemplateView.as_view(template_name="graph/twitter_hashtag_bubble.html"), name='twitter_hashtag_bubble'),
 	path('stock_graph/', TemplateView.as_view(template_name="graph/stock_graph.html"), name='stock_graph'),
-	path('twitter_graph/', TemplateView.as_view(template_name="graph/twitter_graph.html"),name='twitter_graph'),
+	path('twitter_graph/', TemplateView.as_view(template_name="graph/twitter_graph.html"), name='twitter_graph'),
+	path('detail_post_frequency', TemplateView.as_view(template_name="graph/detail_post_frequency.html"), name="detail_post_frequency"),
+	path('detail_hashtag_frequency', TemplateView.as_view(template_name="graph/detail_hashtag_frequency.html"), name="detail_hashtag_frequency"),
+
 	]
