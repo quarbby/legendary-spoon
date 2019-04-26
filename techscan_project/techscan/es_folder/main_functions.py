@@ -37,15 +37,18 @@ def get_wiki_data(keyword):
 
 def get_count(keyword):
 	total_hits = []
-	categories = ['weibo','news','tweets','scholar','zhihu']
+	categories = ['weibo','news','tweets','academic','zhihu']
 	for category in categories:
 		count = dict()
 		count['category'] = category.capitalize()
-		if category == 'tweets' or category == 'scholar':
+		if category == 'tweets':
 			count['hit_count'] = check(keyword, category)
+		elif category == 'academic':
+			count['hit_count'] = check(keyword, 'scholar')
 		else:
 			count['hit_count'] = check(chi_translation(keyword), category)
 		total_hits.append(count)
+
 	return total_hits
 
 def check(keyword, indexes):
