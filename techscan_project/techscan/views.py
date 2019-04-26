@@ -43,7 +43,7 @@ def overview2(request):
 
 def details(request):
 	params = request.GET.get('q')
-	# plotgraph.detail_hashtag_frequency(params)
+	plotgraph.detail_hashtag_frequency(params)
 	# plotgraph.twitter_bubble(params)
 
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')

@@ -581,11 +581,13 @@ def detail_hashtag_frequency(keyword):
 	Total_hashtag = []
 	Total_count = []
 	color_list = []
+	text_list = []
 
 	for i in twitter_tophashtags:
 		Total_hashtag.append(i[0])
 		Total_count.append(i[1])
 		color_list.append('rgb(106,167,156)')
+		text_list.append('Twitter')
 
 
 	df_weibo,_ = graph_query(chi_translation(keyword),'weibo')
@@ -600,27 +602,22 @@ def detail_hashtag_frequency(keyword):
 		Total_hashtag.append(i[0])
 		Total_count.append(i[1])
 		color_list.append('rgb(246,156,99)')
+		text_list.append('Weibo')
 
-	hashtags_counting = pd.DataFrame({'hashtags': Total_hashtag, "counts": Total_count , "color": color_list})
+	hashtags_counting = pd.DataFrame({'hashtags': Total_hashtag, "counts": Total_count , "color": color_list, "texts": text_list})
 	hashtags_count = hashtags_counting.sort_values('counts', ascending = False)
 
 
-	author_final = []
-	count_final = []
-	color_final = []
-
-	for i in range (len(hashtags_count)):
-		author_final.append(hashtags_count['hashtags'][i])
-		count_final.append(hashtags_count['counts'][i])
-		color_final.append(hashtags_count['color'][i])
 
 	trace1 = go.Bar(
-		x = author_final,
-		y = count_final,
+		x = hashtags_count['hashtags'],
+		y = hashtags_count['counts'],
 		name='Weibo',
 		marker=dict(
-			color=color_final,
-			)
+			color=hashtags_count['color'],
+			),
+		hoverinfo = 'text',
+		text = "source: " + hashtags_count['texts'] + "<br>Hashtag: " + hashtags_count['hashtags'],
 		)
 
 	data = [trace1]
@@ -641,7 +638,9 @@ def detail_hashtag_frequency(keyword):
 			),
 		barmode ='group',
 		bargap = 0.15,
-		bargroupgap = 0.1
+		bargroupgap = 0.1,
+	
+
 
 		)
 	fig = dict(data = data , layout = layout)
