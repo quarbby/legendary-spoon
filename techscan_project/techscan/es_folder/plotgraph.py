@@ -601,8 +601,8 @@ def detail_hashtag_frequency(keyword):
 		Total_count.append(i[1])
 		color_list.append('rgb(246,156,99)')
 
-	hashtags_count = pd.DataFrame({'hashtags': Total_hashtag, "counts": Total_count , "color": color_list})
-	hashtags_count = hashtags_count_weibo.sort_values('counts', ascending = False)
+	hashtags_counting = pd.DataFrame({'hashtags': Total_hashtag, "counts": Total_count , "color": color_list})
+	hashtags_count = hashtags_counting.sort_values('counts', ascending = False)
 
 
 	author_final = []
