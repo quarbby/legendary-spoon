@@ -67,7 +67,13 @@
 								<tr>
 									<th scope="row">{{forloop.counter}}</th>
 									<td><a href="{{i.url}}"> {{i.author}} </a></td>
-									<td> {{i.source}}</td>					
+									{% if i.source == "Twitter" %}
+										<td class="source_twitter"> {{i.source}}</td>	
+									{% elif i.source == "Weibo" %}	
+										<td class="source_weibo"> {{i.source}}</td>
+									{% elif i.source == "Zhihu" %}
+										<td class="source_zhihu"> {{i.source}}</td>
+									{% endif %}
 									<td> {{i.favorite_count}}</td>
 									<td> {{i.retweet_count}}</td>
 									<td> {{i.upvotes}}</td>

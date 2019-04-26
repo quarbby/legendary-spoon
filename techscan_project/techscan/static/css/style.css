@@ -83,6 +83,18 @@ input:-webkit-autofill:active  {
   color: #3dc713;
 }
 
+.source_twitter{
+  color: #6aa79c;
+}
+
+.source_weibo{
+  color: #f69c63;
+}
+
+.source_zhihu{
+  color: #55769a;
+}
+
 .sidebar {
   margin: 0;
   padding: 0;
