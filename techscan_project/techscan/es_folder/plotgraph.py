@@ -577,15 +577,16 @@ def detail_hashtag_frequency(keyword):
 	twitter_record = df_twitter.to_dict('records')
 	twitter_hashtag_count = Counter(hashtag['hashtags'] for hashtag in twitter_record)
 	twitter_tophashtags = twitter_hashtag_count.most_common(15)
-	twitter_hashtag = []
-	twitter_count = []
+
+	Total_hashtag = []
+	Total_count = []
+	color_list = []
 
 	for i in twitter_tophashtags:
-		twitter_hashtag.append(i[0])
-		twitter_count.append(i[1])
+		Total_hashtag.append(i[0])
+		Total_count.append(i[1])
+		color_list.append('rgb(106,167,156)')
 
-	hashtags_count_twitter = pd.DataFrame({'hashtags': twitter_hashtag, "counts": twitter_count})
-	hashtags_count_twitter = hashtags_count_twitter.sort_values('counts', ascending = False)
 
 	df_weibo,_ = graph_query(chi_translation(keyword),'weibo')
 	df_weibo ['hashtags']= df_weibo['hashtags'].apply(lambda x:''.join(x))
@@ -596,30 +597,29 @@ def detail_hashtag_frequency(keyword):
 	weibo_hashtag = []
 	weibo_count = []
 	for i in weibo_tophashtags:
-		weibo_hashtag.append(i[0])
-		weibo_count.append(i[1])
+		Total_hashtag.append(i[0])
+		Total_count.append(i[1])
+		color_list.append('rgb(246,156,99)')
 
-	hashtags_count_weibo = pd.DataFrame({'hashtags': weibo_hashtag, "counts": weibo_count})
-	hashtags_count_weibo = hashtags_count_weibo.sort_values('counts', ascending = False)
-	hashtags_counts = pd.concat([hashtags_count_twitter,hashtags_count_weibo],ignore_index = True)
-	
-	new_list = []
-	count_List = []
-	color_List = []
-	for i in range (15):
-		new_list.append(hashtags_counts['hashtags'][i])
-		new_list.append(hashtags_counts['hashtags'][i+15])
-		count_List.append(hashtags_counts['counts'][i])
-		count_List.append(hashtags_counts['counts'][i+15])
-		color_List.append('rgb(106,167,156)')
-		color_List.append('rgb(246,156,99)')
+	hashtags_count = pd.DataFrame({'hashtags': Total_hashtag, "counts": Total_count , "color": color_list})
+	hashtags_count = hashtags_count_weibo.sort_values('counts', ascending = False)
+
+
+	author_final = []
+	count_final = []
+	color_final = []
+
+	for i in range (len(hashtags_count)):
+		author_final.append(hashtags_count['hashtags'][i])
+		count_final.append(hashtags_count['counts'][i])
+		color_final.append(hashtags_count['color'][i])
 
 	trace1 = go.Bar(
-		x = new_list,
-		y = count_List,
+		x = author_final,
+		y = count_final,
 		name='Weibo',
 		marker=dict(
-			color=color_List,
+			color=color_final,
 			)
 		)
 
