@@ -9,10 +9,10 @@ def index(request):
 
 def main(request):
 	params = request.GET.get('q')
-	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
-	plotgraph.main_graph(params)
+	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	# plotgraph.main_graph(params)
 	# plotgraph.plot_stocks()
-	heatmap.heatmap(params)
+	# heatmap.heatmap(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
