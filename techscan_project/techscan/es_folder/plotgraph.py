@@ -1,7 +1,11 @@
 import re
 import plotly
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import json
+=======
+# import json
+>>>>>>> Stashed changes
 # import codecs
 =======
 >>>>>>> Stashed changes
@@ -30,7 +34,7 @@ from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import plotly.figure_factory as ff
 from .uploading_data import upload_data_ner
 from .train_heatmap_index import find_NER
-
+from .stocks_funct import NER_stocks
 
 def plot_pie_chart(keyword):
 
@@ -424,123 +428,6 @@ def twitter_bubble(keyword):
 	fig = dict(data=data, layout=layout)
 	plot(fig, filename='techscan/templates/graph/twitter_hashtag_bubble.html', auto_open=False)
 
-def plot_stocks():
-	res = es.search(index = 'stock', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})
-	company = []
-	date = []
-	closing_price = []
-	percentage = []
-
-	for i in range(len(res)):
-		com = res['hits']['hits'][i]['_source']
-		company.append(com['company'])
-		
-		date.append( com['date'])
-		closing_price.append(com['close'])
-		percentage.append( com['percentage'])
-
-	trace1 = {
-		"x": date[0],
-		"y": closing_price[0],
-		"line": {"color": "rgba(31,119,180,1)"}, 
-		"mode": "lines", 
-		"name": company[0], 
-		"type": "scatter", 
-		"xaxis": "x", 
-		"yaxis": "y"
-		}
-	trace2 = {
-		"x": date[1],
-		"y": closing_price[1],
-		"line": {"color": "rgba(255,129,14,1)"}, 
-		"mode": "lines", 
-		"name": company[1], 
-		"type": "scatter", 
-		"xaxis": "x", 
-		"yaxis": "y"
-		}
-	trace3 = {
-		"x": date[2],
-		"y": closing_price[2],
-		"line": {"color": "rgba(3,255,160,1)"}, 
-		"mode": "lines", 
-		"name": company[2], 
-		"type": "scatter", 
-		"xaxis": "x", 
-		"yaxis": "y"
-		}
-	trace4 = {
-		"x": date[3],
-		"y": closing_price[3],
-		"line": {"color": "rgba(1,11,190,12)"}, 
-		"mode": "lines", 
-		"name": company[3], 
-		"type": "scatter", 
-		"xaxis": "x", 
-		"yaxis": "y"
-		}
-	trace5 = {
-		"x": date[4],
-		"y": closing_price[4],
-		"line": {"color": "rgba(31,119,180,1)"}, 
-		"mode": "lines", 
-		"name": company[4], 
-		"type": "scatter", 
-		"xaxis": "x", 
-		"yaxis": "y"
-		}
-
-
-
-	data = go.Data([trace1, trace2, trace3, trace4, trace5])
-	layout = {
-		"showlegend" : True,
-		"margin": {
-			"r": 10, 
-			"t": 25, 
-			"b": 40, 
-			"l": 60
-			}, 
-		"title": "Stock Prices", 
-		"xaxis": {
-		"domain": [0, 1], 
-		"rangeselector": {"buttons": 
-		[{
-		"count": 3, 
-		"label": "3 mo", 
-		"step": "month", 
-		"stepmode": "backward"
-		}, 
-		{
-		"count": 6, 
-		"label": "6 mo", 
-		"step": "month", 
-		"stepmode": "backward"
-		}, 
-		{
-		"count": 1, 
-		"label": "1 yr", 
-		"step": "year", 
-		"stepmode": "backward"
-		}, 
-		{
-		"count": 1, 
-		"label": "YTD", 
-		"step": "year", 
-		"stepmode": "todate"
-		}, 
-		{"step": "all"}
-		]}, 
-		"title": "Date"
-		}, 
-		"yaxis": {
-		"domain": [0, 1], 
-		"title": "Price"
-		}}
-		
-	fig = dict(data=data, layout=layout)
-	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)
-
 def twitter_graph(keyword):
 	df,_ = graph_query(keyword, 'tweets')
 	df_new = df.groupby(['user_screen_name']).sum().reset_index()
@@ -908,3 +795,120 @@ def top_companies(keyword, indexes = 'news'):
 
 	fig = dict(data = data , layout = layout)
 	plot(fig, filename ='techscan/templates/graph/top_companies.html', auto_open = False)
+
+def plot_stocks(keyword):
+	keyword = chi_translation(keyword)
+	res = es.search(index = 'stocks_store', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})
+	res_input = res['hits']['hits']
+	resitems = []
+	for i in range (len(res_input)):
+	    if res_input[i]['_source']['label'] == keyword:
+	        resitems.append(res_input[i])
+	stock_price = []
+	date = []
+	company = []
+	count = []
+	color = ["rgba(31,119,180,1)", "rgba(51,129,180,16)","rgba(191,29,70,6)","rgba(1,29,18,160)","rgba(101,29,8,160)"]
+	if resitems == []:
+		# return []
+		items = NER_stocks(keyword)
+		upload_data_ner(items, 'stocks_store')
+		for i in range(len(items)):
+			company.append(items[i]['english company'])
+			stock_price.append(items[i]['close'])
+			date.append(items[i]['date'])
+			count.append(items[i]['count'])
+	else:
+		for i in range(len(resitems)):
+			company.append(resitems[i]['_source']['english company'])
+			date.append(resitems[i]['_source']['date'])
+			stock_price.append(resitems[i]['_source']['close'])
+			count.append(resitems[i]['_source']['count'])
+
+	company_details = pd.DataFrame({'company':company, 'date':date, 'stock price' :stock_price, 'count':count})
+	company_details =  company_details.sort_values('count', ascending = False)
+
+
+	company_sorted = company_details.company.tolist()
+	stock_sorted = company_details['stock price'].tolist()
+	date_sorted = company_details['date'].tolist()
+
+	data = list() 	
+
+	if len(company_sorted) >= 5:
+
+		for i in range(5):
+			trace = {
+			   "x": date_sorted[i],
+			   "y": stock_sorted[i],
+			  "line": {"color": color[i]}, 
+			  "mode": "lines", 
+			  "name": company_sorted[i], 
+			  "type": "scatter", 
+			  "xaxis": "x", 
+			  "yaxis": "y"
+			}
+			data.append(trace)
+	else:
+		for i in range(len(company_sorted)):
+			trace = {
+			   "x": date_sorted[i],
+			   "y": stock_sorted[i],
+			  "line": {"color": color[i]}, 
+			  "mode": "lines", 
+			  "name": company_sorted[i], 
+			  "type": "scatter", 
+			  "xaxis": "x", 
+			  "yaxis": "y"
+			}
+			data.append(trace)
+
+
+
+	layout = {
+			"showlegend" : True,
+		  "margin": {
+		    "r": 10, 
+		    "t": 25, 
+		    "b": 40, 
+		    "l": 60
+		  }, 
+		  "title": "Stock Prices", 
+		  "xaxis": {
+		    "domain": [0, 1], 
+		    "rangeselector": {"buttons": [
+		        {
+		          "count": 3, 
+		          "label": "3 mo", 
+		          "step": "month", 
+		          "stepmode": "backward"
+		        }, 
+		        {
+		          "count": 6, 
+		          "label": "6 mo", 
+		          "step": "month", 
+		          "stepmode": "backward"
+		        }, 
+		        {
+		          "count": 1, 
+		          "label": "1 yr", 
+		          "step": "year", 
+		          "stepmode": "backward"
+		        }, 
+		        {
+		          "count": 1, 
+		          "label": "YTD", 
+		          "step": "year", 
+		          "stepmode": "todate"
+		        }, 
+		        {"step": "all"}
+		      ]}, 
+		    "title": "Date"
+		  }, 
+		  "yaxis": {
+		    "domain": [0, 1], 
+		    "title": "Price"
+		  }
+		}
+	fig = go.Figure(data=data, layout=layout)
+	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)
