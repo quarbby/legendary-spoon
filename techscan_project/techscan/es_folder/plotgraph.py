@@ -813,12 +813,15 @@ def plot_stocks(keyword):
 	if resitems == []:
 		# return []
 		items = NER_stocks(keyword)
-		upload_data_ner(items, 'stocks_store')
-		for i in range(len(items)):
-			company.append(items[i]['english company'])
-			stock_price.append(items[i]['close'])
-			date.append(items[i]['date'])
-			count.append(items[i]['count'])
+		if items != []:
+			upload_data_ner(items, 'stocks_store')
+			for i in range(len(items)):
+				company.append(items[i]['english company'])
+				stock_price.append(items[i]['close'])
+				date.append(items[i]['date'])
+				count.append(items[i]['count'])
+		else:
+			return []
 	else:
 		for i in range(len(resitems)):
 			company.append(resitems[i]['_source']['english company'])

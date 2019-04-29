@@ -49,10 +49,14 @@ def NER_stocks(keyword):
 				details['count'] = j['count']
 				final.append(details)
 	# final = list(set(final))
-	remove_duplicates = pd.DataFrame(final)
-	remove_duplicates = remove_duplicates.drop_duplicates(subset='english company')
-	no_duplicates = remove_duplicates.to_dict('records')
-	return no_duplicates		
+	try:	
+		remove_duplicates = pd.DataFrame(final)
+		remove_duplicates = remove_duplicates.drop_duplicates(subset='english company')
+		no_duplicates = remove_duplicates.to_dict('records')
+		return no_duplicates		
+	except:
+		return []
+
 
 # items = NER_stocks('人工智能')
 
