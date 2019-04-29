@@ -1,15 +1,15 @@
-# from ..config import es
-# from pandas import pandas as pd
-# import collections
-# from scroll_query import graph_query
-# from pprint import pprint
-# import jieba.posseg as psg
-# import json
-# import googlemaps
-# import requests
+from ..config import es
+from pandas import pandas as pd
+import collections
+from .scroll_query import graph_query
+from pprint import pprint
+import jieba.posseg as psg
+import json
+import googlemaps
+import requests
 
 def find_NER(keyword):
-	p,_ = graph_query(keyword,'totaltechweb1_data')
+	p,_ = graph_query(keyword,'news')
 	words = p.summary.tolist()
 	publisher = p.authors.tolist()
 	wordList = []
