@@ -1,14 +1,6 @@
 import re
 import plotly
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import json
-=======
-# import json
->>>>>>> Stashed changes
 # import codecs
-=======
->>>>>>> Stashed changes
 import jieba
 import jieba.posseg as psg
 import nltk
