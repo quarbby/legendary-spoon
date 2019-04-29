@@ -44,7 +44,7 @@ def overview2(request):
 def details(request):
 	params = request.GET.get('q')
 	# plotgraph.detail_hashtag_frequency(params)
-	plotgraph.top_companies(params)
+	# plotgraph.top_companies(params, graph = True)
 	# plotgraph.twitter_bubble(params)
 
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
@@ -60,7 +60,8 @@ def details(request):
 		"scholar":es_scholar,
 		"tweets":es_tweets,
 		"zhihu":es_zhihu,
-		"author_table":main_functions.overview_table(params)
+		"author_table":main_functions.overview_table(params),
+		"company_table":plotgraph.top_companies(params)
 	}
 	return render(request, 'details.html', context)
 

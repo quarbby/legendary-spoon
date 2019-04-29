@@ -722,7 +722,7 @@ def heatmap(keyword):
     fig = go.Figure(data=cities, layout=layout)
     plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
 
-def top_companies(keyword, indexes = 'news'):
+def top_companies(keyword, indexes = 'news', graph = False):
 	df,_ = graph_query(chi_translation(keyword), indexes)
 	summary_list = df.summary.tolist()
 	summary_string = "".join(summary_list)
@@ -738,55 +738,64 @@ def top_companies(keyword, indexes = 'news'):
 			companies.append(org)
 
 	companies_count = Counter(companies)
-	top_companies = companies_count.most_common(10)
+	top_companies = companies_count.most_common(20)
 
 	count = []
 	company_name = []
 	for company in top_companies:
 		count.append(company[1])
 		company_name.append(company[0])
-
-	data = [go.Bar(
-		x= company_name,
-		y = count,
-		marker = dict(
-			color = 'rgb(152,89,103)',
-			),
-		)]
-
-	layout = go.Layout(
-		xaxis = dict(
-			title = 'Company Name',
-			tickfont = dict(
-				size = 14,
-				color = 'rgb(107, 107, 107)',
-				family = 'roboto'
-				)),
-		yaxis = dict(
-			title = 'Company Count',
-			titlefont = dict(
-				size = 14,
-				color = 'rgb(107, 107, 107)',
-				family = 'roboto'
+	data = {'company' : company_name, 'count' : count}
+	df_new = pd.DataFrame(data)
+	json_frame = df_new.to_dict('index').values()
+	# print(json_frame)
+	
+	if graph == True:
+		data = [go.Bar(
+			x= company_name,
+			y = count,
+			marker = dict(
+				color = 'rgb(152,89,103)',
 				),
-			tickfont = dict(
-				size = 14,
-				color = 'rgb(107, 107, 107)'
-				)
-			),
-		legend=dict(
-			x = 0,
-			y = 1.0,
-			bgcolor = 'rgba(255, 255, 255, 0)',
-			bordercolor = 'rgba(255, 255, 255, 0)'
-			),
+			)]
 
-		bargap = 0.15,
-		bargroupgap = 0.1
-		)
+		layout = go.Layout(
+			xaxis = dict(
+				title = 'Company Name',
+				tickfont = dict(
+					size = 14,
+					color = 'rgb(107, 107, 107)',
+					family = 'roboto'
+					)),
+			yaxis = dict(
+				title = 'Company Count',
+				titlefont = dict(
+					size = 14,
+					color = 'rgb(107, 107, 107)',
+					family = 'roboto'
+					),
+				tickfont = dict(
+					size = 14,
+					color = 'rgb(107, 107, 107)'
+					)
+				),
+			legend=dict(
+				x = 0,
+				y = 1.0,
+				bgcolor = 'rgba(255, 255, 255, 0)',
+				bordercolor = 'rgba(255, 255, 255, 0)'
+				),
 
-	fig = dict(data = data , layout = layout)
-	plot(fig, filename ='techscan/templates/graph/top_companies.html', auto_open = False)
+			bargap = 0.15,
+			bargroupgap = 0.1
+			)
+
+		fig = dict(data = data , layout = layout)
+		plot(fig, filename ='techscan/templates/graph/top_companies.html', auto_open = False)
+	
+	else:
+		return json_frame
+
 
 def plot_stocks(keyword):
 	keyword = chi_translation(keyword)
@@ -800,7 +809,7 @@ def plot_stocks(keyword):
 	date = []
 	company = []
 	count = []
-	color = ["rgba(31,119,180,1)", "rgba(51,129,180,16)","rgba(191,29,70,6)","rgba(1,29,18,160)","rgba(101,29,8,160)"]
+	color = ["rgba(234,174,163,1)", "rgba(222,193,158,1)","rgba(140,84,97,1)","rgba(132,153,116,1)","rgba(78,81,109,1)"]
 	if resitems == []:
 		# return []
 		items = NER_stocks(keyword)
