@@ -1,8 +1,12 @@
 import re
 import plotly
+<<<<<<< Updated upstream
 import json
 # import codecs
+=======
+>>>>>>> Stashed changes
 import jieba
+import jieba.posseg as psg
 import nltk
 import math
 import numpy as np
@@ -838,3 +842,69 @@ def heatmap(keyword):
 
     fig = go.Figure(data=cities, layout=layout)
     plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
+
+def top_companies(keyword, indexes = 'news'):
+	df,_ = graph_query(chi_translation(keyword), indexes)
+	summary_list = df.summary.tolist()
+	summary_string = "".join(summary_list)
+	tokenised = psg.cut(summary_string)
+	org_list = []
+	for token in tokenised:
+		if token.flag == "nt":
+			org_list.append(token.word)
+
+	companies = []
+	for org in org_list:
+		if '公司' in org or '集团'in org:
+			companies.append(org)
+
+	companies_count = Counter(companies)
+	top_companies = companies_count.most_common(10)
+
+	count = []
+	company_name = []
+	for company in top_companies:
+		count.append(company[1])
+		company_name.append(company[0])
+
+	data = [go.Bar(
+		x= company_name,
+		y = count,
+		marker = dict(
+			color = 'rgb(152,89,103)',
+			),
+		)]
+
+	layout = go.Layout(
+		xaxis = dict(
+			title = 'Company Name',
+			tickfont = dict(
+				size = 14,
+				color = 'rgb(107, 107, 107)',
+				family = 'roboto'
+				)),
+		yaxis = dict(
+			title = 'Company Count',
+			titlefont = dict(
+				size = 14,
+				color = 'rgb(107, 107, 107)',
+				family = 'roboto'
+				),
+			tickfont = dict(
+				size = 14,
+				color = 'rgb(107, 107, 107)'
+				)
+			),
+		legend=dict(
+			x = 0,
+			y = 1.0,
+			bgcolor = 'rgba(255, 255, 255, 0)',
+			bordercolor = 'rgba(255, 255, 255, 0)'
+			),
+
+		bargap = 0.15,
+		bargroupgap = 0.1
+		)
+
+	fig = dict(data = data , layout = layout)
+	plot(fig, filename ='techscan/templates/graph/top_companies.html', auto_open = False)

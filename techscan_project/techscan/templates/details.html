@@ -83,96 +83,51 @@
 								{% endfor %}
 							</tbody>
 						</table>
-						<!-- <ul class="nav nav-tabs" role="tablist">
+						<ul class="nav nav-tabs" role="tablist">
 							<li class="nav-item active">
-								<a class="nav-link" href="#Weibo" role="tab" data-toggle="tab">Weibo</a>
+								<a class="nav-link" href="#hashtag_freq" role="tab" data-toggle="tab">Hashtag Frequency</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link " href="#Twitter" role="tab" data-toggle="tab">Twitter</a>
+								<a class="nav-link " href="#top_companies" role="tab" data-toggle="tab">Top Companies</a>
 							</li>
-							<li class="nav-item">
+							<!-- <li class="nav-item">
 								<a class="nav-link" href="#Zhihu" role="tab" data-toggle="tab">Zhihu</a>
-							</li>
-						</ul> -->
+							</li> -->
+						</ul>
 
 
 
-						<!-- <div class="tab-content">
-							<div role="Weibo" class="tab-pane active" id="Weibo"> -->
+						<div class="tab-content">
+							<div role="hashtag_freq" class="tab-pane active" id="hashtag_freq">
 								<div class="container mt-2 col-12">
 									<h3><b>Hashtag Frequency Graph</b></h3>
 									<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
 										<iframe src="{% url 'detail_hashtag_frequency' %}" class="graph-frame" ></iframe> 
 									</div>
 								</div>
-							<!-- </div>
+							</div>
 
 
-							<div role="Twitter" class="tab-pane hide" id="Twitter">
+							<div role="top_companies" class="tab-pane hide" id="top_companies">
 								<div class="container mt-2 col-12">
-									<h3><b>Twitter Hashtag Popularity Graph</b></h3>
+									<h3><b>Top Companies Frequency Graph</b></h3>
 									<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
-										<iframe src="{% url 'twitter_hashtag_bubble' %}" class="graph-frame" ></iframe> 
+										<iframe src="{% url 'top_companies' %}" class="graph-frame" ></iframe> 
 									</div>
 								</div>
 							</div>
 
 
-							<div role="Zhihu" class="tab-pane hide" id="Zhihu">
+							<!-- <div role="Zhihu" class="tab-pane hide" id="Zhihu">
 								<div class="container mt-2 col-12">
 									<h3><b>Zhihu Post Frequency Graph</b></h3>
 									<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
 										<iframe src="{% url 'detail_post_frequency' %}" class="graph-frame" ></iframe> 
 									</div>
 								</div>
-							</div>
-						</div> -->
-<!-- 
-		<ul class="nav nav-tabs">
-			<li class="active">
-				<a class="card border-bottom-0 rounded-top" data-toggle="tab" href="#weibo">
-					<div class="px-2 m-2">Weibo</div>
-				</a>
-			</li>
-			<li>
-				<a class="card border-top-0 border-right-0 border-left-0 rounded-0" data-toggle="tab" href="#tweets">
-					<div class="px-2 m-2">Twitter</div>
-				</a>
-			</li>
-			<li>
-				<a class="card border-top-0 border-right-0 border-left-0 rounded-0" data-toggle="tab" href="#zhihu">
-					<div class="px-2 m-2">Zhihu</div>
-				</a>
-			</li>
-		</ul>
-
-		<div class="tab-content border-0">
-			<div id="weibo" class="tab-pane active">
-				<div class="container mt-2 col-12">
-					<h3><b>Weibo Hashtag Frequency Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-						<iframe src="{% url 'weibo_hashtag_graph' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-			<div id="tweets" class="tab-pane">
-				<div class="container mt-2 col-12">
-					<h3><b>Twitter Hashtag Popularity Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-						<iframe src="{% url 'twitter_hashtag_bubble' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-			<div id="zhihu" class="tab-pane">
-				<div class="container mt-2 col-12">
-					<h3><b>Zhihu Post Frequency Graph</b></h3>
-					<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
-						<iframe src="{% url 'zhihu_graph' %}" class="graph-frame" ></iframe> 
-					</div>
-				</div>
-			</div>
-		</div>
-	-->
+							</div> -->
+						</div>
+							
 	<!-- Post Row -->
 	<div class="row">
 

@@ -27,5 +27,6 @@ urlpatterns = [
 	path('twitter_graph/', TemplateView.as_view(template_name="graph/twitter_graph.html"), name='twitter_graph'),
 	path('detail_post_frequency', TemplateView.as_view(template_name="graph/detail_post_frequency.html"), name="detail_post_frequency"),
 	path('detail_hashtag_frequency', TemplateView.as_view(template_name="graph/detail_hashtag_frequency.html"), name="detail_hashtag_frequency"),
+	path('top_companies', TemplateView.as_view(template_name="graph/top_companies.html"), name="top_companies"),
 
 	]
