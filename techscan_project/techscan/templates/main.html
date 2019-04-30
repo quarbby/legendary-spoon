@@ -72,64 +72,70 @@
 	
 		<div class="container col-12">
 			<span class="section-title"><h3>Related Fields</h3></span>
-
+			{% if network == "False" %}
+			<h3> No Relations Found </h3>
+			{% else %}
 			<div class="row">
-			<div class="embed-responsive embed-responsive-16by9 col-sm-7 ml-3 mt-4">
-				<iframe src="{% url 'plotneo4jgraph' %}" class="graph-frame" ></iframe> 
-			</div>
+				<div class="embed-responsive embed-responsive-16by9 col-sm-7 ml-3 mt-4">
+					<iframe src="{% url 'plotneo4jgraph' %}" class="graph-frame" ></iframe> 
+				</div>
 
-			<table class="table table-hover col-sm-4 ml-5 mt-4">
-	<thead>
-		<tr>
-			<th scope="col">#</th>
-			<th scope="col">Field</th>
-			<th scope="col">Weibo</th>
-			<th scope="col">Zhihu</th>
-			<th scope="col">Academic</th>
-			<th scope="col">News</th>
-			<th scope="col">Tweets</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for i in related_table %}
-		<tr>
-			<th scope="row">{{forloop.counter}}</th>
-			<td><a href="?q={{i.fieldName}}"> {{i.fieldName}} </a></td>
-			<td>
-				{% if i.weiboPercentile == "True" %}
-				<div class = "percentileTrue">
-				{% endif %}
-					{{i.weiboCount}}
-				</div>
-			</td>					
-			<td>
-				{% if i.zhihuPercentile == "True" %}
-				<div class = "percentileTrue">
-				{% endif %}
-					{{i.zhihuCount}}
-				</div>
-			</td>
-			<td>{{i.scholarCount}}</td>
+				<table class="table table-hover col-sm-4 ml-5 mt-4">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Field</th>
+							<th scope="col">Weibo</th>
+							<th scope="col">Zhihu</th>
+							<th scope="col">Academic</th>
+							<th scope="col">News</th>
+							<th scope="col">Tweets</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for i in related_table %}
+						<tr>
+							<th scope="row">{{forloop.counter}}</th>
+							<td><a href="?q={{i.fieldName}}"> {{i.fieldName}} </a></td>
+							<td>
+								{% if i.weiboPercentile == "True" %}
+								<div class = "percentileTrue">
+									{% endif %}
+									{{i.weiboCount}}
+								</div>
+							</td>					
+							<td>
+								{% if i.zhihuPercentile == "True" %}
+								<div class = "percentileTrue">
+									{% endif %}
+									{{i.zhihuCount}}
+								</div>
+							</td>
+							<td>{{i.scholarCount}}</td>
 
-			<td>{{i.newsCount}}</td>
-			<td>
-				{% if i.tweetsPercentile == "True" %}
-				<div class = "percentileTrue">
-				{% endif %}
-					{{i.tweetsCount}}
-				</div>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
-	</div>
+							<td>{{i.newsCount}}</td>
+							<td>
+								{% if i.tweetsPercentile == "True" %}
+								<div class = "percentileTrue">
+									{% endif %}
+									{{i.tweetsCount}}
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>			
+			{% endif %}
 </div>
 
-		<div class="container p-3 ml-2 col-11">
+		<div class="container col-12">
 			<span class="section-title"><h3>Heatmap</h3></span>
-			<div class="embed-responsive embed-responsive-21by9">
-				<iframe src="{% url 'heatmap' %}" class="graph-frame" ></iframe> 
+			<h5> China news report on {{search_word}}</h5>
+			<div class="container p-3 ml-2 col-11">
+				<div class="embed-responsive embed-responsive-21by9">
+					<iframe src="{% url 'heatmap' %}" class="graph-frame" ></iframe> 
+				</div>
 			</div>
 		</div>
 

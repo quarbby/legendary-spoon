@@ -684,9 +684,12 @@ def heatmap(keyword):
         cities.append(city)
 
     layout = go.Layout(
-            title = go.layout.Title(
-                text = 'China News Reports on {}'.format(keyword.lower())
-            ),
+    	margin=go.layout.Margin(
+    		l=60,
+    		r=60,
+    		b=30,
+    		t=30,
+    		pad=2),
             showlegend = True,
             font = go.layout.Font(size = 20),
             autosize = True,
