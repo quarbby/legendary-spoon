@@ -22,12 +22,12 @@ def related_field(keyword):
 
 def search_field(Keyword):
   with neo4jdriver.session() as session:
-    output = session.run('MATCH f=(f1:Field:SubGraphCS)<-[r1:PART_OF_FIELD]-(q:Field:SubGraphCS) WHERE f1.fieldName =~ "(?i){}" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
+    output = session.run('MATCH f=(f1:Field)<-[r1:PART_OF_FIELD]-(q:Field) WHERE f1.fieldName =~ "(?i){}" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
     result = [record for record in output]
     if result != []:
       return result
     else:
-      output = session.run('MATCH f=(f1:Field:SubGraphCS)<-[r1:PART_OF_FIELD]-(q:Field:SubGraphCS) WHERE f1.fieldName =~ "(?i).*{}.*" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
+      output = session.run('MATCH f=(f1:Field)<-[r1:PART_OF_FIELD]-(q:Field) WHERE f1.fieldName =~ "(?i).*{}.*" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
       result = [record for record in output]
       return result
       
@@ -285,7 +285,7 @@ def plotgraph(result):
     data=[trace1, trace2,trace]
     fig=go.Figure(data=data, layout=layout)
 
-    final_graph = plot(fig, filename = 'techscan/templates/graph/neo4jgraph.html', auto_open=False)
+    plot(fig, filename = 'techscan/templates/graph/neo4jgraph.html', auto_open=False)
 
     # IDList = [] 
     # LabelList = []
@@ -297,9 +297,8 @@ def plotgraph(result):
     #   for l in range (len(TotalNode)):
     #     if IDList[w] in TotalNode[l]["id"]:
     #       LabelList.append(TotalNode[l]["name"])
-    return (final_graph)
   except:
-    pass
+    return 'False'
 
 
 def get_related_table(keyword):
