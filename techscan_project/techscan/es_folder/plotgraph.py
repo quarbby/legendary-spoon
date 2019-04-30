@@ -27,6 +27,8 @@ import plotly.figure_factory as ff
 from .uploading_data import upload_data_ner
 from .train_heatmap_index import find_NER
 from .stocks_funct import NER_stocks
+import spacy
+nlp = spacy.load('en_core_web_md')
 
 def plot_pie_chart(keyword):
 
@@ -801,7 +803,6 @@ def top_companies(keyword, indexes = 'news', graph = False):
 	else:
 		return json_frame
 
-
 def plot_stocks(keyword):
 	keyword = chi_translation(keyword)
 	res = es.search(index = 'stocks_store', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})
@@ -921,3 +922,48 @@ def plot_stocks(keyword):
 		}
 	fig = go.Figure(data=data, layout=layout)
 	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)
+
+def companies_wordcloud(keyword):
+	df_news,_ = graph_query(chi_translation(keyword), 'news')
+	df_twitter,_ = graph_query(keyword, 'tweets')
+	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
+		stopword_chinese = f.read()
+	df_news['summary'] = df_news['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
+	stopword_english = stopwords.words('english')
+	extra = ['rt', 'ai']
+	stopword_english = stopword_english.extend(extra)
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: x.lower())
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
+	# df_twitter = df_twitter[df_twitter['summary'] != '']
+	# df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
+	# df_twitter = df_twitter[df_twitter['summary'] != '']
+	tweets_summary_list = df_twitter.summary.tolist()
+	tweets_summary_string = " ".join(tweets_summary_list)
+	tweets_tokenised = nlp(tweets_summary_string)
+	tweets_companies = []
+	for ents in tweets_tokenised.ents:
+		if ents.label_ == 'ORG':
+			tweets_companies.append(ents.text)
+
+	news_summary_list = df_news.summary.tolist()
+	news_summary_string = "".join(news_summary_list)
+	news_tokenised = psg.cut(news_summary_string)
+	news_org_list = []
+	for token in news_tokenised:
+		if token.flag == "nt":
+			news_org_list.append(token.word)
+
+	news_companies = []
+	for org in news_org_list:
+		if '公司' in org or '集团'in org:
+			news_companies.append(org)
+
+	total_company = tweets_companies + news_companies
+	total_company = ' '.join(total_company)
+
+	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+	wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
+		max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="winter").generate(total_company)
+	
+	wordcloud.to_file("techscan/static/word_cloud/company_wordcloud.png")
