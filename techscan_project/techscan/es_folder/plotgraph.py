@@ -439,6 +439,7 @@ def wordcloud(keyword, indexes = 'weibo'):
 	else:
 		stopword = stopwords.words('english')
 		df['summary'] = df['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
+		df['summary'] = df['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
 		df['summary'] = df['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword]))
 	
 	df = df[df['summary']!='']
