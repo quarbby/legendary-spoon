@@ -19,6 +19,7 @@ def main(request):
 		"wiki_result": main_functions.get_wiki_data(params),
 		"hit_count": main_functions.get_count(params),
 		"related_table": neo4jgraph.get_related_table(params),
+		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	}
 	return render(request, 'main.html', context)
 
