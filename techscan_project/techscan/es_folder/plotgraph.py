@@ -430,31 +430,32 @@ def twitter_graph(keyword):
 	fig['layout'].update(title='Distplot with Normal Distribution')
 	plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
 
-def wordcloud(keyword, indexes = 'weibo'):
-	df,_ = graph_query(keyword,indexes)
-	if indexes == 'weibo' or indexes == 'zhihu':
-		with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
-			stopword = f.read()
-		df['summary'] = df['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword]))
-	else:
-		stopword = stopwords.words('english')
-		df['summary'] = df['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
-		df['summary'] = df['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
-		df['summary'] = df['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword]))
+def wordcloud(keyword):
+	df_weibo,_ = graph_query(chi_translation(keyword),'weibo')
+	df_twitter,_ = graph_query(keyword, 'tweets')
+	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
+		stopword_chinese = f.read()
+	df_weibo['summary'] = df_weibo['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
 	
-	df = df[df['summary']!='']
-	summary_list = df['summary'].tolist()
+	stopword_english = stopwords.words('english')
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
+	
+	df_all = pd.concat([df_weibo, df_twitter], axis = 0, ignore_index = True)
+	df_all = df_all[df_all['summary']!='']
+	summary_list = df_all['summary'].tolist()
 	summary_string = ''.join(summary_list)
-	if indexes == 'weibo' or indexes == 'zhihu':
-		mask = np.array(Image.open('techscan/static/word_cloud/circle.png'))
-	else:
-		mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
+	# if indexes == 'weibo' or indexes == 'zhihu':
+	# 	mask = np.array(Image.open('techscan/static/word_cloud/circle.png'))
+	# else:
+	# 	mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
 			
 	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
-	wordcloud = WordCloud( background_color = "white",collocations = False, max_words = 100,font_path=font_path,
-		max_font_size = 100, random_state = 42, width = 1000, height = 860, margin = 2, mask = mask).generate(summary_string)
+	wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
+		max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2).generate(summary_string)
 	
-	wordcloud.to_file("techscan/static/word_cloud/{}_wordcloud.png".format(indexes))
+	wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
 
 def detail_hashtag_frequency(keyword):
 	df_twitter,_ = graph_query(keyword, 'tweets')

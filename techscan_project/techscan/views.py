@@ -14,6 +14,8 @@ def main(request):
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
 	plotgraph.plot_stocks(params)
 	plotgraph.heatmap(params)
+	plotgraph.wordcloud(params)
+
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
@@ -50,7 +52,6 @@ def details(request):
 	# plotgraph.detail_hashtag_frequency(params)
 	# plotgraph.top_companies(params, graph = True)
 	# plotgraph.twitter_bubble(params)
-
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
 	_,es_scholar = scroll_query.sub_query(params,'scholar')
 	_,es_news = scroll_query.sub_query(main_functions.chi_translation(params),'news')
