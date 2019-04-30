@@ -9,13 +9,13 @@ def index(request):
 
 def main(request):
 	params = request.GET.get('q')
-	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	# plotgraph.main_graph(params)
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
-	plotgraph.plot_stocks(params)
+	# plotgraph.plot_stocks(params)
 	plotgraph.heatmap(params)
-	plotgraph.wordcloud(params)
-	plotgraph.companies_wordcloud(params)
+	# plotgraph.wordcloud(params)
+	# plotgraph.companies_wordcloud(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
@@ -24,6 +24,7 @@ def main(request):
 		"summary_length": summary_length,
 		"hit_count": main_functions.get_count(params),
 		"related_table": neo4jgraph.get_related_table(params),
+		"author_table":main_functions.overview_table(params),
 		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	}
 	return render(request, 'main.html', context)

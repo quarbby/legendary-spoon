@@ -260,3 +260,9 @@ a:hover:before{
     padding: .3rem !important;
     font-size: 1.2em !important;
 }
+
+#author-box{
+  text-align: center;
+  margin-top: -.1rem!important;
+
+}

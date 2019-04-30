@@ -10,7 +10,7 @@ from ..es_folder import main_functions
 #   return [{"fieldName" : record['f1.fieldName']} for record in relatedField]
 def related_field(keyword):
   with neo4jdriver.session() as session:
-    relatedField = session.run("MATCH (f:Field)<-[:PART_OF_FIELD]-(f1:Field) WHERE f.fieldName =~ '(?i){}' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
+    relatedField = session.run("MATCH (f:Field)<-[:PART_OF_FIELD]-(f1:Field) WHERE f.fieldName =~ '(?i){}' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 5".format(keyword))
     related_field_list = [{"fieldName" : record['f1.fieldName']} for record in relatedField]
     if related_field_list != []:
       return related_field_list
