@@ -31,7 +31,12 @@ def eng_translation(keyword):
 def get_wiki_data(keyword):
 	try:
 		result = requests.get('https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles={}&exsentences=5'.format(keyword), verify=False).json()
-		return result['query']['pages'][list(result['query']['pages'].keys())[0]]['extract']
+		sentences = result['query']['pages'][list(result['query']['pages'].keys())[0]]['extract']
+		sentences_list = sentences.split('.')
+		sentence1 = '.'.join(sentences_list[:2])
+		sentence1 = sentence1 + '.'
+		sentence2 = '.'.join(sentences_list[2:])
+		return sentence1, sentence2, len(sentences_list)
 	except:
 		return('No summary found!')
 

@@ -11,12 +11,15 @@ def main(request):
 	params = request.GET.get('q')
 	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	# plotgraph.main_graph(params)
+	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
 	plotgraph.plot_stocks(params)
 	plotgraph.heatmap(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
-		"wiki_result": main_functions.get_wiki_data(params),
+		"wiki_result_short": wiki_result_short,
+		"wiki_result_long": wiki_result_long,
+		"summary_length": summary_length,
 		"hit_count": main_functions.get_count(params),
 		"related_table": neo4jgraph.get_related_table(params),
 		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params))
