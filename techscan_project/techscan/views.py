@@ -15,7 +15,7 @@ def main(request):
 	# plotgraph.plot_stocks(params)
 	plotgraph.heatmap(params)
 	# plotgraph.wordcloud(params)
-	# plotgraph.companies_wordcloud(params)
+	plotgraph.people_companies_wordcloud(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
