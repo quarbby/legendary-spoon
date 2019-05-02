@@ -78,16 +78,69 @@
 				</div>
 				{% endif %}
 			</section>
-			<div class="container col-3 m-0">
-				<div style="text-align: left">
-					<img src="{% static 'word_cloud/tech_wordcloud.png' %}" class="graph-frame" style="width:430px; height:250px"></img>
-				</div>
+		<div class="container col-3 m-0">
+
+
+			<nav>
+			  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+			    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Tech</a>
+			    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Companies</a>
+			    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">People</a>
+			  </div>
+			</nav>
+
+			<div class="tab-content" id="nav-tabContent">
+			  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+			  	<img src="{% static 'word_cloud/tech_wordcloud.png' %}" class="graph-frame" style="width:430px; height:250px"></img>
+			  </div>
+			  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+			  	<img src="{% static 'word_cloud/company_wordcloud.png' %}" class="graph-frame" style="width:430px; height:250px"></img>
+			  </div>
+			  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
 			</div>
+
 		</div>
 	</div>
 
 
 	<div class="row">
+		<div class="container col m-1">
+			<span class="section-title"><h3>Top Authors</h3></span>
+			<table class="table table-hover mt-2 pt-2" id="author-box">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Author</th>
+						<th scope="col">Source</th>
+						<th scope="col">Total Favorites</th>
+						<th scope="col">Total Retweet</th>
+						<th scope="col">Total Upvotes</th>					
+						<th scope="col">Post Count</th>
+						<th scope="col">Average favorites/upvotes/retweets per post</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in author_table %}
+					<tr>
+						<th scope="row">{{forloop.counter}}</th>
+						<td><a href="{{i.url}}"> {{i.author}} </a></td>
+						{% if i.source == "Twitter" %}
+						<td class="source_twitter"> {{i.source}}</td>	
+						{% elif i.source == "Weibo" %}	
+						<td class="source_weibo"> {{i.source}}</td>
+						{% elif i.source == "Zhihu" %}
+						<td class="source_zhihu"> {{i.source}}</td>
+						{% endif %}
+						<td> {{i.favorite_count}}</td>
+						<td> {{i.retweet_count}}</td>
+						<td> {{i.upvotes}}</td>
+						<td> {{i.size}}</td>
+						<td> {{i.average}}</td>		
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 		<div class="container col m-1">
 			<span class="section-title"><h3>Related Fields</h3></span>
 		<div class="row">
@@ -150,44 +203,6 @@
 			{% endif %}
 		</div>	
 		</div>
-
-		<div class="container col m-1">
-			<span class="section-title"><h3>Top Authors</h3></span>
-			<table class="table table-hover mt-2 pt-2" id="author-box">
-				<thead>
-					<tr>
-						<th scope="col">#</th>
-						<th scope="col">Author</th>
-						<th scope="col">Source</th>
-						<th scope="col">Total Favorites</th>
-						<th scope="col">Total Retweet</th>
-						<th scope="col">Total Upvotes</th>					
-						<th scope="col">Post Count</th>
-						<th scope="col">Average favorites/upvotes/retweets per post</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for i in author_table %}
-					<tr>
-						<th scope="row">{{forloop.counter}}</th>
-						<td><a href="{{i.url}}"> {{i.author}} </a></td>
-						{% if i.source == "Twitter" %}
-						<td class="source_twitter"> {{i.source}}</td>	
-						{% elif i.source == "Weibo" %}	
-						<td class="source_weibo"> {{i.source}}</td>
-						{% elif i.source == "Zhihu" %}
-						<td class="source_zhihu"> {{i.source}}</td>
-						{% endif %}
-						<td> {{i.favorite_count}}</td>
-						<td> {{i.retweet_count}}</td>
-						<td> {{i.upvotes}}</td>
-						<td> {{i.size}}</td>
-						<td> {{i.average}}</td>		
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
 	</div>
 
 		<div class="row">
@@ -210,8 +225,6 @@
 		</div>
 
 
-
-
 			<!-- <div class="container p-3 ml-2 col-6">
 				<span class="section-title"><h3>Top Companies' Stocks</h3></span>
 				<h5>Stock prices of the most frequently mentioned companies in the news.</h5>
@@ -219,5 +232,6 @@
 					<iframe src="{% url 'stock_graph' %}" class="graph-frame" ></iframe> 
 				</div>
 			</div> -->
-		</div>
-	</body>
+
+	</div>
+</body>
