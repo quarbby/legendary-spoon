@@ -694,7 +694,7 @@ def heatmap(keyword):
     	# 	b=10,
     	# 	t=10,
     	# 	pad=2),
-    	legend = dict(x = -.1, y = 1.4, orientation = "h"),
+    	# legend = dict(x = -.1, y = 1.4, orientation = "h"),
     	showlegend = True,
     	font = go.layout.Font(size = 15,
     		family = 'roboto'),
@@ -964,6 +964,8 @@ def people_companies_wordcloud(keyword):
         if '公司' in org or '集团'in org:
             news_companies.append(org)
 
+    total_tech = news_summary_string + tweets_summary_string
+
     total_company = tweets_companies + news_companies
     total_company = ' '.join(total_company)
 
@@ -972,9 +974,13 @@ def people_companies_wordcloud(keyword):
 
     font_path = 'techscan/static/word_cloud/STFangSong.ttf'
     wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
+    	max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="copper").generate(total_tech)
+    wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
+
+    wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
         max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="winter").generate(total_company)
     wordcloud.to_file("techscan/static/word_cloud/company_wordcloud.png")
 
     wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
-        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="cool").generate(total_people)
+        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="twilight_shifted").generate(total_people)
     wordcloud.to_file("techscan/static/word_cloud/people_wordcloud.png")

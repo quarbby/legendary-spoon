@@ -14,7 +14,6 @@ def main(request):
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
 	# plotgraph.plot_stocks(params)
 	plotgraph.heatmap(params)
-	# plotgraph.wordcloud(params)
 	plotgraph.people_companies_wordcloud(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
