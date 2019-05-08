@@ -247,8 +247,8 @@ def plotgraph(result):
 
     layout = go.Layout(
              # title="Related Fields and Authors",
-             # width=500,
-             # height=500,
+             # width = 550,
+             # height = 250,
              autosize = True,
              showlegend=False,
              scene=dict(
@@ -260,8 +260,8 @@ def plotgraph(result):
             t=0,
             l=0,
             r=0,
-            b=0
-
+            b=0,
+            pad = 1,
         ),
         hovermode='closest',
 

@@ -196,6 +196,7 @@ def main_graph(keyword):
 	df_chinese,_ = graph_query(str(chi_translation(keyword)))
 	df = pd.concat([df_english,df_chinese], ignore_index = True)
 	dates = ['2017', '2018', '2019']
+	df = df.dropna(subset = ['published'])
 	df = df[df.published.str.contains('|'.join(dates))]
 
 	if df is not None:
@@ -248,37 +249,35 @@ def main_graph(keyword):
 		data = [trace_2017, trace_2018, trace_2019]
 
 		layout = go.Layout(
+			width = 780,
+			height = 300,
 			margin=go.layout.Margin(
-				l=60,
-				r=60,
-				b=50,
-				t=50,
-				pad=4),
-			legend = dict(x = -.1, y = 1.1, orientation = "h"),
+				l=0,
+				r=0,
+				b=0,
+				t=0,
+				pad=1),
+			legend = dict(x = 0.1, y = 1.15, orientation = "h"),
 			updatemenus = list([
 				dict(
 					buttons = list([
 						dict(
-							args = [{'visible': [True,True,True]},
-							{'title' : "Total Count"}],
+							args = [{'visible': [True,True,True]},],
 							label = "All",
 							method = "update",
 							),
 						dict(
-							args = [{'visible':[True,False,False]},
-							{'title' : "Total Count for 2017"}],
+							args = [{'visible':[True,False,False]},],
 							label = "2017",
 							method = "update",
 							),
 						dict(
-							args = [{'visible':[False,True,False]},
-							{'title' : "Total Count for 2018"}],
+							args = [{'visible':[False,True,False]},],
 							label = "2018",
 							method = "update",
 							),
 						dict(
-							args = [{'visible':[False,False,True]},
-							{'title' : "Total Count for 2019"}],
+							args = [{'visible':[False,False,True]},],
 							label = "2019",
 							method = "update",
 							)
@@ -688,17 +687,19 @@ def heatmap(keyword):
         cities.append(city)
 
     layout = go.Layout(
-    	# margin=go.layout.Margin(
-    	# 	l=10,
-    	# 	r=10,
-    	# 	b=10,
-    	# 	t=10,
-    	# 	pad=2),
-    	# legend = dict(x = -.1, y = 1.4, orientation = "h"),
+    	legend = dict(x = 1.02, y = 0.5, orientation = "v"),
     	showlegend = True,
     	font = go.layout.Font(size = 15,
     		family = 'roboto'),
     	autosize = True,
+    	width = 780,
+    	height = 300,
+    	margin=go.layout.Margin(
+				l=0,
+				r=0,
+				b=0,
+				t=0,
+				pad=1),
             # Tickformatstops = go.layout.tickformatstops(dtickrange = [50,100]),
             xaxis = dict (fixedrange = True),
             yaxis = dict (fixedrange = True),
