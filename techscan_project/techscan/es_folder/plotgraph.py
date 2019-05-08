@@ -939,15 +939,17 @@ def people_companies_wordcloud(keyword):
     df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
     df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
     # df_twitter['mentions'] = df_twitter['mentions'].apply(lambda x: re.sub("['\[\]']", '', x))
-
+    df_twitter['summary'] = df_twitter['summary'].apply(lambda x: nlp(x))
+    df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join( [word.text for word in x.ents if word.label_ == 'ORG']))
+    tweets_companies = df_twitter['summary'].tolist()
     tweets_summary_list = df_twitter.summary.tolist()
     tweets_summary_string = " ".join(tweets_summary_list)
-    tweets_tokenised = nlp(tweets_summary_string)
-    tweets_companies = []
+    # tweets_tokenised = nlp(tweets_summary_string)
+    # tweets_companies = []
     tweets_people = df_twitter.mentions.tolist() + df_twitter.user_screen_name.tolist()
-    for ents in tweets_tokenised.ents:
-        if ents.label_ == 'ORG':
-            tweets_companies.append(ents.text)
+    # for ents in tweets_tokenised.ents:
+    #     if ents.label_ == 'ORG':
+    #         tweets_companies.append(ents.text)
 
     news_summary_list = df_news.summary.tolist()
     news_summary_string = "".join(news_summary_list)
