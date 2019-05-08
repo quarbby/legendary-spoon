@@ -247,7 +247,7 @@ def overview_table(keyword):
 		df_zhihu_new['average'] = (df_zhihu_new['upvotes']/df_zhihu_new['size']).astype(int)
 		df_zhihu_new['max'] = df_zhihu.groupby('author', as_index = False)['upvotes'].max()['upvotes']
 		df_zhihu_new['weighted'] = (0.6 * df_zhihu_new['max']) + (0.15*df_zhihu_new['upvotes']) + (0.25*df_zhihu_new['average'])
-		df_zhihu_new = df_zhihu_new.sort_values('weighted',ascending = False).reset_index()[:3]
+		df_zhihu_new = df_zhihu_new.sort_values('weighted',ascending = False).reset_index()[:2]
 		df_zhihu_new['source'] = 'Zhihu'
 		#Get a list of the URL
 		author_list = df_zhihu_new['author'].values.tolist()
@@ -268,7 +268,7 @@ def overview_table(keyword):
 		df_weibo_new['average'] = (df_weibo_new['favorite_count']/df_weibo_new['size']).astype(int)
 		df_weibo_new['max'] = df_weibo.groupby('author', as_index = False)['favorite_count'].max()['favorite_count']
 		df_weibo_new['weighted'] = (0.6 * df_weibo_new['max']) + (0.15*df_weibo_new['favorite_count']) + (0.25*df_weibo_new['average'])
-		df_weibo_new = df_weibo_new.sort_values('weighted',ascending = False).reset_index()[:3]
+		df_weibo_new = df_weibo_new.sort_values('weighted',ascending = False).reset_index()[:2]
 		df_weibo_new['source'] = 'Weibo'
 		#Get a list of URL
 		author_list = df_weibo_new['author'].values.tolist()
@@ -290,7 +290,7 @@ def overview_table(keyword):
 		df_twitter_new['average'] = (df_twitter_new['fav_retweet']/df_twitter_new['size']).astype(int)
 		df_twitter_new['max'] = df_twitter.groupby('author', as_index = False)['fav_retweet'].max()['fav_retweet']
 		df_twitter_new['weighted'] = (0.6 * df_twitter_new['max']) + (0.15*df_twitter_new['fav_retweet']) + (0.25*df_twitter_new['average'])
-		df_twitter_new = df_twitter_new.sort_values('weighted',ascending = False).reset_index()[:3]
+		df_twitter_new = df_twitter_new.sort_values('weighted',ascending = False).reset_index()[:2]
 		df_twitter_new['source'] = 'Twitter'
 		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
 		df_twitter_new['color'] = 'rgb(106,167,156)'
