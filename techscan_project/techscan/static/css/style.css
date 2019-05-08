@@ -22,7 +22,7 @@
 }
 
 .navbar-brand{
-  font-size: 1.5rem !important;
+  font-size: 1.25rem !important;
   color: #556777 !important;
   white-space: nowrap;
   font-family: "Franklin Gothic" !important;
@@ -57,10 +57,6 @@ h1,h2,h3,h4,h5,td,p,th{
   font-size: 2.5rem;
   border-bottom: 3px #8080802b solid;
 }
-
-.
-
-
 
 .form-control:hover,active,focus {
   outline: none !important;
@@ -98,9 +94,9 @@ input:-webkit-autofill:active  {
 .sidebar {
   margin: 0;
   padding: 0;
-  width: 200px;
+  width: 153.6px;
   background-color: #f1f1f1;
-  position: fixed;
+  position: fixed !important;
   height: 100%;
   overflow: auto;
 }
@@ -111,7 +107,7 @@ input:-webkit-autofill:active  {
   color: #333 !important;
   padding: 2px 19px;
   font-family: "Franklin Gothic", sans-serif;
-  font-size: 26px;
+  font-size: 110%;
 }
 
 .sub-sidebar {
@@ -159,7 +155,17 @@ hr {
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
-  margin-left: 200px;
+  margin-left: 153.6px;
+  width:90vw;
+  overflow: auto;
+  /*height: 1000px;*/
+  /*padding: 5px 15px;*/
+}
+
+div.content-2 {
+  margin-left: 153.6px;
+  width:100%;
+  /*overflow: auto;*/
   /*height: 1000px;*/
   /*padding: 5px 15px;*/
 }
@@ -176,7 +182,23 @@ div.category-content{
     position: relative;
   }
   .sidebar a {float: left;}
-  div.content {margin-left: 0;}
+  div.content {
+    margin-left: 0;
+    margin-top:40px;
+    overflow: hidden;
+  }
+
+  div .content-2{
+    margin-left: 0;
+  }
+}
+
+/*On screens less than 650px shift contents lower*/
+@media screen and (max-width: 645px) {
+  div.content
+  {
+    margin-top: 65px;
+  }
 }
 
 /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
@@ -265,4 +287,21 @@ a:hover:before{
   text-align: center;
   margin-top: -.1rem!important;
 
+}
+
+.summary_body{
+  font-size: 18px;
+}
+
+.nav-link {
+  display: block;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  height: 2rem;
+}
+
+.first-row {
+  max-height: 20vh;
 }
