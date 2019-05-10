@@ -226,19 +226,31 @@ def percentile(keyword, indexes):
 		return "False"
 
 def overview_table(keyword):
+
+	
 	df_twitter,_ = graph_query(str(keyword), 'tweets')
 	df_zhihu,_ = graph_query(chi_translation(str(keyword)), 'zhihu')
 	df_weibo,_ = graph_query(chi_translation(str(keyword)), 'weibo')
-	df_twitter = df_twitter.rename(columns = {'user_screen_name':'author',
+	try:
+		df_twitter = df_twitter.rename(columns = {'user_screen_name':'author',
 		'url':'authorUrl'})
-	df_twitter['fav_retweet'] = df_twitter['favorite_count'] + df_twitter['retweet_count']
-	df_weibo = df_weibo.rename(columns = {
+	except:
+		pass
+	try:
+		df_twitter['fav_retweet'] = df_twitter['favorite_count'] + df_twitter['retweet_count']
+	except:
+		pass
+	try:
+		df_weibo = df_weibo.rename(columns = {
 		'user_name':'author',
 		'url':'authorUrl'
 		})
+	except:
+		pass
 	Final_List_author = []
 	Final_List_size = []
 	Color_List = []
+	Medias = []
 	if df_zhihu is not None:
 		upvotes_count = df_zhihu.groupby(['author']).sum().reset_index().sort_values('upvotes', ascending=False)
 		post_freq = df_zhihu.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
@@ -259,6 +271,7 @@ def overview_table(keyword):
 				zhihu_url.append(list(temp_zhihu_url)[0])
 		df_zhihu_new['url'] = zhihu_url
 		df_zhihu_new['color'] = 'rgb(85,118,154)'
+		Medias.append(df_zhihu_new)
 
 	if df_weibo is not None:
 		weibo_favorite_count = df_weibo.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
@@ -281,6 +294,7 @@ def overview_table(keyword):
 		df_weibo_new['id'] = weibo_id
 		df_weibo_new['url'] = 'https://www.weibo.com/' + df_weibo_new['id']
 		df_weibo_new['color'] = 'rgb(246,156,99)'
+		Medias.append(df_weibo_new)
 
 	if df_twitter is not None:
 		twitter_fav_retweet = df_twitter.groupby(['author']).sum().reset_index().sort_values('fav_retweet', ascending=False)
@@ -294,8 +308,9 @@ def overview_table(keyword):
 		df_twitter_new['source'] = 'Twitter'
 		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
 		df_twitter_new['color'] = 'rgb(106,167,156)'
+		Medias.append(df_twitter_new)
 
-	df_all = pd.concat([df_twitter_new, df_weibo_new, df_zhihu_new], axis = 0, ignore_index = True)
+	df_all = pd.concat(Medias, axis = 0, ignore_index = True)
 	df_all = df_all.sort_values(['favorite_count'], ascending = False)
 	df_graph = df_all.sort_values(['size'], ascending = False)
 	df_all = df_all.fillna('N.A')
@@ -338,3 +353,4 @@ def overview_table(keyword):
 
 
 	return json_frame
+	
