@@ -927,63 +927,84 @@ def plot_stocks(keyword):
 	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)
 
 def people_companies_wordcloud(keyword):
-    df_news,_ = graph_query(chi_translation(keyword), 'news')
-    df_twitter,_ = graph_query(keyword, 'tweets')
-    with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
-        stopword_chinese = f.read()
-    df_news['summary'] = df_news['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
-    stopword_english = stopwords.words('english')
-    extra = ['rt', 'ai']
-    stopword_english = stopword_english.extend(extra)
-    df_twitter['summary'] = df_twitter['summary'].apply(lambda x: x.lower())
-    df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
-    df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
-    # df_twitter['mentions'] = df_twitter['mentions'].apply(lambda x: re.sub("['\[\]']", '', x))
-    df_twitter['summary'] = df_twitter['summary'].apply(lambda x: nlp(x))
-    df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join( [word.text for word in x.ents if word.label_ == 'ORG']))
-    tweets_companies = df_twitter['summary'].tolist()
-    tweets_summary_list = df_twitter.summary.tolist()
-    tweets_summary_string = " ".join(tweets_summary_list)
-    # tweets_tokenised = nlp(tweets_summary_string)
-    # tweets_companies = []
-    tweets_people = df_twitter.mentions.tolist() + df_twitter.user_screen_name.tolist()
-    # for ents in tweets_tokenised.ents:
-    #     if ents.label_ == 'ORG':
-    #         tweets_companies.append(ents.text)
+	df_news,_ = graph_query(chi_translation(keyword), 'news')
+	df_twitter,_ = graph_query(keyword, 'tweets')
+	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
+		stopword_chinese = f.read()
+	try:
+		df_news['summary'] = df_news['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
+	except:
+		pass
+	total_tech = []
+	total_company = []
+	total_people = []
+	try:
+		stopword_english = stopwords.words('english')
+		extra = ['rt', 'ai']
+		stopword_english = stopword_english.extend(extra)
+		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: x.lower())
+		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
+		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
+		# df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
+	    # df_twitter['mentions'] = df_twitter['mentions'].apply(lambda x: re.sub("['\[\]']", '', x))
+		df_twitter['company'] = df_twitter['summary'].apply(lambda x: nlp(x))
+		df_twitter['company'] = df_twitter['company'].apply(lambda x:' '.join( [word.text for word in x.ents if word.label_ == 'ORG']))
+		
+		tweets_companies = df_twitter['company'].tolist()
+		total_company.extend(tweets_companies)
+		tweets_summary_list = df_twitter.summary.tolist()
+		# tweets_summary_string = " ".join(tweets_summary_list)
+		total_tech.extend(tweets_summary_list)
+	    # tweets_tokenised = nlp(tweets_summary_string)
+	    # tweets_companies = []
+		tweets_people = df_twitter.mentions.tolist() + df_twitter.user_screen_name.tolist()
+		total_people.extend(tweets_people)
+	except:
+		pass
+	    # for ents in tweets_tokenised.ents:
+	    #     if ents.label_ == 'ORG':
+	    #         tweets_companies.append(ents.text)
+	if df_news is not None:
+		news_summary_list = df_news.summary.tolist()
+		news_summary_string = "".join(news_summary_list)
+		total_tech.extend(news_summary_list)
+		news_tokenised = psg.cut(news_summary_string)
+		news_org_list = []
+		news_people = []
+		for token in news_tokenised:
+			if token.flag == "nt":
+				news_org_list.append(token.word)
+			if token.flag == "nr":
+				news_people.append(token.word)
+		total_people.extend(news_people)
+		news_companies = []
+		for org in news_org_list:
+			if '公司' in org or '集团'in org:
+				news_companies.append(org)
+		total_company.extend(news_companies)
 
-    news_summary_list = df_news.summary.tolist()
-    news_summary_string = "".join(news_summary_list)
-    news_tokenised = psg.cut(news_summary_string)
-    news_org_list = []
-    news_people = []
-    for token in news_tokenised:
-        if token.flag == "nt":
-            news_org_list.append(token.word)
-        if token.flag == "nr":
-            news_people.append(token.word)
+	try:
+		# total_tech = news_summary_string + tweets_summary_string
+		total_tech = ' '.join(total_tech)
 
-    news_companies = []
-    for org in news_org_list:
-        if '公司' in org or '集团'in org:
-            news_companies.append(org)
+		# total_company = tweets_companies + news_companies
+		total_company = ' '.join(total_company)
 
-    total_tech = news_summary_string + tweets_summary_string
+		# total_people = tweets_people + news_people
+		total_people = ' '.join(total_people)
 
-    total_company = tweets_companies + news_companies
-    total_company = ' '.join(total_company)
+		font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
+	    	max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="copper").generate(total_tech)
+		wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
 
-    total_people = tweets_people + news_people
-    total_people = ' '.join(total_people)
+		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
+	        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="winter").generate(total_company)
+		wordcloud.to_file("techscan/static/word_cloud/company_wordcloud.png")
 
-    font_path = 'techscan/static/word_cloud/STFangSong.ttf'
-    wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
-    	max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="copper").generate(total_tech)
-    wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
-
-    wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
-        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="winter").generate(total_company)
-    wordcloud.to_file("techscan/static/word_cloud/company_wordcloud.png")
-
-    wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
-        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="twilight_shifted").generate(total_people)
-    wordcloud.to_file("techscan/static/word_cloud/people_wordcloud.png")
+		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
+	        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="twilight_shifted").generate(total_people)
+		wordcloud.to_file("techscan/static/word_cloud/people_wordcloud.png")
+	
+	except:
+		pass
