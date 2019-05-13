@@ -28,7 +28,7 @@ from .uploading_data import upload_data_ner
 from .train_heatmap_index import find_NER
 from .stocks_funct import NER_stocks
 import spacy
-nlp = spacy.load('en_core_web_md')
+
 
 def plot_pie_chart(keyword):
 
@@ -926,7 +926,8 @@ def plot_stocks(keyword):
 	fig = go.Figure(data=data, layout=layout)
 	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)
 
-def people_companies_wordcloud(keyword):
+def people_companies(keyword):
+	nlp = spacy.load('en_core_web_md')
 	df_news,_ = graph_query(chi_translation(keyword), 'news')
 	df_twitter,_ = graph_query(keyword, 'tweets')
 	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
@@ -993,18 +994,54 @@ def people_companies_wordcloud(keyword):
 		# total_people = tweets_people + news_people
 		total_people = ' '.join(total_people)
 
-		font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+		wordcloud_info = dict()
+		wordcloud_info['label'] = keyword
+		wordcloud_info['company'] = total_company
+		wordcloud_info['people'] = total_people
+		wordcloud_info['tech'] = total_tech
+		wordcloud_list = []
+		wordcloud_list.append(wordcloud_info)
+		return(wordcloud_list)
+
+		
+	
+	except:
+		pass
+def people_companies_wordcloud(keyword):
+	res = es.search(index = 'wordcloud' , size = int(10000), scroll = '2m', body = {"query" : {
+        "match" : {"label" : keyword}
+        }})
+	res_input = res['hits']['hits']
+	if res_input == [] :
+	
+		details = people_companies(keyword)
+		upload_data_ner(details, 'wordcloud')
+		total_tech = details[0]['tech']
+		total_company = details[0]['company']
+		total_people = details[0]['people']
+
+	else:
+		total_tech = res_input[0]['_source']['tech']
+		total_company = res_input[0]['_source']['company']
+		total_people = res_input[0]['_source']['people']
+	
+	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+	
+	try:
 		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
 	    	max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="copper").generate(total_tech)
 		wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
-
+	except:
+		pass
+	try:
 		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
 	        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="winter").generate(total_company)
 		wordcloud.to_file("techscan/static/word_cloud/company_wordcloud.png")
-
+	except:
+		pass
+	try:
 		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
 	        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="twilight_shifted").generate(total_people)
 		wordcloud.to_file("techscan/static/word_cloud/people_wordcloud.png")
-	
 	except:
 		pass
