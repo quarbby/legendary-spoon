@@ -733,33 +733,53 @@ def heatmap(keyword):
     plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
 
 def top_companies(keyword, indexes = 'news', graph = False):
-	df,_ = graph_query(chi_translation(keyword), indexes)
-	summary_list = df.summary.tolist()
-	summary_string = "".join(summary_list)
-	tokenised = psg.cut(summary_string)
-	org_list = []
-	for token in tokenised:
-		if token.flag == "nt":
-			org_list.append(token.word)
+	# df,_ = graph_query(chi_translation(keyword), indexes)
+	# summary_list = df.summary.tolist()
+	# summary_string = "".join(summary_list)
+	# tokenised = psg.cut(summary_string)
+	# org_list = []
+	# for token in tokenised:
+	# 	if token.flag == "nt":
+	# 		org_list.append(token.word)
 
-	companies = []
-	for org in org_list:
-		if '公司' in org or '集团'in org:
-			companies.append(org)
+	# companies = []
+	# for org in org_list:
+	# 	if '公司' in org or '集团'in org:
+	# 		companies.append(org)
 
-	companies_count = Counter(companies)
-	top_companies = companies_count.most_common(20)
+	# companies_count = Counter(companies)
+	# top_companies = companies_count.most_common(20)
 
-	count = []
-	company_name = []
-	for company in top_companies:
-		count.append(company[1])
-		company_name.append(company[0])
-	data = {'company' : company_name, 'count' : count}
-	df_new = pd.DataFrame(data)
-	json_frame = df_new.to_dict('index').values()
+	# count = []
+	# company_name = []
+	# for company in top_companies:
+	# 	count.append(company[1])
+	# 	company_name.append(company[0])
+	# data = {'company' : company_name, 'count' : count}
+	# df_new = pd.DataFrame(data)
+	# json_frame = df_new.to_dict('index').values()
 	# print(json_frame)
 	
+	search_term = chi_translation('Artificial intelligence')
+	res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {"match" : {"labels" : search_term}}})
+	#机器学习
+
+	res_input = res['hits']['hits']
+	resItems = []
+	for i in range (len(res_input)):
+		if res_input[i]['_source']['labels'] == search_term :
+			resItems.append(res_input[i])
+
+	company_name = []
+	count = []
+	for i in range (len(resItems)):
+		company_name.append(resItems[i]['_source']['publisher'])
+		count.append(int(resItems[i]['_source']['weighting']))
+
+	data = {'company' : company_name, 'count' : count}
+	df_new = pd.DataFrame(data)
+	df_new = df_new.sort_values('count',ascending = False)[:10]
+	json_frame = df_new.to_dict('index').values()
 	if graph == True:
 		data = [go.Bar(
 			x= company_name,
