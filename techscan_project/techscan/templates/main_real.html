@@ -1,0 +1,223 @@
+{% load staticfiles %}
+<!doctype html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes"> -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<!-- Bootstrap CSS-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<link rel="shortcut icon" href="{%  static 'images/favicon.ico' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<title>Main</title>
+</head>
+
+<body>
+
+	<!-- The navbar -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">		
+		<div class="row col-12" >
+			<a class="navbar-brand" href="/">Tech Scan <span class="small-logo" id="china">China</span></a>
+			<form class="search-form col-sm-4 pt-1" action="/main" method="get" id="srch-term">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Search..." name="q">
+					<span class="input-group-btn">
+					<button class="btn btn-secondary" type="submit">	
+				<i class="fa fa-search"></i></span></div>
+			</form>
+		</div>
+	</nav>
+
+	<!-- The sidebar -->
+	<div class="sidebar">
+		<div class="main-sidebar">
+			<a class="active-main-category" href="/main?q={{search_word}}">Overview</a>
+			<a class="main-category" href="/details?q={{search_word}}">Details</a>
+			<!-- <a class="main-category" href="/overview2?q={{search_word}}">Overview 2</a> -->
+		</div>
+		<div class="sub-sidebar">
+			<a class="sub-category" href="/weibo?q={{search_word}}">Weibo</a>
+			<a class="sub-category" href="/scholar?q={{search_word}}">Academic</a>
+			<a class="sub-category" href="/news?q={{search_word}}">News</a>
+			<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
+			<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
+			<!-- <a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
+			<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
+		</div>
+	</div>
+
+
+	<!-- The content -->
+	<div class = "content">
+
+	<div class="container pt-3 ml-2 col-12">
+		<div class="row">
+			<section class="col-sm-9" >
+				<span class="section-title"><h1>{{search_word}} ({{chi_translation}})</h1></span>
+				<div class="row">
+					<h5 class="ml-3 mt-2 mb-0"><u>Number of Hits: </u></h5> 
+					{% for i in hit_count%}
+					<h5 class="ml-2 mr-3 mt-2 mb-0">
+						<a href="/{% filter lower %}{{i.category}}{% endfilter %}?q={{search_word}}" style="color:#556777">{{i.category}}: {{i.hit_count}}</a>
+					</h5>
+					{% endfor %}
+				</div>
+
+				<h5 class="mt-2 mb-0" align="justify"> {{wiki_result_short}}
+					{% if summary_length > 2 %}
+					<a data-toggle="collapse" href="#read_more" role="button" aria-expanded="false" aria-controls="read_more" style="color:#556777">
+						Read More
+					</a>
+				</h5>
+				<div class="collapse" id="read_more">
+					<h5 class="m-0" align="justify"> {{wiki_result_long}}</h5>
+				</div>
+				{% endif %}
+			</section>
+			<div class="container col-3 m-0">
+				<div style="text-align: left">
+					<img src="{% static 'word_cloud/tech_wordcloud.png' %}" class="graph-frame" style="width:430px; height:250px"></img>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="container col m-1">
+			<span class="section-title"><h3>Related Fields</h3></span>
+		<div class="row">
+			
+			{% if network == "False" %}
+			<h3> No Relations Found </h3>
+			{% else %}
+			
+			<div class="embed-responsive embed-responsive-21by9 col-sm-7 ml-3 mt-4">
+				<iframe src="{% url 'plotneo4jgraph' %}" class="graph-frame" ></iframe> 
+			</div>
+			<div class="col-4">
+				<table class="table table-hover col-sm-4 mt-4">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Field</th>
+							<th scope="col">Weibo</th>
+							<th scope="col">Zhihu</th>
+							<th scope="col">Academic</th>
+							<th scope="col">News</th>
+							<th scope="col">Tweets</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for i in related_table %}
+						<tr>
+							<th scope="row">{{forloop.counter}}</th>
+							<td><a href="?q={{i.fieldName}}"> {{i.fieldName}} </a></td>
+							<td>
+								{% if i.weiboPercentile == "True" %}
+								<div class = "percentileTrue">
+									{% endif %}
+									{{i.weiboCount}}
+								</div>
+							</td>					
+							<td>
+								{% if i.zhihuPercentile == "True" %}
+								<div class = "percentileTrue">
+									{% endif %}
+									{{i.zhihuCount}}
+								</div>
+							</td>
+							<td>{{i.scholarCount}}</td>
+
+							<td>{{i.newsCount}}</td>
+							<td>
+								{% if i.tweetsPercentile == "True" %}
+								<div class = "percentileTrue">
+									{% endif %}
+									{{i.tweetsCount}}
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		
+			{% endif %}
+		</div>	
+		</div>
+
+		<div class="container col m-1">
+			<span class="section-title"><h3>Top Authors</h3></span>
+			<table class="table table-hover mt-2 pt-2" id="author-box">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Author</th>
+						<th scope="col">Source</th>
+						<th scope="col">Total Favorites</th>
+						<th scope="col">Total Retweet</th>
+						<th scope="col">Total Upvotes</th>					
+						<th scope="col">Post Count</th>
+						<th scope="col">Average favorites/upvotes/retweets per post</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in author_table %}
+					<tr>
+						<th scope="row">{{forloop.counter}}</th>
+						<td><a href="{{i.url}}"> {{i.author}} </a></td>
+						{% if i.source == "Twitter" %}
+						<td class="source_twitter"> {{i.source}}</td>	
+						{% elif i.source == "Weibo" %}	
+						<td class="source_weibo"> {{i.source}}</td>
+						{% elif i.source == "Zhihu" %}
+						<td class="source_zhihu"> {{i.source}}</td>
+						{% endif %}
+						<td> {{i.favorite_count}}</td>
+						<td> {{i.retweet_count}}</td>
+						<td> {{i.upvotes}}</td>
+						<td> {{i.size}}</td>
+						<td> {{i.average}}</td>		
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+		<div class="row">
+			<div class="container col m-1">
+				<span class="section-title"><h3>Time Series Graph</h3></span>
+				<h5>Total post across all platforms over time.</h5>
+				<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+					<iframe src="{% url 'plotgraphall' %}" class="graph-frame" ></iframe> 
+				</div>
+			</div>
+			<div class="container col m-1">
+				<span class="section-title"><h3>Heatmap</h3></span>
+				<h5> China news report on {{search_word}}</h5>
+				<div class="container p-3 ml-2 col-11">
+					<div class="embed-responsive embed-responsive-21by9">
+						<iframe src="{% url 'heatmap' %}" class="graph-frame" ></iframe> 
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+			<!-- <div class="container p-3 ml-2 col-6">
+				<span class="section-title"><h3>Top Companies' Stocks</h3></span>
+				<h5>Stock prices of the most frequently mentioned companies in the news.</h5>
+				<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+					<iframe src="{% url 'stock_graph' %}" class="graph-frame" ></iframe> 
+				</div>
+			</div> -->
+		</div>
+	</body>

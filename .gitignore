@@ -32,3 +32,6 @@ var/
 .installed.cfg
 *.egg
 
+#React Test stuff
+react_test/.vscode/*
+react_test/node_modules/*
