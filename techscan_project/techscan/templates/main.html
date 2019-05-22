@@ -48,12 +48,12 @@
 				<a class="sub-category" href="/scholar?q={{search_word}}">Academic</a>
 				<a class="sub-category" href="/news?q={{search_word}}">News</a>
 				<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
-				<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
+				<!-- <a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a> -->
 			</div>
 		</div>
 
 		<!-- Container for content part1 (summary and wordcloud) -->
-		<div class="container-fluid content pl-1 pr-0">
+		<div class="container-fluid content pl-1 pr-0 mb-2">
 			<!-- First row for summary and wordcloud -->
 			<div class="d-flex flex-row flex-wrap">
 				<!-- Container for summary -->
@@ -79,7 +79,7 @@
 					{% endif %}
 				</div>
 				<!-- Container for wordcloud -->
-				<div class="container col-md-3 p-0 mt-2">
+				<!-- <div class="container col-md-3 p-0 mt-2">
 					<span class="section-title">
 						<h3 class="font-weight-light" style="font-size: 25px">
 							What's popular
@@ -104,14 +104,14 @@
 							<img src="{% static 'word_cloud/people_wordcloud.png' %}" class="graph-frame" style="width:430px; height:150px"></img>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 
 		<!-- Second row for top authors and network graph-->
-		<div class="row" style="margin-left:153.6px; margin-right: 0">
+		<div class="row" style="margin-left:153.6px; margin-right: 0; height:370px">
 			<!-- Top author table -->
-			<div class="container col-md-5 pl-1">
+			<!-- <div class="container col-md-5 pl-1">
 				<span class="section-title">
 					<h3 class="font-weight-light" style="font-size: 25px">
 						Top Authors
@@ -151,18 +151,46 @@
 						{% endfor %}
 					</tbody>
 				</table>
+			</div> -->
+
+			<!-- Word cloud Columns -->
+			<div class="containter col-md-5 pl-1 pr-0">
+				<span class="section-title"><h3 class="font-weight-light" style="font-size: 25px">Popular Entities</h3></span>
+				<div class="row">
+					<div class="container col-4">
+						<u><span class="wordcloud_font">
+						<h5 class="font-weight-light">
+							Technologies
+						</h5></span></u>
+						<img src="{% static 'word_cloud/tech_wordcloud.png' %}" class="graph-frame" style="width:240px; height:300px"></img>
+					</div>
+					<div class="container col-4">
+						<u><span class="wordcloud_font">
+						<h5 class="font-weight-light">
+							Companies
+						</h5></span></u>
+						<img src="{% static 'word_cloud/company_wordcloud.png' %}" class="graph-frame" style="width:240px; height:300px"></img>
+					</div>
+					<div class="container col-4">
+						<u><span class="wordcloud_font">
+						<h5 class="font-weight-light">
+							People
+						</h5></span></u>
+						<img src="{% static 'word_cloud/people_wordcloud.png' %}" class="graph-frame" style="width:240px; height:300px"></img>
+					</div>
+				</div>
 			</div>
 
 			<!-- Network Map -->
 			<div class="container col-md m-0">
-				<span class="section-title"><h3 class="font-weight-light" style="font-size: 25px">Related Fields</h3></span>
+				<span class="section-title"><h3 class="font-weight-light" style="font-size: 25px">Related Technologies</h3></span>
 				<div class="row" style="width: 100%">
 
 					{% if network == "False" %}
 					<h3> No Relations Found </h3>
 					{% else %}
 
-					<div class="embed-responsive embed-responsive-16by9 col-sm-7 ml-3 mt-0" style="height:260px">
+					<div class="embed-responsive embed-responsive-16by9 col-sm-7 ml-3 mt-0" style="height:300px">
 						<iframe src="{% url 'plotneo4jgraph' %}" class="graph-frame" ></iframe> 
 					</div>
 					<div class="col-4">
