@@ -13,8 +13,8 @@ def main(request):
 	# plotgraph.main_graph(params)
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
 	# plotgraph.plot_stocks(params)
-	plotgraph.heatmap(params)
-	plotgraph.people_companies_wordcloud(params)
+	# plotgraph.heatmap(params)
+	# plotgraph.people_companies_wordcloud(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
@@ -65,8 +65,8 @@ def details(request):
 		"scholar":es_scholar,
 		"tweets":es_tweets,
 		"zhihu":es_zhihu,
-		"author_table":main_functions.overview_table(params),
-		"company_table":plotgraph.top_companies(params)
+		# "author_table":main_functions.overview_table(params),
+		# "company_table":plotgraph.top_companies(params)
 	}
 	return render(request, 'details.html', context)
 

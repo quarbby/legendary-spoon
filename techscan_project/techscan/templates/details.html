@@ -2,27 +2,30 @@
 <!doctype html>
 
 <html>
+
 <head>
 	<meta charset="utf-8">
-	<meta name = "viewport" content = "width=device-width, initial-scale">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale"> -->
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	<!-- Bootstrap CSS-->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+		integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="shortcut icon" href="{%  static 'images/favicon.ico' %}">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-	<title>Details</title>
+	<title>details</title>
 </head>
 
 <body>
 
 	<!-- Nav Bar -->
 	<nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top pt-1 pb-2">
-		<a class="navbar-brand" href="/"> 
-			Tech Scan <span class="small-logo" id="china">China</span>
+		<a class="navbar-brand" href="/">
+			Tech Scan <span class="small-logo" id="china">Chinese</span>
 		</a>
-		<form class="form-inline" action="/details" method="get" id="srch-term">
+		<!-- <form class="form-inline" action="/details" method="get" id="srch-term">
 			<div class="input-group">
 				<input type="text" class="form-control" placeholder="Search..." name="q">
 				<span class="input-group-btn">
@@ -31,7 +34,7 @@
 					</button>
 				</span>
 			</div>
-		</form>
+		</form> -->
 	</nav>
 
 	<!-- Container for sidebar and everything else -->
@@ -40,9 +43,8 @@
 		<!-- Sidebar -->
 		<div class="sidebar">
 			<div class="main-sidebar mt-2">
-				<a class="active-main-category" href="/main?q={{search_word}}">Overview</a>
-
-				<a class="main-category" href="/details?q={{search_word}}">Details</a>
+				<a class="main-category" href="/main?q={{search_word}}">Overview</a>
+				<a class="active-main-category" href="/details?q={{search_word}}">Details</a>
 				<!-- <a class="main-category" href="/overview2?q={{search_word}}">Overview 2</a> -->
 			</div>
 			<div class="sub-sidebar">
@@ -59,8 +61,38 @@
 		<div class="container-fluid content pl-1 pr-0 mb-2 mt-2">
 			<div class="row">
 
+				<!-- News Card -->
+				<div class="col pl-3 pr-1">
+					<h3 class="font-weight-light" style="font-size: 25px"><b>News</b></h3>
+					{% for i in news %}
+					<div class="card bg-light text-dark col-12">
+						<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
+						<div class="sub-card-body py-2">{{i.summary}}</div>
+						<div class="row px-2">
+							<div class="sub-card-others p-2">{{i.authors}}</div>
+							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+						</div>
+					</div>
+					{%endfor%}
+				</div>
+
+				<!-- Scholar Cards -->
+				<div class="col p-1">
+					<h3 class="font-weight-light" style="font-size: 25px"><b>Academic</b></h3>
+					{% for i in scholar %}
+					<div class="card bg-light text-dark col-12">
+						<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
+						<div class="sub-card-body py-2">{{i.summary}}</div>
+						<div class="row px-2">
+							<div class="sub-card-others p-2">{{i.authors}}</div>
+							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+						</div>
+					</div>
+					{%endfor%}
+				</div>
+
 				<!-- Weibo Cards -->
-				<div class="col pl-3">
+				<div class="col p-1">
 					<h3 class="font-weight-light" style="font-size: 25px"><b>Weibo</b></h3>
 					{% for i in weibo %}
 					<div class="card bg-light text-dark col-12">
@@ -120,7 +152,7 @@
 				</div>
 
 				<!-- Zhihu Cards -->
-				<div class="col p-1">
+				<div class="col pr-3 pl-1">
 					<h3 class="font-weight-light" style="font-size: 25px"><b>Zhihu</b></h3>
 					{% for i in zhihu %}
 					<div class="card bg-light text-dark col-12">
@@ -128,7 +160,7 @@
 						<div class="sub-card-body py-2">{{i.summary}}</div>
 						<div class="row px-2">
 							<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">
-							{{i.author}}</a></div>
+									{{i.author}}</a></div>
 							<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
 							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
 						</div>
@@ -136,242 +168,128 @@
 					{%endfor%}
 				</div>
 
-				<!-- News Card -->
-				<div class="col p-1">
-					<h3 class="font-weight-light" style="font-size: 25px"><b>News</b></h3>
-					{% for i in news %}
-					<div class="card bg-light text-dark col-12">
-						<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
-						<div class="sub-card-body py-2">{{i.summary}}</div>
-						<div class="row px-2">
-							<div class="sub-card-others p-2">{{i.authors}}</div>
-							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-						</div>
-					</div>
-					{%endfor%}
-				</div>
-
-				<!-- Scholar Cards -->
-				<div class="col pr-3">
-					<h3 class="font-weight-light" style="font-size: 25px"><b>Academic</b></h3>
-					{% for i in scholar %}
-					<div class="card bg-light text-dark col-12">
-						<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
-						<div class="sub-card-body py-2">{{i.summary}}</div>
-						<div class="row px-2">
-							<div class="sub-card-others p-2">{{i.authors}}</div>
-							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-						</div>
-					</div>
-					{%endfor%}
-				</div>
 			</div>
-						<table class="table table-hover pt-2" style="text-align: center">
-							<h3 class="font-weight-light" style="font-size: 25px">Top Authors</h3>
-							<thead>
-								<tr>
-									<th scope="col" class="font-weight-light">#</th>
-									<th scope="col" class="font-weight-light">Author</th>
-									<th scope="col" class="font-weight-light">Source</th>
-									<th scope="col" class="font-weight-light">Total Favorites</th>
-									<th scope="col" class="font-weight-light">Total Retweet</th>
-									<th scope="col" class="font-weight-light">Total Upvotes</th>					
-									<th scope="col" class="font-weight-light">Post Count</th>
-									<th scope="col" class="font-weight-light">Average favorites/upvotes/retweets per post</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for i in author_table %}
-								<tr>
-									<th scope="row" class="font-weight-light">{{forloop.counter}}</th>
-									<td class="font-weight-light"><a href="{{i.url}}"> {{i.author}} </a></td>
-									{% if i.source == "Twitter" %}
-										<td class="source_twitter font-weight-light"> {{i.source}}</td>	
-									{% elif i.source == "Weibo" %}	
-										<td class="source_weibo font-weight-light"> {{i.source}}</td>
-									{% elif i.source == "Zhihu" %}
-										<td class="source_zhihu font-weight-light"> {{i.source}}</td>
-									{% endif %}
-									<td class="font-weight-light"> {{i.favorite_count}}</td>
-									<td class="font-weight-light"> {{i.retweet_count}}</td>
-									<td class="font-weight-light"> {{i.upvotes}}</td>
-									<td class="font-weight-light"> {{i.size}}</td>
-									<td class="font-weight-light"> {{i.average}}</td>		
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-						<table class="table table-hover pt-2" style="text-align: center">
-							<h3 class="font-weight-light" style="font-size: 25px">Top Companies</h3>
-							<thead>
-								<tr>
-									<th scope="col" class="font-weight-light">#</th>
-									<th scope="col" class="font-weight-light">Companies</th>
-									<th scope="col" class="font-weight-light">Count</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for i in company_table %}
-								<tr>
-									<th scope="row" class="font-weight-light">{{forloop.counter}}</th>
-									<td class="font-weight-light">{{i.company}}</td>
-									<td class="font-weight-light">{{i.count}}</td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-						<ul class="nav nav-tabs" role="tablist">
-							<li class="nav-item active">
-								<a class="nav-link" href="#hashtag_freq" role="tab" data-toggle="tab">Hashtag Frequency</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link " href="#top_companies" role="tab" data-toggle="tab">Top Companies</a>
-							</li>
-							<!-- <li class="nav-item">
+
+			<table class="table table-hover pt-2" style="text-align: center">
+				<h3 class="font-weight-light" style="font-size: 25px">Top Authors</h3>
+				<thead>
+					<tr>
+						<th scope="col" class="font-weight-light">#</th>
+						<th scope="col" class="font-weight-light">Author</th>
+						<th scope="col" class="font-weight-light">Source</th>
+						<th scope="col" class="font-weight-light">Total Favorites</th>
+						<th scope="col" class="font-weight-light">Total Retweet</th>
+						<th scope="col" class="font-weight-light">Total Upvotes</th>
+						<th scope="col" class="font-weight-light">Post Count</th>
+						<th scope="col" class="font-weight-light">Average favorites/upvotes/retweets per post</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in author_table %}
+					<tr>
+						<th scope="row" class="font-weight-light">{{forloop.counter}}</th>
+						<td class="font-weight-light"><a href="{{i.url}}"> {{i.author}} </a></td>
+						{% if i.source == "Twitter" %}
+						<td class="source_twitter font-weight-light"> {{i.source}}</td>
+						{% elif i.source == "Weibo" %}
+						<td class="source_weibo font-weight-light"> {{i.source}}</td>
+						{% elif i.source == "Zhihu" %}
+						<td class="source_zhihu font-weight-light"> {{i.source}}</td>
+						{% endif %}
+						<td class="font-weight-light"> {{i.favorite_count}}</td>
+						<td class="font-weight-light"> {{i.retweet_count}}</td>
+						<td class="font-weight-light"> {{i.upvotes}}</td>
+						<td class="font-weight-light"> {{i.size}}</td>
+						<td class="font-weight-light"> {{i.average}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<table class="table table-hover pt-2" style="text-align: center">
+				<h3 class="font-weight-light" style="font-size: 25px">Top Companies</h3>
+				<thead>
+					<tr>
+						<th scope="col" class="font-weight-light">#</th>
+						<th scope="col" class="font-weight-light">Companies</th>
+						<th scope="col" class="font-weight-light">Count</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in company_table %}
+					<tr>
+						<th scope="row" class="font-weight-light">{{forloop.counter}}</th>
+						<td class="font-weight-light">{{i.company}}</td>
+						<td class="font-weight-light">{{i.count}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="nav-item active">
+					<a class="nav-link" href="#hashtag_freq" role="tab" data-toggle="tab">Hashtag Frequency</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link " href="#top_companies" role="tab" data-toggle="tab">Top Companies</a>
+				</li>
+				<!-- <li class="nav-item">
 								<a class="nav-link" href="#Zhihu" role="tab" data-toggle="tab">Zhihu</a>
 							</li> -->
-						</ul>
+			</ul>
 
 
 
-						<div class="tab-content">
-							<div role="hashtag_freq" class="tab-pane active" id="hashtag_freq">
-								<div class="container mt-2 col-12">
-									<h3 class="font-weight-light" style="font-size: 25px"><b>Hashtag Frequency Graph</b></h3>
-									<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
-										<iframe src="{% url 'detail_hashtag_frequency' %}" class="graph-frame" ></iframe> 
-									</div>
-								</div>
-							</div>
+			<div class="tab-content">
+				<div role="hashtag_freq" class="tab-pane active" id="hashtag_freq">
+					<div class="container mt-2 col-12">
+						<h3 class="font-weight-light" style="font-size: 25px"><b>Hashtag Frequency Graph</b></h3>
+						<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
+							<iframe src="{% url 'detail_hashtag_frequency' %}" class="graph-frame"></iframe>
+						</div>
+					</div>
+				</div>
 
 
-							<div role="top_companies" class="tab-pane hide" id="top_companies">
-								<div class="container mt-2 col-12">
-									<h3 class="font-weight-light" style="font-size: 25px"><b>Top Companies Frequency Graph</b></h3>
-									<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
-										<iframe src="{% url 'top_companies' %}" class="graph-frame" ></iframe> 
-									</div>
-								</div>
-							</div>
+				<div role="top_companies" class="tab-pane hide" id="top_companies">
+					<div class="container mt-2 col-12">
+						<h3 class="font-weight-light" style="font-size: 25px"><b>Top Companies Frequency Graph</b></h3>
+						<div class="embed-responsive embed-responsive-21by9" id="responsive-bar" style="height:500px;">
+							<iframe src="{% url 'top_companies' %}" class="graph-frame"></iframe>
+						</div>
+					</div>
+				</div>
 
-							<!-- Post Row -->
-			
-	
+				<!-- Post Row -->
+
+
 
 			</div>
 		</div>
 	</div>
-	<input type = "checkbox" class = "menucheck" id = "menu" />
-	<label for = "menu" class = "menuicon">&#556777</label>
 
-	<div class="navigationMobile pl-3 pt-5">
-			<div class="item">
-			<input type="checkbox" id="item1">
-			<label for="item1">Medias</label>
-			<ul class="nav nav-tabs" role="tablist">
-				<li class="nav-item">
-					<a class="nav-link" href="#Weibo" role="tab" data-toggle="tab">Weibo</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link " href="#Twitter" role="tab" data-toggle="tab">Twitter</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link " href="#Zhihu" role="tab" data-toggle="tab">Zhihu</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link " href="#News" role="tab" data-toggle="tab">News</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link " href="#Academic" role="tab" data-toggle="tab">Academic</a>
-				</li>
+	<div class="navigationMobile px-2" style="margin-top:52px">
+
+		<ul class="nav nav-tabs bg-light fixed-top" id="navtab-mobile" style="margin-top:52px" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link " href="#News" role="tab" data-toggle="tab">News</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link " href="#Academic" role="tab" data-toggle="tab">Academic</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#Weibo" role="tab" data-toggle="tab">Weibo</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link " href="#Twitter" role="tab" data-toggle="tab">Twitter</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link " href="#Zhihu" role="tab" data-toggle="tab">Zhihu</a>
+			</li>
 
 
-			</ul>
-			</div>
-		</div>
-		<div class="tab-content">
-			<div role="Weibo" class="tab-pane active" id="Weibo">
-				<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
-					<h3 class="font-weight-light" style="font-size: 25px"><b>Weibo</b></h3>
-					{% for i in weibo %}
-					<div class="card bg-light text-dark col-12">
-						<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
-						<div class="sub-card-body py-2">{{i.summary}}</div>
-						<div class="row px-2">
-							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-						</div>
-					</div>
-					{%endfor%}
-				</div>
-			</div>
+		</ul>
+		<div class="tab-content" style="margin-top:90px">
 
-
-			<div role="Twitter" class="tab-pane hide" id="Twitter">
-				<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
-					<h3 class="font-weight-light" style="font-size: 25px"><b>Tweets</b></h3>
-					{% for i in tweets %}
-					{% if i.sentiment == "Positive" %}
-					<div class="card border-success mb-2 tweeter-border">
-						<div class="card-body bg-light text-success col-12">
-							<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-							<div class="sub-card-body">{{i.summary}}</div>
-							<div class="row px-2">
-								<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-								<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
-								<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-							</div>
-						</div>
-					</div>
-					{% elif i.sentiment == "Negative" %}
-
-					<div class="card border-danger mb-2 tweeter-border">
-						<div class="card-body bg-light text-danger col-12">
-							<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-							<div class="sub-card-body">{{i.summary}}</div>
-							<div class="row px-2">
-								<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-								<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
-								<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-							</div>
-						</div>
-					</div>
-					{%else%}
-					<div class="card border-dark mb-2 tweeter-border">
-						<div class="card-body bg-light text-dark col-12">
-							<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-							<div class="sub-card-body">{{i.summary}}</div>
-							<div class="row px-2">
-								<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-								<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
-								<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-							</div>
-						</div>
-					</div>
-					{% endif %}
-					{% endfor %}
-				</div>
-			</div>
-
-			<div role="Zhihu" class="tab-pane hide" id="Zhihu">
-				<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
-					<h3 class="font-weight-light" style="font-size: 25px"><b>Zhihu</b></h3>
-					{% for i in zhihu %}
-					<div class="card bg-light text-dark col-12">
-						<div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
-						<div class="sub-card-body py-2">{{i.summary}}</div>
-						<div class="row px-2">
-							<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">
-							{{i.author}}</a></div>
-							<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
-							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-						</div>
-					</div>
-					{%endfor%}
-				</div>
-			</div>
-
-			<div role="News" class="tab-pane hide" id="News">
+			<div role="News" class="tab-pane active" id="News">
 				<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
 					<h3 class="font-weight-light" style="font-size: 25px"><b>News</b></h3>
 					{% for i in news %}
@@ -404,7 +322,90 @@
 			</div>
 		</div>
 
-			</ul>
+		<div role="Weibo" class="tab-pane hide" id="Weibo">
+			<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
+				<h3 class="font-weight-light" style="font-size: 25px"><b>Weibo</b></h3>
+				{% for i in weibo %}
+				<div class="card bg-light text-dark col-12">
+					<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
+					<div class="sub-card-body py-2">{{i.summary}}</div>
+					<div class="row px-2">
+						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+					</div>
+				</div>
+				{%endfor%}
+			</div>
 		</div>
+
+		<div role="Twitter" class="tab-pane hide" id="Twitter">
+			<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
+				<h3 class="font-weight-light" style="font-size: 25px"><b>Tweets</b></h3>
+				{% for i in tweets %}
+				{% if i.sentiment == "Positive" %}
+				<div class="card border-success mb-2 tweeter-border">
+					<div class="card-body bg-light text-success col-12">
+						<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
+						<div class="sub-card-body">{{i.summary}}</div>
+						<div class="row px-2">
+							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+							<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+						</div>
+					</div>
+				</div>
+				{% elif i.sentiment == "Negative" %}
+
+				<div class="card border-danger mb-2 tweeter-border">
+					<div class="card-body bg-light text-danger col-12">
+						<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
+						<div class="sub-card-body">{{i.summary}}</div>
+						<div class="row px-2">
+							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+							<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+						</div>
+					</div>
+				</div>
+				{%else%}
+				<div class="card border-dark mb-2 tweeter-border">
+					<div class="card-body bg-light text-dark col-12">
+						<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
+						<div class="sub-card-body">{{i.summary}}</div>
+						<div class="row px-2">
+							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+							<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<div role="Zhihu" class="tab-pane hide" id="Zhihu">
+			<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
+				<h3 class="font-weight-light" style="font-size: 25px"><b>Zhihu</b></h3>
+				{% for i in zhihu %}
+				<div class="card bg-light text-dark col-12">
+					<div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
+					<div class="sub-card-body py-2">{{i.summary}}</div>
+					<div class="row px-2">
+						<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">
+								{{i.author}}</a></div>
+						<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
+						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+					</div>
+				</div>
+				{%endfor%}
+			</div>
+		</div>
+
+	</div>
+
+
+	</ul>
+	</div>
 	</div>
 </body>

@@ -97,18 +97,18 @@ def sub_query(keyword, indexes = '_all', sizes = 100):
 	if indexes == 'weibo' or indexes == 'tweets':
 		df = df.sort_values(['favorite_count'], ascending = False)
 		df = df.reset_index(drop = True)
-		df = df[:5]
+		df = df[:20]
 		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	elif indexes == 'zhihu':
 		df = df.sort_values(['upvotes'], ascending = False)
 		df = df.reset_index(drop = True)
-		df = df[:5]
+		df = df[:20]
 		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	else:
 		df = df.reset_index(drop = True)
-		df = df[:5]
+		df = df[:20]
 		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	return df, json_frame

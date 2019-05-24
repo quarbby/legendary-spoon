@@ -760,7 +760,7 @@ def top_companies(keyword, indexes = 'news', graph = False):
 	# json_frame = df_new.to_dict('index').values()
 	# print(json_frame)
 	
-	search_term = chi_translation('Artificial intelligence')
+	search_term = chi_translation(keyword)
 	res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {"match" : {"labels" : search_term}}})
 	#机器学习
 
