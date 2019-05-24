@@ -38,7 +38,6 @@
 	</nav>
 
 	<!-- Container for sidebar and everything else -->
-
 	<div class="container-fluid p-0" style="margin-top: 44px; overflow: auto;">
 		<!-- Sidebar -->
 		<div class="sidebar">
@@ -55,8 +54,6 @@
 				<!-- <a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a> -->
 			</div>
 		</div>
-
-
 
 		<div class="container-fluid content pl-1 pr-0 mb-2 mt-2">
 			<div class="row">
@@ -224,6 +221,7 @@
 					{% endfor %}
 				</tbody>
 			</table>
+
 			<ul class="nav nav-tabs" role="tablist">
 				<li class="nav-item active">
 					<a class="nav-link" href="#hashtag_freq" role="tab" data-toggle="tab">Hashtag Frequency</a>
@@ -264,6 +262,7 @@
 
 			</div>
 		</div>
+
 	</div>
 
 	<div class="navigationMobile px-2" style="margin-top:52px">
@@ -285,8 +284,8 @@
 				<a class="nav-link " href="#Zhihu" role="tab" data-toggle="tab">Zhihu</a>
 			</li>
 
-
 		</ul>
+
 		<div class="tab-content" style="margin-top:90px">
 
 			<div role="News" class="tab-pane active" id="News">
@@ -320,92 +319,89 @@
 					{%endfor%}
 				</div>
 			</div>
-		</div>
 
-		<div role="Weibo" class="tab-pane hide" id="Weibo">
-			<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
-				<h3 class="font-weight-light" style="font-size: 25px"><b>Weibo</b></h3>
-				{% for i in weibo %}
-				<div class="card bg-light text-dark col-12">
-					<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
-					<div class="sub-card-body py-2">{{i.summary}}</div>
-					<div class="row px-2">
-						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-					</div>
-				</div>
-				{%endfor%}
-			</div>
-		</div>
-
-		<div role="Twitter" class="tab-pane hide" id="Twitter">
-			<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
-				<h3 class="font-weight-light" style="font-size: 25px"><b>Tweets</b></h3>
-				{% for i in tweets %}
-				{% if i.sentiment == "Positive" %}
-				<div class="card border-success mb-2 tweeter-border">
-					<div class="card-body bg-light text-success col-12">
-						<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-						<div class="sub-card-body">{{i.summary}}</div>
+			<div role="Weibo" class="tab-pane hide" id="Weibo">
+				<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
+					<h3 class="font-weight-light" style="font-size: 25px"><b>Weibo</b></h3>
+					{% for i in weibo %}
+					<div class="card bg-light text-dark col-12">
+						<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
+						<div class="sub-card-body py-2">{{i.summary}}</div>
 						<div class="row px-2">
 							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-							<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
 							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
 						</div>
 					</div>
+					{%endfor%}
 				</div>
-				{% elif i.sentiment == "Negative" %}
+			</div>
 
-				<div class="card border-danger mb-2 tweeter-border">
-					<div class="card-body bg-light text-danger col-12">
-						<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-						<div class="sub-card-body">{{i.summary}}</div>
+			<div role="Twitter" class="tab-pane hide" id="Twitter">
+				<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
+					<h3 class="font-weight-light" style="font-size: 25px"><b>Tweets</b></h3>
+					{% for i in tweets %}
+					{% if i.sentiment == "Positive" %}
+					<div class="card border-success mb-2 tweeter-border">
+						<div class="card-body bg-light text-success col-12">
+							<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
+							<div class="sub-card-body">{{i.summary}}</div>
+							<div class="row px-2">
+								<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+								<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+								<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+							</div>
+						</div>
+					</div>
+					{% elif i.sentiment == "Negative" %}
+
+					<div class="card border-danger mb-2 tweeter-border">
+						<div class="card-body bg-light text-danger col-12">
+							<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
+							<div class="sub-card-body">{{i.summary}}</div>
+							<div class="row px-2">
+								<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+								<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+								<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+							</div>
+						</div>
+					</div>
+					{%else%}
+					<div class="card border-dark mb-2 tweeter-border">
+						<div class="card-body bg-light text-dark col-12">
+							<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
+							<div class="sub-card-body">{{i.summary}}</div>
+							<div class="row px-2">
+								<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
+								<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+								<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+
+			<div role="Zhihu" class="tab-pane hide" id="Zhihu">
+				<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
+					<h3 class="font-weight-light" style="font-size: 25px"><b>Zhihu</b></h3>
+					{% for i in zhihu %}
+					<div class="card bg-light text-dark col-12">
+						<div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
+						<div class="sub-card-body py-2">{{i.summary}}</div>
 						<div class="row px-2">
-							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-							<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
+							<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">
+									{{i.author}}</a></div>
+							<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
 							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
 						</div>
 					</div>
+					{%endfor%}
 				</div>
-				{%else%}
-				<div class="card border-dark mb-2 tweeter-border">
-					<div class="card-body bg-light text-dark col-12">
-						<div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
-						<div class="sub-card-body">{{i.summary}}</div>
-						<div class="row px-2">
-							<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-							<div class="sub-card-others p-2">Retweet Count: {{i.retweet_count}}</div>
-							<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-						</div>
-					</div>
-				</div>
-				{% endif %}
-				{% endfor %}
 			</div>
-		</div>
 
-		<div role="Zhihu" class="tab-pane hide" id="Zhihu">
-			<div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
-				<h3 class="font-weight-light" style="font-size: 25px"><b>Zhihu</b></h3>
-				{% for i in zhihu %}
-				<div class="card bg-light text-dark col-12">
-					<div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
-					<div class="sub-card-body py-2">{{i.summary}}</div>
-					<div class="row px-2">
-						<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">
-								{{i.author}}</a></div>
-						<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
-						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
-					</div>
-				</div>
-				{%endfor%}
-			</div>
 		</div>
 
 	</div>
 
-
-	</ul>
-	</div>
-	</div>
 </body>
