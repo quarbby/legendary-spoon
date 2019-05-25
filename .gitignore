@@ -10,7 +10,7 @@
 *.pyo
 
 # Data
-techscan_project/techscan/es_folder/import-delete/data/*
+techscan_project/techscan/es_folder/import-delete/*
 techscan_project/techscan/speech_text/data/*
 
 # Django stuff
