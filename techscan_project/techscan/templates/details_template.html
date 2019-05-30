@@ -12,8 +12,8 @@
     <title>techscan</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      <a class="navbar-brand" href="#">Navbar</a>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id = "Navbar">
+      <a class="navbar-brand" href="#">TechScan Chinese</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="z-index: 100;">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -21,9 +21,15 @@
         <ul class="navbar-nav">
           {% for keyword in keywords %}
             <li class="nav-item">
-                <a class="nav-link active" href="{{keyword}}.html">
+              {% if keyword == search_word %}
+                <a class="nav-link active" id = "keyword-active" href="{{keyword}}.html">
                     {{keyword}}
                 </a>
+              {% else %}
+                <a class="nav-link active" id = "keyword-not-search"href="{{keyword}}.html">
+                    {{keyword}}
+                </a>
+              {% endif %}
             </li>
             {% endfor %}
         </ul>
@@ -54,7 +60,7 @@
         <div class="col pl-3 pr-1">
           <h3 class="font-weight-light" style="font-size: 25px"><b>News</b></h3>
           {% for i in news %}
-          <div class="card bg-light text-dark col-12">
+          <div class="card bg-light text-dark col-12 mb-2">
             <div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">
@@ -69,7 +75,7 @@
         <div class="col p-1">
           <h3 class="font-weight-light" style="font-size: 25px"><b>Academic</b></h3>
           {% for i in scholar %}
-          <div class="card bg-light text-dark col-12">
+          <div class="card bg-light text-dark col-12 mb-2">
             <div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">
@@ -84,7 +90,7 @@
         <div class="col p-1">
           <h3 class="font-weight-light" style="font-size: 25px"><b>Weibo</b></h3>
           {% for i in weibo %}
-          <div class="card bg-light text-dark col-12">
+          <div class="card bg-light text-dark col-12 mb-2">
             <div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">
@@ -214,7 +220,7 @@
         </tbody>
       </table>
 
-      <ul class="nav nav-tabs" role="tablist">
+      <ul class="nav nav-tabs" role="tablist" >
         <li class="nav-item active">
           <a class="nav-link" href="#hashtag_freq" role="tab" data-toggle="tab">Hashtag Frequency</a>
         </li>
@@ -259,7 +265,7 @@
 
   <div class="navigationMobile px-2">
 
-    <ul class="nav nav-tabs bg-light fixed-top" id="navtab-mobile" style="margin-top:52px; z-index: -1;" role="tablist">
+    <ul class="nav nav-tabs bg-light fixed-top" id="navtab-mobile" style="margin-top:52px; z-index: 25;" role="tablist">
       <li class="nav-item">
         <a class="nav-link " href="#News" role="tab" data-toggle="tab">News</a>
       </li>
@@ -281,10 +287,10 @@
     <div class="tab-content" style="margin-top:90px">
 
       <div role="News" class="tab-pane active" id="News">
-        <div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
+        <div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2" style = "z-index: : 5">
           <h3 class="font-weight-light" style="font-size: 25px"><b>News</b></h3>
           {% for i in news %}
-          <div class="card bg-light text-dark col-12">
+          <div class="card bg-light text-dark col-12 mb-2">
             <div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">
@@ -300,7 +306,7 @@
         <div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
           <h3 class="font-weight-light" style="font-size: 25px"><b>Academic</b></h3>
           {% for i in scholar %}
-          <div class="card bg-light text-dark col-12">
+          <div class="card bg-light text-dark col-12 mb-2">
             <div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">
@@ -316,7 +322,7 @@
         <div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
           <h3 class="font-weight-light" style="font-size: 25px"><b>Weibo</b></h3>
           {% for i in weibo %}
-          <div class="card bg-light text-dark col-12">
+          <div class="card bg-light text-dark col-12 mb-2">
             <div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">
@@ -334,7 +340,8 @@
           {% for i in tweets %}
           {% if i.sentiment == "Positive" %}
           <div class="card border-success mb-2 tweeter-border">
-            <div class="card-body bg-light text-success col-12">
+            <!-- <div class="card-body bg-light text-success col-12"> -->
+            <div class="card bg-light text-dark col-12 mb-2">
               <div class="sub-card-title"><a href="{{i.url}}">@{{ i.user_name }}</a></div>
               <div class="sub-card-body">{{i.summary}}</div>
               <div class="row px-2">
@@ -378,7 +385,7 @@
         <div class="container-fluid-mobile content-mobile pl-1 pr-0 mb-2 mt-2">
           <h3 class="font-weight-light" style="font-size: 25px"><b>Zhihu</b></h3>
           {% for i in zhihu %}
-          <div class="card bg-light text-dark col-12">
+          <div class="card bg-light text-dark col-12 mb-2">
             <div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">

@@ -20,13 +20,25 @@
 #china.small-logo {
   letter-spacing: -1px;
 }
-
+#Navbar{
+  background-color: #0a2a4a
+}
+.navbar-toggler{
+  background-color: #4f6e90
+}
+.navbar{
+  background-color: #94caff94
+}
 .navbar-brand {
   font-size: 1.25rem !important;
-  color: #556777 !important;
+  color: #ffff !important;
   white-space: nowrap;
   font-family: "Franklin Gothic" !important;
   letter-spacing: -2px;
+}
+
+#keyword-active{
+  background-image: -webkit-linear-gradient(50deg, #d49292, #555);
 }
 
 .percentileTrue {
@@ -270,7 +282,13 @@ div.category-content {
 
 a {
   position: relative;
-  color: #556777 !important;
+  color: #031d1d !important;
+  text-decoration: none;
+}
+
+a#keyword-not-search, a#keyword-active{
+  position: relative;
+  color: #e0ecec !important;
   text-decoration: none;
 }
 
@@ -347,4 +365,8 @@ a:hover:before {
 
 .first-row {
   max-height: 20vh;
+}
+
+div.card {
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
