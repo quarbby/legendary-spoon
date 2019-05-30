@@ -370,3 +370,13 @@ a:hover:before {
 div.card {
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+#tweets_positive{
+  border: solid green !important;
+}
+#tweets_negative{
+  border: solid red !important;
+}
+
+#tweets_neutral{
+  border: solid black !important;
+}
