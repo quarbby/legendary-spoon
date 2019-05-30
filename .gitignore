@@ -10,8 +10,12 @@
 *.pyo
 
 # Data
-techscan_project/techscan/es_folder/import-delete/*
+techscan_project/techscan/es_folder/upload_delete/data/*
 techscan_project/techscan/speech_text/data/*
+techscan_project/techscan/pages/*.html
+
+#Chromedriver
+techscan_project/techscan/es_folder/chromedriver.exe
 
 # Django stuff
 *.log

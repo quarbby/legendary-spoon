@@ -1065,3 +1065,51 @@ def people_companies_wordcloud(keyword):
 		wordcloud.to_file("techscan/static/word_cloud/people_wordcloud.png")
 	except:
 		pass
+
+
+def sort_by_dates(searchterm):
+	df_weibo,_ = graph_query(chi_translation(searchterm),'weibo')
+	df_news,_ = graph_query(chi_translation(searchterm),'news')
+	df_scholar,_ = graph_query(searchterm,'scholar')
+	df_tweets,_ = graph_query(searchterm,'tweets')
+	df_zhihu,_ = graph_query(chi_translation(searchterm),'zhihu')
+	
+	if df_weibo is None:
+		json_weibo = []
+	else:
+		df_weibo = df_weibo.drop_duplicates(subset = 'summary', keep = 'first')
+		df_weibo = df_weibo.sort_values('published', ascending = False).head(100)
+		df_weibo = df_weibo.sort_values('favorite_count', ascending = False)
+		json_weibo = df_weibo.head(20).to_dict('records')
+	
+	if df_zhihu is None:
+		json_zhihu = []
+	else:
+		df_zhihu = df_zhihu.drop_duplicates(subset = 'summary', keep = 'first')
+		df_zhihu = df_zhihu.sort_values('published', ascending = False).head(100)
+		df_zhihu = df_zhihu.sort_values('upvotes', ascending = False)
+		json_zhihu = df_zhihu.head(20).to_dict('records')
+
+	if df_tweets is None:
+		json_tweets = []
+	else:
+		df_tweets = df_tweets.drop_duplicates(subset = 'summary', keep = 'first')
+		df_tweets = df_tweets.sort_values('published', ascending = False).head(100)
+		df_tweets = df_tweets.sort_values('favorite_count', ascending = False)
+		json_tweets = df_tweets.head(20).to_dict('records')
+
+	if df_news is None:
+		json_news = []
+	else:
+		df_news = df_news.drop_duplicates(subset = 'summary', keep = 'first')
+		df_news = df_news.sort_values('published', ascending = False)
+		json_news = df_news.head(20).to_dict('records')
+
+	if df_scholar is None:
+		json_scholar = []
+	else:
+		df_scholar = df_scholar.drop_duplicates(subset = 'summary', keep = 'first')
+		df_scholar = df_scholar.sort_values('published', ascending = False)
+		json_scholar = df_scholar.head(20).to_dict('records')
+
+	return json_zhihu, json_tweets, json_scholar, json_news, json_weibo
