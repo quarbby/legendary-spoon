@@ -7,7 +7,6 @@ urlpatterns = [
 	path('',views.index),
 	path('main', views.main),
 	path('details', views.details),
-	path('overview2', views.overview2),
 	path('weibo', views.weibo),
 	path('scholar', views.scholar),
 	path('news', views.news),
