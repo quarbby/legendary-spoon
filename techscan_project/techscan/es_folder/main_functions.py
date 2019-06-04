@@ -64,16 +64,15 @@ def get_zh_author(keyword, graph = False):
 
 	df,_ = graph_query(keyword, 'zhihu')
 	if df is not None:
-		upvotes_count = df.groupby(['author']).sum().reset_index().sort_values('upvotes', ascending=False)
+		upvote_count = df.groupby(['author']).sum().reset_index().sort_values('upvote_count', ascending=False)
 
 		post_freq = df.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
 		post_freq.rename(columns={'author': 'author_1'}, inplace=True)
 
-		df_new = pd.concat([upvotes_count, post_freq], axis = 1).drop(columns = ['author_1'])
-		df_new['average'] = (df_new['upvotes']/df_new['size']).astype(int)
-		df_new['max'] = df.groupby('author', as_index=False)['upvotes'].max()['upvotes']
-		df_new['weighted'] = (0.6 * df_new['max']) + (0.15*df_new['upvotes']) + (0.25*df_new['average'])
-
+		df_new = pd.concat([upvote_count, post_freq], axis = 1).drop(columns = ['author_1'])
+		df_new['average'] = (df_new['upvote_count']/df_new['size']).astype(int)
+		df_new['max'] = df.groupby('author', as_index=False)['upvote_count'].max()['upvote_count']
+		df_new['weighted'] = (0.6 * df_new['max']) + (0.15*df_new['upvote_count']) + (0.25*df_new['average'])
 		df_new = df_new.sort_values('weighted',ascending = False).reset_index()[:10]
 		if graph == True:
 			df_new.sort_values('weighted',ascending = True)
@@ -105,28 +104,28 @@ def get_zh_author(keyword, graph = False):
 	else:
 		pass
 
-def weibo_author(keyword):
+def weibo_author(keyword): #need to change according to es data
 
 	df_weibo,_ = graph_query(keyword, 'weibo')
 	if df_weibo is not None:
-		favorite_count = df_weibo.groupby(['user_name']).sum().reset_index().sort_values('favorite_count', ascending=False)
+		favorite_count = df_weibo.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 
-		post_freq = df_weibo.groupby(['user_name']).size().rename('size').reset_index().sort_values('size', ascending = False)
-		post_freq.rename(columns={'user_name': 'user_name_1'}, inplace=True)
+		post_freq = df_weibo.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
+		post_freq.rename(columns={'author': 'author_1'}, inplace=True)
 
-		df_weibo_new = pd.concat([favorite_count, post_freq], axis = 1).drop(columns = ['user_name_1'])
+		df_weibo_new = pd.concat([favorite_count, post_freq], axis = 1).drop(columns = ['author_1'])
 		df_weibo_new['average'] = (df_weibo_new['favorite_count']/df_weibo_new['size']).astype(int)
-		df_weibo_new['max'] = df_weibo.groupby('user_name', as_index=False)['favorite_count'].max()['favorite_count']
+		df_weibo_new['max'] = df_weibo.groupby('author', as_index=False)['favorite_count'].max()['favorite_count']
 		df_weibo_new['weighted'] = (0.6 * df_weibo_new['max']) + (0.15*df_weibo_new['favorite_count']) + (0.25*df_weibo_new['average'])
 
 		df_weibo_new = df_weibo_new.sort_values('weighted',ascending = False).reset_index()[:10]
 
 		#Get a list of URL
-		author_list = df_weibo_new['user_name'].values.tolist()
+		author_list = df_weibo_new['author'].values.tolist()
 		author_list2 = [[i] for i in author_list]
 		weibo_id = []
 		for i in range(len(author_list2)):
-			temp_weibo_id = set(df_weibo[df_weibo['user_name'].isin(list(author_list2[i]))].user_id.values.tolist())
+			temp_weibo_id = set(df_weibo[df_weibo['author'].isin(list(author_list2[i]))].user_id.values.tolist())
 			if list(temp_weibo_id)[0] not in weibo_id:
 				weibo_id.append(list(temp_weibo_id)[0])
 		df_weibo_new['id'] = weibo_id
@@ -137,20 +136,21 @@ def weibo_author(keyword):
 	else:
 		pass
 
+
 def twitter_author(keyword):
 	df_twitter,_ = graph_query(keyword, 'tweets')
 	df_twitter['fav_retweet'] = df_twitter['favorite_count'] + df_twitter['retweet_count']
 
 	if df_twitter is not None:
-		twitter_fav_retweet = df_twitter.groupby(['user_screen_name']).sum().reset_index().sort_values('fav_retweet', ascending=False)
-		post_freq = df_twitter.groupby(['user_screen_name']).size().rename('size').reset_index().sort_values('size', ascending = False)
-		post_freq.rename(columns = {'user_screen_name': 'author_1'}, inplace = True)
+		twitter_fav_retweet = df_twitter.groupby(['author']).sum().reset_index().sort_values('fav_retweet', ascending=False)
+		post_freq = df_twitter.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
+		post_freq.rename(columns = {'author': 'author_1'}, inplace = True)
 		df_twitter_new = pd.concat([twitter_fav_retweet, post_freq], axis = 1).drop(columns = ['author_1'])
 		df_twitter_new['average'] = (df_twitter_new['fav_retweet']/df_twitter_new['size']).astype(int)
-		df_twitter_new['max'] = df_twitter.groupby('user_screen_name', as_index = False)['fav_retweet'].max()['fav_retweet']
+		df_twitter_new['max'] = df_twitter.groupby('author', as_index = False)['fav_retweet'].max()['fav_retweet']
 		df_twitter_new['weighted'] = (0.6 * df_twitter_new['max']) + (0.15*df_twitter_new['fav_retweet']) + (0.25*df_twitter_new['average'])
 		df_twitter_new = df_twitter_new.sort_values('weighted',ascending = False).reset_index()[:10]
-		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['user_screen_name']
+		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
 		json_frame = df_twitter_new.to_dict('index').values()
 	return json_frame
 
@@ -187,9 +187,9 @@ def twitter_author(keyword):
 # 		return favorite_percentile_value
 
 # 	elif indexes == 'zhihu':
-# 		total_upvotes_count = df.upvotes.tolist()
-# 		upvotes_percentile_value = np.percentile(total_upvotes_count, 85)
-# 		return upvotes_percentile_value
+# 		total_upvote_count = df.upvote_count.tolist()
+# 		upvote_count_percentile_value = np.percentile(total_upvote_count, 85)
+# 		return upvote_count_percentile_value
 
 # tweets_retweet_percentile, tweets_favorite_percentile = get_percentile('tweets')
 # weibo_favorite_percentile = get_percentile('weibo')
@@ -199,7 +199,7 @@ def percentile(keyword, indexes):
 	if indexes == 'tweets':	
 		df_keyword,_ = graph_query(str(keyword), indexes)
 		if df_keyword is not None:
-			df_keyword = df_keyword.groupby(['user_screen_name']).sum().reset_index().sort_values('favorite_count', ascending=False)
+			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 			df_keyword['fav_retweet'] = df_keyword['favorite_count'] + df_keyword['retweet_count']
 			df_positive = df_keyword[df_keyword.fav_retweet >= 20]
 			top = len(df_positive)
@@ -207,15 +207,15 @@ def percentile(keyword, indexes):
 	elif indexes == 'weibo':	
 		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
 		if df_keyword is not None:
-			df_keyword = df_keyword.groupby(['user_name']).sum().reset_index().sort_values('favorite_count', ascending=False)
+			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 			df_positive = df_keyword[df_keyword.favorite_count >= 20]
 			top = len(df_positive)
 
 	elif indexes == 'zhihu':
 		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
 		if df_keyword is not None:
-			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('upvotes', ascending=False)
-			df_positive = df_keyword[df_keyword.upvotes >= 128]
+			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('upvote_count', ascending=False)
+			df_positive = df_keyword[df_keyword.upvote_count >= 128]
 			top = len(df_positive)
 
 	if df_keyword is not None:
@@ -232,7 +232,7 @@ def overview_table(keyword):
 	df_zhihu,_ = graph_query(chi_translation(str(keyword)), 'zhihu')
 	df_weibo,_ = graph_query(chi_translation(str(keyword)), 'weibo')
 	try:
-		df_twitter = df_twitter.rename(columns = {'user_screen_name':'author',
+		df_twitter = df_twitter.rename(columns = {'author':'author',
 		'url':'authorUrl'})
 	except:
 		pass
@@ -242,7 +242,7 @@ def overview_table(keyword):
 		pass
 	try:
 		df_weibo = df_weibo.rename(columns = {
-		'user_name':'author',
+		'author':'author',
 		'url':'authorUrl'
 		})
 	except:
@@ -252,13 +252,13 @@ def overview_table(keyword):
 	Color_List = []
 	Medias = []
 	if df_zhihu is not None:
-		upvotes_count = df_zhihu.groupby(['author']).sum().reset_index().sort_values('upvotes', ascending=False)
+		upvote_count = df_zhihu.groupby(['author']).sum().reset_index().sort_values('upvote_count', ascending=False)
 		post_freq = df_zhihu.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
 		post_freq.rename(columns = {'author': 'author_1'}, inplace = True)
-		df_zhihu_new = pd.concat([upvotes_count, post_freq], axis = 1).drop(columns = ['author_1'])
-		df_zhihu_new['average'] = (df_zhihu_new['upvotes']/df_zhihu_new['size']).astype(int)
-		df_zhihu_new['max'] = df_zhihu.groupby('author', as_index = False)['upvotes'].max()['upvotes']
-		df_zhihu_new['weighted'] = (0.6 * df_zhihu_new['max']) + (0.15*df_zhihu_new['upvotes']) + (0.25*df_zhihu_new['average'])
+		df_zhihu_new = pd.concat([upvote_count, post_freq], axis = 1).drop(columns = ['author_1'])
+		df_zhihu_new['average'] = (df_zhihu_new['upvote_count']/df_zhihu_new['size']).astype(int)
+		df_zhihu_new['max'] = df_zhihu.groupby('author', as_index = False)['upvote_count'].max()['upvote_count']
+		df_zhihu_new['weighted'] = (0.6 * df_zhihu_new['max']) + (0.15*df_zhihu_new['upvote_count']) + (0.25*df_zhihu_new['average'])
 		df_zhihu_new = df_zhihu_new.sort_values('weighted',ascending = False).reset_index()[:2]
 		df_zhihu_new['source'] = 'Zhihu'
 		#Get a list of the URL

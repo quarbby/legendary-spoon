@@ -15,7 +15,7 @@ techscan_project/techscan/speech_text/data/*
 techscan_project/techscan/pages/*.html
 
 #Chromedriver
-techscan_project/techscan/es_folder/chromedriver.exe
+techscan_project/chromedriver.exe
 
 # Django stuff
 *.log
@@ -36,3 +36,8 @@ var/
 .installed.cfg
 *.egg
 
+# Settings
+techscan_project/techscan/.vscode/settings.json
+
+# Graph templates
+techscan_project/techscan/templates/graph/*

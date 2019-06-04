@@ -196,11 +196,11 @@ def main_graph(keyword):
 	df_chinese,_ = graph_query(str(chi_translation(keyword)))
 	df = pd.concat([df_english,df_chinese], ignore_index = True)
 	dates = ['2017', '2018', '2019']
-	df = df.dropna(subset = ['published'])
-	df = df[df.published.str.contains('|'.join(dates))]
+	df = df.dropna(subset = ['date'])
+	df = df[df.date.str.contains('|'.join(dates))]
 
 	if df is not None:
-		df['published_date'] = df['published'].apply(lambda x:  x[:7])
+		df['published_date'] = df['date'].apply(lambda x:  x[:7])
 		df_2017 = df[df.published_date.str.contains('2017')]
 		df_2017 = df_2017['published_date'].value_counts()
 		df_2017 = df_2017.sort_index(ascending = False)
@@ -1067,35 +1067,33 @@ def people_companies_wordcloud(keyword):
 		pass
 
 
-def sort_by_dates(searchterm):
-	df_weibo,_ = graph_query(chi_translation(searchterm),'weibo')
-	df_news,_ = graph_query(chi_translation(searchterm),'news')
-	df_scholar,_ = graph_query(searchterm,'scholar')
-	df_tweets,_ = graph_query(searchterm,'tweets')
-	df_zhihu,_ = graph_query(chi_translation(searchterm),'zhihu')
+def sort_by_dates(keyword):
+	df_weibo,_ = graph_query(chi_translation(keyword),'weibo')
+	df_news,_ = graph_query(chi_translation(keyword),'news')
+	df_scholar,_ = graph_query(keyword,'scholar')
+	df_tweets,_ = graph_query(keyword,'tweets')
+	df_zhihu,_ = graph_query(chi_translation(keyword),'zhihu')
 	
 	if df_weibo is None:
 		json_weibo = []
 	else:
 		df_weibo = df_weibo.drop_duplicates(subset = 'summary', keep = 'first')
-		df_weibo = df_weibo.sort_values('published', ascending = False).head(100)
-		df_weibo = df_weibo.sort_values('favorite_count', ascending = False)
+		df_weibo = df_weibo.sort_values(['published','favorite_count'], ascending = [False,False]).head(100)
+		# df_weibo = df_weibo.sort_values('favorite_count', ascending = False)
 		json_weibo = df_weibo.head(20).to_dict('records')
 	
 	if df_zhihu is None:
 		json_zhihu = []
 	else:
 		df_zhihu = df_zhihu.drop_duplicates(subset = 'summary', keep = 'first')
-		df_zhihu = df_zhihu.sort_values('published', ascending = False).head(100)
-		df_zhihu = df_zhihu.sort_values('upvotes', ascending = False)
+		df_zhihu = df_zhihu.sort_values(['published','upvotes'], ascending = [False,False]).head(100)
 		json_zhihu = df_zhihu.head(20).to_dict('records')
 
 	if df_tweets is None:
 		json_tweets = []
 	else:
 		df_tweets = df_tweets.drop_duplicates(subset = 'summary', keep = 'first')
-		df_tweets = df_tweets.sort_values('published', ascending = False).head(100)
-		df_tweets = df_tweets.sort_values('favorite_count', ascending = False)
+		df_tweets = df_tweets.sort_values(['published','favorite_count'], ascending = [False,False]).head(100)
 		json_tweets = df_tweets.head(20).to_dict('records')
 
 	if df_news is None:

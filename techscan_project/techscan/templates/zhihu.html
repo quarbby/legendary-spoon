@@ -50,11 +50,12 @@
 			<div class="col-7 p-1">
 				{% for i in zhihu %}
 				<div class="card bg-light text-dark col-12">
-					<div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.headline}}</a></div>
+					<div class="sub-card-title py-2"><a href="{{i.summary_url}}">{{i.title}}</a></div>
 					<div class="sub-card-body py-2">{{i.summary}}</div>
 					<div class="row px-2">
-						<div class="sub-card-others p-2"><a href="{{i.authorUrl}}">{{i.author}}</a></div>
-						<div class="sub-card-others p-2">Upvote Count: {{i.upvotes}}</div>
+						<div class="sub-card-others p-2"><a href="{{i.author_url}}">{{i.author}}</a></div>
+						<div class="sub-card-others p-2">Upvote Count: {{i.upvote_count}}</div>
+						<div class="sub-card-others p-2">Date: {{i.date}}</div>
 					</div>
 				</div>
 				{%endfor%}
@@ -74,7 +75,7 @@
 						{% for i in author_table %}
 						<tr>
 							<th scope="row">{{forloop.counter}}</th>
-							<td><a href="{{i.authorUrl}}">{{i.author}}</a></td>
+							<td><a href="{{i.author_url}}">{{i.author}}</a></td>
 							<td> {{i.max}}</td>
 							<td> {{i.size}}</td>
 							<td>{{i.average}}</td>		

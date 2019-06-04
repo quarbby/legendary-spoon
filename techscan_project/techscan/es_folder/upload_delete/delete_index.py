@@ -10,4 +10,10 @@ def delete_indices(index_name):
 	else:
 		print('Index does not exist')
 
-# delete_indices('tweets')
+delete_indices('scholar')
+
+
+
+
+# res = es.search(index = 'tweets', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})['hits']['hits']
+# print(res[0]['_source'])

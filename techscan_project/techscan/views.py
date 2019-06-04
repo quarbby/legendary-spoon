@@ -1,42 +1,38 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .es_folder import main_functions, scroll_query, plotgraph
-from .neo4j_folder import neo4jgraph
 from django.views.generic import RedirectView
 from django.template.loader import render_to_string
+from .es_folder import main_functions, scroll_query, plotgraph, crawler
+from .es_folder.upload_delete import uploading_data
+from .neo4j_folder import neo4jgraph
+from .crawler_list import keywords
+import time
 
 def index(request):
 	return render(request, 'index.html')
 
-def main(request):
-	# params = request.GET.get('q')
-	params = "artificial intelligence"
-	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
-	# plotgraph.main_graph(params)
-	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
-	# plotgraph.plot_stocks(params)
-	# plotgraph.heatmap(params)
-	# plotgraph.people_companies_wordcloud(params)
-	context = {
-		"chi_translation": main_functions.chi_translation(params),
-		"search_word": ' '.join([word.capitalize() for word in params.split()]),
-		"wiki_result_short": wiki_result_short,
-		"wiki_result_long": wiki_result_long,
-		"summary_length": summary_length,
-		"hit_count": main_functions.get_count(params),
-		"related_table": neo4jgraph.get_related_table(params),
-		"author_table":main_functions.overview_table(params),
-		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params))
-	}
-	return render(request, 'main.html', context)
 
-def details(request):
-	# params = request.GET.get('q')
-	# plotgraph.detail_hashtag_frequency(params)
-	# plotgraph.top_companies(params, graph = True)
-	# plotgraph.twitter_bubble(params)
-	keywords = ['artificial intelligence', 'machine learning', 'quantum computer']
-	for params in keywords:
+def update(request):
+	start_time = time.time()
+	for keyword in keywords:
+	    for site in keyword['sites']:
+	        if site['source'] == 'tweets':
+	            uploading_data.upload_crawled_data(site['source'], crawler.crawl_twitter(site['url']))
+	        elif site['source'] == 'zhihu':
+	            uploading_data.upload_crawled_data(site['source'], crawler.crawl_zhihu(site['url']))
+	        elif site['source'] == 'news':
+	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_news(site['url']))
+	        elif site['source'] == 'scholar':
+	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
+	time_taken = " %s seconds " % (time.time() - start_time)
+	return HttpResponse	('Done. Time taken to complete: {}'.format(time_taken))
+
+def generate_templates(request):
+
+	list_of_keywords = [kw['keyword'] for kw in keywords]
+
+	for params in list_of_keywords:
+		# es_zhihu, es_tweets, es_scholar, es_news, es_weibo = plotgraph.sort_by_dates(params)
 		_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
 		_,es_scholar = scroll_query.sub_query(params,'scholar')
 		_,es_news = scroll_query.sub_query(main_functions.chi_translation(params),'news')
@@ -50,7 +46,7 @@ def details(request):
 			"scholar":es_scholar,
 			"tweets":es_tweets,
 			"zhihu":es_zhihu,
-			"keywords": keywords
+			"keywords": list_of_keywords
 			# "author_table":main_functions.overview_table(params),
 			# "company_table":plotgraph.top_companies(params)
 		}
@@ -58,20 +54,67 @@ def details(request):
 		content = render_to_string('details_template.html', context)
 		with open('techscan/pages/'+ params + '.html','w', encoding='utf8') as static_file:
 			static_file.write(content)
-	# return render(request, 'details.html', context)
+	return HttpResponse('Generated {} different templates on {}'.format(len(list_of_keywords), list_of_keywords))
+
+def main(request):
+	params = request.GET.get('q')
+	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
+	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	plotgraph.main_graph(params)
+	# plotgraph.plot_stocks(params)
+	# plotgraph.heatmap(params)
+	# plotgraph.people_companies_wordcloud(params)
+	context = {
+		"chi_translation": main_functions.chi_translation(params),
+		"search_word": ' '.join([word.capitalize() for word in params.split()]),
+		"wiki_result_short": wiki_result_short,
+		"wiki_result_long": wiki_result_long,
+		"summary_length": summary_length,
+		"hit_count": main_functions.get_count(params),
+		"related_table": neo4jgraph.get_related_table(params),
+		# "author_table":main_functions.overview_table(params),
+		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	}
+	return render(request, 'main.html', context)
+
+def details(request):
+	params = request.GET.get('q')
+	# plotgraph.detail_hashtag_frequency(params)
+	# plotgraph.top_companies(params, graph = True)
+	# plotgraph.twitter_bubble(params)
+
+	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
+	_,es_scholar = scroll_query.sub_query(params,'scholar')
+	_,es_news = scroll_query.sub_query(main_functions.chi_translation(params),'news')
+	_,es_tweets = scroll_query.sub_query(params,'tweets')
+	_,es_zhihu = scroll_query.sub_query(main_functions.chi_translation(params),'zhihu')
+	context = {
+		"search_word": params,
+		"chi_translation": main_functions.chi_translation(params),
+		"weibo": es_weibo,
+		"news":es_news,
+		"scholar":es_scholar,
+		"tweets":es_tweets,
+		"zhihu":es_zhihu,
+		# "keywords": keywords
+		# "author_table":main_functions.overview_table(params),
+		# "company_table":plotgraph.top_companies(params)
+	}
+
 	return render(request,'details.html',context)
+
+
+
 
 def weibo(request):
 	params = request.GET.get('q')
 	plotgraph.top_hashtag(params)
 	plotgraph.wordcloud(main_functions.chi_translation(params))
 	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
-	# eng_summary = [main_functions.eng_translation(list(es_weibo)[i]['summary']) for i in range(4)]
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"weibo":es_weibo,
-		# "weibo":zip(es_weibo,eng_summary),
 		"weibo_table":main_functions.weibo_author(main_functions.chi_translation(params)),
 	}
 	return render(request, 'weibo.html', context)
@@ -106,7 +149,7 @@ def tweets(request):
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"tweets": es_tweets,
-		"author_table": main_functions.twitter_author(params)
+		# "author_table": main_functions.twitter_author(params)
 	}
 	return render(request, 'tweets.html', context)
 
@@ -121,18 +164,3 @@ def zhihu(request):
 	}
 	return render(request, 'zhihu.html', context)
 
-def facial_recognition(request):
-	params = request.GET.get('q')
-	context = {
-		"search_word": params,
-		"chi_translation": main_functions.chi_translation(params),
-	}
-	return render(request, 'facial_recognition.html', context)
-
-def speech_text(request):
-	params = request.GET.get('q')
-	context = {
-		"search_word": params,
-		"chi_translation": main_functions.chi_translation(params),
-	}
-	return render(request, 'speech_text.html', context)

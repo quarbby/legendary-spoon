@@ -29,7 +29,7 @@ def text_query(keyword, indexes = '_all', sizes = 100):
 		df = df.reset_index(drop = True)
 		json_frame = df.to_dict('index').values()
 	elif indexes == 'zhihu':
-		df = df.sort_values(['upvotes'], ascending = False)
+		df = df.sort_values(['upvote_count'], ascending = False)
 		df = df.reset_index(drop = True)
 		json_frame = df.to_dict('index').values()
 	else:
@@ -94,22 +94,22 @@ def sub_query(keyword, indexes = '_all', sizes = 100):
 
 	if df is None:
 		return ([],[])
-	if indexes == 'weibo' or indexes == 'tweets':
+	if indexes == 'weibo':
 		df = df.sort_values(['favorite_count'], ascending = False)
 		df = df.reset_index(drop = True)
 		df = df[:20]
 		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	elif indexes == 'zhihu':
-		df = df.sort_values(['upvotes'], ascending = False)
+		df = df.sort_values(['upvote_count'], ascending = False)
 		df = df.reset_index(drop = True)
 		df = df[:20]
-		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
+		df['date'] = df['date'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	else:
-		df = df.reset_index(drop = True)
-		df = df[:20]
-		df['published'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
+	# 	df = df.reset_index(drop = True)
+	# 	df = df[:20]
+	# 	df['date'] = df['date'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		json_frame = df.to_dict('index').values()
 	return df, json_frame
 

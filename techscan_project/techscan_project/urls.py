@@ -1,10 +1,11 @@
-from django.contrib import admin
 from django.urls import path
 from techscan import views
 from django.views.generic import TemplateView
 
 urlpatterns = [
-	path('',views.index),
+	path('', views.index),
+	path('update', views.update),
+	path('generate-templates', views.generate_templates),
 	path('main', views.main),
 	path('details', views.details),
 	path('weibo', views.weibo),
@@ -12,9 +13,6 @@ urlpatterns = [
 	path('news', views.news),
 	path('tweets', views.tweets),
 	path('zhihu', views.zhihu),
-	path('facial_recognition', views.facial_recognition),
-	path('speech_text', views.speech_text),
-	path('admin/', admin.site.urls),
 	path('plotneo4jgraph/', TemplateView.as_view(template_name="graph/neo4jgraph.html"), name= 'plotneo4jgraph'),
 	path('plotlinetweets/', TemplateView.as_view(template_name="graph/basic_line_graph_tweets.html"),name='plotlinetweets'),
 	path('heatmap/', TemplateView.as_view(template_name="graph/heatmap.html"), name= 'heatmap'),

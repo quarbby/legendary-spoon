@@ -49,10 +49,10 @@
 			<div class="col p-1">
 				{% for i in news %}
 				<div class="card bg-light text-dark col-12">
-					<div class="sub-card-title py-2"><a href="{{i.url}}">{{i.title}}</a></div>
+					<div class="sub-card-title py-2"><a href="{{i.summary_url}}">{{i.title}}</a></div>
 					<div class="sub-card-body py-2">{{i.summary}}</div>
 					<div class="row px-2">
-						<div class="sub-card-others p-2">Author: {{i.authors}}</div>
+						<div class="sub-card-others p-2">Author: {{i.author}}</div>
 					</div>
 				</div>
 				{%endfor%}

@@ -53,13 +53,13 @@
 				<h3><b>Top 5 Posts</b></h3>
 				{% for i in weibo %}
 				<div class="card bg-light text-dark col-12">
-					<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.user_name}}</a></div>
+					<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.author}}</a></div>
 					<div class="sub-card-body py-2">{{i.summary}}</div>
 					<!-- <div style="display: none;" id="hiddenText{{forloop.counter0}}">{{j}}</div>
 					<a href="#" onclick="$('#hiddenText{{forloop.counter0}}').show(); return false;">Translate</a> -->
 					<div class="row px-2">
 						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
-						<div class="sub-card-others p-2">Published Date: {{i.published}}</div>
+						<div class="sub-card-others p-2">Published Date: {{i.date}}</div>
 					</div>
 				</div>
 				{%endfor%}
@@ -80,7 +80,7 @@
 						{% for i in weibo_table %}
 						<tr>
 							<th scope="row">{{forloop.counter}}</th>
-							<td><a href="{{i.url}}">{{i.user_name}}</a></td>
+							<td><a href="{{i.url}}">{{i.author}}</a></td>
 							<td> {{i.max}}</td>
 							<td> {{i.size}}</td>
 							<td>{{i.average}}</td>		
