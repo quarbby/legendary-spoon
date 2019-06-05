@@ -9,8 +9,6 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot
 
-# from elasticsearch import Elasticsearch
-# es = Elasticsearch([{'host' : 'localhost', 'port' : 9200}])
 
 def chi_translation(keyword):
 	try:

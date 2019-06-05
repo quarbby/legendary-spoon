@@ -11,7 +11,6 @@ import time
 def index(request):
 	return render(request, 'index.html')
 
-
 def update(request):
 	start_time = time.time()
 	for keyword in keywords:
@@ -24,10 +23,6 @@ def update(request):
 	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_news(site['url']))
 	        elif site['source'] == 'scholar':
 	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
-	time_taken = " %s seconds " % (time.time() - start_time)
-	return HttpResponse	('Done. Time taken to complete: {}'.format(time_taken))
-
-def generate_templates(request):
 
 	list_of_keywords = [kw['keyword'] for kw in keywords]
 
@@ -54,7 +49,9 @@ def generate_templates(request):
 		content = render_to_string('details_template.html', context)
 		with open('techscan/pages/'+ params + '.html','w', encoding='utf8') as static_file:
 			static_file.write(content)
-	return HttpResponse('Generated {} different templates on {}'.format(len(list_of_keywords), list_of_keywords))
+
+	time_taken = " %s seconds " % (time.time() - start_time)
+	return HttpResponse('Done. Time taken to complete: {}. Generated {} different templates on {}'.format(time_taken, len(list_of_keywords), list_of_keywords))
 
 def main(request):
 	params = request.GET.get('q')

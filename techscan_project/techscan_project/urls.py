@@ -5,7 +5,6 @@ from django.views.generic import TemplateView
 urlpatterns = [
 	path('', views.index),
 	path('update', views.update),
-	path('generate-templates', views.generate_templates),
 	path('main', views.main),
 	path('details', views.details),
 	path('weibo', views.weibo),
