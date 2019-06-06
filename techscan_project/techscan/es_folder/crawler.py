@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DC
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import re
 import bs4 as bs
 from datetime import datetime
@@ -32,6 +33,22 @@ def disable_ssl():
     ctx.verify_mode = ssl.CERT_NONE
     return ctx
 
+
+
+def sentiment(sentence):
+    analyzer = SentimentIntensityAnalyzer()
+    VS = analyzer.polarity_scores(sentence)
+
+    if VS['compound'] >= 0.05:
+        return('Positive')
+
+    elif VS['compound'] > -0.05 and VS['compound'] < 0.05:
+        return('Neutral')
+
+    else:
+        return('Negative')
+
+
 def crawl_twitter(url):
     page_source = get_page_source(url)
     soup = bs.BeautifulSoup(page_source, 'html.parser')
@@ -50,7 +67,8 @@ def crawl_twitter(url):
             "summary_url": 'https://twitter.com/' + tweet.select('b')[0].text + '/status/' + tweet['data-item-id'],
             "reply_count": int(tweet.select('span.ProfileTweet-actionCount')[0]['data-tweet-stat-count']),
             "retweet_count": int(tweet.select('span.ProfileTweet-actionCount')[1]['data-tweet-stat-count']),
-            "favorite_count": int(tweet.select('span.ProfileTweet-actionCount')[2]['data-tweet-stat-count'])
+            "favorite_count": int(tweet.select('span.ProfileTweet-actionCount')[2]['data-tweet-stat-count']),
+            "sentiment": sentiment(tweet.select('p.tweet-text')[0].get_text())
         })
     return all_tweets
 
@@ -110,7 +128,7 @@ def crawl_scholar(url):
 
 
 def convert_to_posts(cards):
-    ids = set()
+    
     posts = list()
     post = list()
     for i, card in enumerate (cards):
@@ -187,8 +205,7 @@ def convert_to_posts(cards):
 
        
 
-        if post['id'] not in ids:
-            posts.append(post)
+        posts.append(post)
     
     return posts
 
