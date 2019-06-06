@@ -1000,11 +1000,10 @@ def people_companies(keyword):
 		wordcloud_list = []
 		wordcloud_list.append(wordcloud_info)
 		return(wordcloud_list)
-
-		
 	
 	except:
 		pass
+		
 def people_companies_wordcloud(keyword):
 	res = es.search(index = 'wordcloud' , size = int(10000), scroll = '2m', body = {"query" : {
         "match" : {"label" : keyword}
