@@ -1,10 +1,15 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DC
+import re
 import bs4 as bs
 from datetime import datetime
+import dateparser
 import time
 import urllib.parse
 import ssl
-
 
 def get_page_source(url):
     browser = webdriver.Chrome(executable_path="chromedriver")
@@ -100,32 +105,142 @@ def crawl_scholar(url):
         all_scholar.append(post)
     return all_scholar
 
-def crawl_weibo(url):
-    page_source = urllib.request.urlopen(url, context = disable_ssl()).read()
-    soup = bs.BeautifulSoup(page_source,'lxml')
-    cards = soup.find_all('div','card')
-    all_weibo = []
-    for i in cards:
+
+
+
+
+
+def login_weibo(url):
+    # Open chrome and login to Weibo for access to search term data
+    caps = DC().CHROME
+    caps['pageLoadStrategy'] = "none"
+    browser = webdriver.Chrome(desired_capabilities = caps, executable_path="chromedriver")
+    browser.get(url)
+    browser.implicitly_wait(10)
+    WebDriverWait(browser, timeout = 120, poll_frequency = 20).until(
+        EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '登录')]")))
+
+    try:
+        credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
+        username = credentials[0]
+        password = credentials[1]
+        username.send_keys('weichao1995@gmail.com')
+        password.send_keys('31O55h95')
+        login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
+        login_button.click()
+
+    except:
+        login_page = browser.find_element_by_xpath("//*[contains(text(), '登录')]")
+        login_page.click()
+        
+        time.sleep(10)
+        
+        credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
+        username = credentials[0]
+        password = credentials[1]
+        username.send_keys('weichao1995@gmail.com')
+        password.send_keys('31O55h95')
+        login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
+        login_button.click()
+
+
+
+
+def convert_to_posts(cards, ids):
+    ids = set()
+    posts = list()
+    post = list()
+    for i, card in enumerate (cards):
+        entry = card.find('div', {'node-type':'like'});
+        post = dict()
+        text_html = entry.find('p', {'node-type':'feed_list_content'})
+        if entry.find('p', {'node-type':'feed_list_content_full'}):
+            text_html = entry.find('p', {'node-type':'feed_list_content_full'})
+        for br in text_html.find_all('br'):
+            br.replace_with('\n')
+        text = text_html.get_text().strip()
+        text = text.replace('收起全文d', '').strip()
+        text = text.replace('O网页链接', '').strip()
+        text = re.sub(r'L.*的.*视频', '', text).strip()
+
+        links = [a['href'] for a in text_html.find_all('a') 
+                 if re.search(r'(http:\/\/t\.cn/[a-zA-Z0-9]*)', a['href'])]
+
+        hashtags = re.findall(r'\#([^#]*)\#', text)
+
+        name_html  = entry.find('a', {'class':'name'})
+        name = name_html.get_text().strip()
+
+        date_html = entry.find('p', {'class':'from'}).find('a')
+        date = date_html.get_text().split()[0].strip()
         try:
-            post = dict()
-            post['author'] = i.find_all('a')[3]['nick-name']
-            post['author_url'] = i.find_all('a')[3]['href']
-            post['date'] = i.find('div','card-act').find_all('li')[1].find('a').text
-            post['summary'] = i.find('div','card-feed').find('p').text.strip()
-            post['summary_url'] = i.find('p','from').find('a')['href']
-            if any(char.isdigit() for char in i.find('div','card-act').find_all('li')[2].find('a').text) == True:
-                post['reply_count'] = int(''.join(list(filter(str.isdigit, i.find('div','card-act').find_all('li')[2].find('a').text))))
+            if '今天' in str(date):
+                date = str(datetime.datetime.now())
+                date = dateparser.parse(date)
+                date = date.isoformat()
+
+            elif '年' not in str(date):
+                year = datetime.date.today().year
+    #             date = str(year) + '年' + date
+                date = dateparser.parse(date)
+                date = date.replace(year=int(year)).isoformat()
+
             else:
-                post['reply_count'] = 0
-            if any(char.isdigit() for char in i.find('div','card-act').find_all('li')[1].find('a').text) == True:
-                post['retweet_count'] = int(''.join(list(filter(str.isdigit, i.find('div','card-act').find_all('li')[1].find('a').text))))
-            else:
-                post['retweet_count'] = 0
-            if i.find('div','card-act').find_all('li')[3].find('a').text != " ":
-                post['favorite_count'] = i.find('div','card-act').find_all('li')[3].find('a').text
-            else:
-                post['favorite_count'] = 0
-            all_weibo.append(post)
+                date = dateparser.parse(date)
+                date = date.isoformat()
         except:
-            pass
+            date = str(datetime.datetime.now())
+
+        url_search = re.search(r'\/\/weibo.com\/([0-9]*\/[a-zA-z0-9]*)', date_html['href'])
+        if url_search:
+            post_id = url_search.group(1)
+            url = 'https://www.weibo.com/{}'.format(post_id)
+
+
+        name_search = re.search(r'\/\/weibo.com\/([0-9]*)\?', name_html['href'])
+        if name_search:
+            uid = name_search.group(1)
+
+        like_html = card.find('a', {'title':'赞'})
+        like_count = like_html.get_text().strip()
+        like_count = int(like_count) if like_count else 0
+        
+     # Turn authors into a list of strings rather than a list of dicts 
+        post['summary'] = text
+        post['id'] = post_id
+
+        # In twitter there is only 1 author so a string, not a list, is returned
+        post['user_id'] = uid
+        post['author'] = name
+        post['date'] = date
+
+        post['links'] = links
+        post['hashtags'] = hashtags
+        post['hashtag_count'] = len(hashtags)
+        post['favorite_count'] = like_count
+
+        post['summary_url'] = url
+
+        post['subject'] = [search_term]
+
+        if post['id'] not in ids:
+            posts.append(post)
+    
+    return posts
+
+
+def crawl_weibo(url):  
+    login_weibo(url)
+    browser.get(url)
+    time.sleep(10)
+    source = browser.page_source 
+    soup = BeautifulSoup(source, 'lxml')
+    cards = list()
+    cards_temp = soup.find_all('div', {'class':'card-wrap'})
+    
+    for card in cards_temp:
+        if card.find('div', {'node-type':'like'}):
+            cards.append(card)
+    all_weibo = convert_to_posts(cards , ids)
+
     return all_weibo
