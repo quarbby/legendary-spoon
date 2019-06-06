@@ -16,14 +16,14 @@ def update(request):
 	crawler.weibo_login()
 	for keyword in keywords:
 	    for site in keyword['sites']:
-	        # if site['source'] == 'tweets':
-	        #     uploading_data.upload_crawled_data(site['source'], crawler.crawl_twitter(site['url']))
-	        # elif site['source'] == 'zhihu':
-	        #     uploading_data.upload_crawled_data(site['source'], crawler.crawl_zhihu(site['url']))
-	        # elif site['source'] == 'news':
-	        # 	uploading_data.upload_crawled_data(site['source'], crawler.crawl_news(site['url']))
-	        # elif site['source'] == 'scholar':
-	        # 	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
+	        if site['source'] == 'tweets':
+	            uploading_data.upload_crawled_data(site['source'], crawler.crawl_twitter(site['url']))
+	        elif site['source'] == 'zhihu':
+	            uploading_data.upload_crawled_data(site['source'], crawler.crawl_zhihu(site['url']))
+	        elif site['source'] == 'news':
+	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_news(site['url']))
+	        elif site['source'] == 'scholar':
+	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
 	        if site['source'] == 'weibo':
 	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_weibo(site['url']))
 
@@ -83,11 +83,11 @@ def details(request):
 	# plotgraph.top_companies(params, graph = True)
 	# plotgraph.twitter_bubble(params)
 
-	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
-	_,es_scholar = scroll_query.text_query(params,'scholar')
-	_,es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
-	_,es_tweets = scroll_query.text_query(params,'tweets')
-	_,es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
+	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
+	es_scholar = scroll_query.text_query(params,'scholar')
+	es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
+	es_tweets = scroll_query.text_query(params,'tweets')
+	es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -110,7 +110,7 @@ def weibo(request):
 	params = request.GET.get('q')
 	plotgraph.top_hashtag(params)
 	plotgraph.wordcloud(main_functions.chi_translation(params))
-	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
+	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -121,7 +121,7 @@ def weibo(request):
 
 def scholar(request):
 	params = request.GET.get('q')
-	_,es_scholar = scroll_query.text_query(params,'scholar')
+	es_scholar = scroll_query.text_query(params,'scholar')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -131,7 +131,7 @@ def scholar(request):
 
 def news(request):
 	params = request.GET.get('q')
-	_,es_news = scroll_query.text_query(main_functions.chi_translation(params),'news', sizes = 5)
+	es_news = scroll_query.text_query(main_functions.chi_translation(params),'news', sizes = 5)
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -144,7 +144,7 @@ def tweets(request):
 	# plotgraph.twitter_bubble(params)
 	# plotgraph.twitter_graph(params)
 	# plotgraph.wordcloud((params), indexes = 'tweets')
-	_,es_tweets = scroll_query.text_query(params,'tweets')
+	es_tweets = scroll_query.text_query(params,'tweets')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -155,7 +155,7 @@ def tweets(request):
 
 def zhihu(request):
 	params = request.GET.get('q')
-	_,es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
+	es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
