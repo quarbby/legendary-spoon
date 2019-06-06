@@ -68,7 +68,10 @@ def crawl_zhihu(url):
         post['summary_url'] = str(data[5]['content']) if data[5] else "Data not availiable"
         post['date'] = datetime.strptime((data[6]['content']), "%Y-%m-%dT%H:%M:%S.%fZ") if data[6] else "Data not availiable"
         post['summary'] = str(cards[i].find_all('span',{'itemprop': 'articleBody'})[0].contents[0])
-        post['upvote_count'] = int(cards[i]['data-za-extra-module'].split(',')[4].split(':')[1])
+        try:
+            post['upvote_count'] = int(cards[i]['data-za-extra-module'].split(',')[4].split(':')[1])
+        except:
+            post['upvote_count'] = 0
         all_zhihu.append(post)
     return all_zhihu
 
@@ -245,18 +248,3 @@ def crawl_weibo(url):
 
 
 
-# def crawl_weibo(url):  
-#     login_weibo('https://s.weibo.com/weibo?q=谷歌华为&nodup=1&page=1')
-#     browser.get(url)
-#     time.sleep(10)
-#     source = browser.page_source 
-#     soup = BeautifulSoup(source, 'lxml')
-#     cards = list()
-#     cards_temp = soup.find_all('div', {'class':'card-wrap'})
-    
-#     for card in cards_temp:
-#         if card.find('div', {'node-type':'like'}):
-#             cards.append(card)
-#     all_weibo = convert_to_posts(cards , ids)
-
-#     return all_weibo
