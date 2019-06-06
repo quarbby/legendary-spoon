@@ -13,22 +13,25 @@ def index(request):
 
 def update(request):
 	start_time = time.time()
+	crawler.weibo_login()
 	for keyword in keywords:
 	    for site in keyword['sites']:
-	        if site['source'] == 'tweets':
-	            uploading_data.upload_crawled_data(site['source'], crawler.crawl_twitter(site['url']))
-	        elif site['source'] == 'zhihu':
-	            uploading_data.upload_crawled_data(site['source'], crawler.crawl_zhihu(site['url']))
-	        elif site['source'] == 'news':
-	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_news(site['url']))
-	        elif site['source'] == 'scholar':
-	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
+	        # if site['source'] == 'tweets':
+	        #     uploading_data.upload_crawled_data(site['source'], crawler.crawl_twitter(site['url']))
+	        # elif site['source'] == 'zhihu':
+	        #     uploading_data.upload_crawled_data(site['source'], crawler.crawl_zhihu(site['url']))
+	        # elif site['source'] == 'news':
+	        # 	uploading_data.upload_crawled_data(site['source'], crawler.crawl_news(site['url']))
+	        # elif site['source'] == 'scholar':
+	        # 	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
+	        if site['source'] == 'weibo':
+	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_weibo(site['url']))
 
 	list_of_keywords = [kw['keyword'] for kw in keywords]
 
 	for params in list_of_keywords:
 		# es_zhihu, es_tweets, es_scholar, es_news, es_weibo = plotgraph.sort_by_dates(params)
-		# _,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
+		es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 		es_scholar = scroll_query.text_query(params,'scholar')
 		es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
 		es_tweets = scroll_query.text_query(params,'tweets')
@@ -36,7 +39,7 @@ def update(request):
 		context = {
 			"search_word": params,
 			"chi_translation": main_functions.chi_translation(params),
-			# "weibo": es_weibo,
+			"weibo": es_weibo,
 			"news":es_news,
 			"scholar":es_scholar,
 			"tweets":es_tweets,

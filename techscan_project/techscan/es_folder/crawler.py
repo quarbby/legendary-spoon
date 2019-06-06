@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DC
 import re
 import bs4 as bs
-from datetime import datetime
+import datetime
 import dateparser
 import time
 import urllib.parse
@@ -106,47 +106,7 @@ def crawl_scholar(url):
     return all_scholar
 
 
-
-
-
-
-def login_weibo(url):
-    # Open chrome and login to Weibo for access to search term data
-    caps = DC().CHROME
-    caps['pageLoadStrategy'] = "none"
-    browser = webdriver.Chrome(desired_capabilities = caps, executable_path="chromedriver")
-    browser.get(url)
-    browser.implicitly_wait(10)
-    WebDriverWait(browser, timeout = 120, poll_frequency = 20).until(
-        EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '登录')]")))
-
-    try:
-        credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
-        username = credentials[0]
-        password = credentials[1]
-        username.send_keys('weichao1995@gmail.com')
-        password.send_keys('31O55h95')
-        login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
-        login_button.click()
-
-    except:
-        login_page = browser.find_element_by_xpath("//*[contains(text(), '登录')]")
-        login_page.click()
-        
-        time.sleep(10)
-        
-        credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
-        username = credentials[0]
-        password = credentials[1]
-        username.send_keys('weichao1995@gmail.com')
-        password.send_keys('31O55h95')
-        login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
-        login_button.click()
-
-
-
-
-def convert_to_posts(cards, ids):
+def convert_to_posts(cards):
     ids = set()
     posts = list()
     post = list()
@@ -189,7 +149,8 @@ def convert_to_posts(cards, ids):
                 date = dateparser.parse(date)
                 date = date.isoformat()
         except:
-            date = str(datetime.datetime.now())
+            date = datetime.datetime.now()
+
 
         url_search = re.search(r'\/\/weibo.com\/([0-9]*\/[a-zA-z0-9]*)', date_html['href'])
         if url_search:
@@ -221,26 +182,81 @@ def convert_to_posts(cards, ids):
 
         post['summary_url'] = url
 
-        post['subject'] = [search_term]
+       
 
         if post['id'] not in ids:
             posts.append(post)
     
     return posts
 
+def weibo_login():
+    # Open chrome and login to Weibo for access to search term data
+    caps = DC().CHROME
+    caps['pageLoadStrategy'] = "none"
+    browser = webdriver.Chrome( executable_path="chromedriver")
+    browser.get('https://s.weibo.com/weibo?q=谷歌华为&nodup=1&page=1')
+    browser.implicitly_wait(10)
+    WebDriverWait(browser, timeout = 120, poll_frequency = 20).until(
+        EC.presence_of_element_located((By.XPATH, "//*[contains(text(), '登录')]")))
 
-def crawl_weibo(url):  
-    login_weibo(url)
+    try:
+        credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
+        username = credentials[0]
+        password = credentials[1]
+        username.send_keys('weichao1995@gmail.com')
+        password.send_keys('31O55h95')
+        login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
+        login_button.click()
+
+    except:
+        login_page = browser.find_element_by_xpath("//*[contains(text(), '登录')]")
+        login_page.click()
+        
+        time.sleep(10)
+        
+        credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
+        username = credentials[0]
+        password = credentials[1]
+        username.send_keys('weichao1995@gmail.com')
+        password.send_keys('31O55h95')
+        login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
+        login_button.click()
+
+def crawl_weibo(url):
+    caps = DC().CHROME
+    caps['pageLoadStrategy'] = "none"
+    browser = webdriver.Chrome(desired_capabilities = caps, executable_path="chromedriver")
     browser.get(url)
     time.sleep(10)
     source = browser.page_source 
-    soup = BeautifulSoup(source, 'lxml')
+    soup = bs.BeautifulSoup(source, 'lxml')
     cards = list()
     cards_temp = soup.find_all('div', {'class':'card-wrap'})
     
     for card in cards_temp:
         if card.find('div', {'node-type':'like'}):
             cards.append(card)
-    all_weibo = convert_to_posts(cards , ids)
+    all_weibo = convert_to_posts(cards)
 
     return all_weibo
+
+
+
+
+
+
+# def crawl_weibo(url):  
+#     login_weibo('https://s.weibo.com/weibo?q=谷歌华为&nodup=1&page=1')
+#     browser.get(url)
+#     time.sleep(10)
+#     source = browser.page_source 
+#     soup = BeautifulSoup(source, 'lxml')
+#     cards = list()
+#     cards_temp = soup.find_all('div', {'class':'card-wrap'})
+    
+#     for card in cards_temp:
+#         if card.find('div', {'node-type':'like'}):
+#             cards.append(card)
+#     all_weibo = convert_to_posts(cards , ids)
+
+#     return all_weibo
