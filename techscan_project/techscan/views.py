@@ -28,15 +28,15 @@ def update(request):
 
 	for params in list_of_keywords:
 		# es_zhihu, es_tweets, es_scholar, es_news, es_weibo = plotgraph.sort_by_dates(params)
-		_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
-		_,es_scholar = scroll_query.sub_query(params,'scholar')
-		_,es_news = scroll_query.sub_query(main_functions.chi_translation(params),'news')
-		_,es_tweets = scroll_query.sub_query(params,'tweets')
-		_,es_zhihu = scroll_query.sub_query(main_functions.chi_translation(params),'zhihu')
+		# _,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
+		es_scholar = scroll_query.text_query(params,'scholar')
+		es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
+		es_tweets = scroll_query.text_query(params,'tweets')
+		es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
 		context = {
 			"search_word": params,
 			"chi_translation": main_functions.chi_translation(params),
-			"weibo": es_weibo,
+			# "weibo": es_weibo,
 			"news":es_news,
 			"scholar":es_scholar,
 			"tweets":es_tweets,
@@ -80,11 +80,11 @@ def details(request):
 	# plotgraph.top_companies(params, graph = True)
 	# plotgraph.twitter_bubble(params)
 
-	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
-	_,es_scholar = scroll_query.sub_query(params,'scholar')
-	_,es_news = scroll_query.sub_query(main_functions.chi_translation(params),'news')
-	_,es_tweets = scroll_query.sub_query(params,'tweets')
-	_,es_zhihu = scroll_query.sub_query(main_functions.chi_translation(params),'zhihu')
+	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
+	_,es_scholar = scroll_query.text_query(params,'scholar')
+	_,es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
+	_,es_tweets = scroll_query.text_query(params,'tweets')
+	_,es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -107,7 +107,7 @@ def weibo(request):
 	params = request.GET.get('q')
 	plotgraph.top_hashtag(params)
 	plotgraph.wordcloud(main_functions.chi_translation(params))
-	_,es_weibo = scroll_query.sub_query(main_functions.chi_translation(params),'weibo')
+	_,es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -118,7 +118,7 @@ def weibo(request):
 
 def scholar(request):
 	params = request.GET.get('q')
-	_,es_scholar = scroll_query.sub_query(params,'scholar')
+	_,es_scholar = scroll_query.text_query(params,'scholar')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -141,7 +141,7 @@ def tweets(request):
 	# plotgraph.twitter_bubble(params)
 	# plotgraph.twitter_graph(params)
 	# plotgraph.wordcloud((params), indexes = 'tweets')
-	_,es_tweets = scroll_query.sub_query(params,'tweets')
+	_,es_tweets = scroll_query.text_query(params,'tweets')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
@@ -152,7 +152,7 @@ def tweets(request):
 
 def zhihu(request):
 	params = request.GET.get('q')
-	_,es_zhihu = scroll_query.sub_query(main_functions.chi_translation(params),'zhihu')
+	_,es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),

@@ -2,7 +2,7 @@ import requests
 from pprint import pprint
 from textblob import TextBlob
 from ..config import es
-from .scroll_query import graph_query, processing_hits
+from .scroll_query import text_query, processing_hits
 import pandas as pd
 import numpy as np
 import plotly.plotly as py
@@ -60,7 +60,7 @@ def check(keyword, indexes):
 
 def get_zh_author(keyword, graph = False):
 
-	df,_ = graph_query(keyword, 'zhihu')
+	df,_ = text_query(keyword, 'zhihu')
 	if df is not None:
 		upvote_count = df.groupby(['author']).sum().reset_index().sort_values('upvote_count', ascending=False)
 
@@ -104,7 +104,7 @@ def get_zh_author(keyword, graph = False):
 
 def weibo_author(keyword): #need to change according to es data
 
-	df_weibo,_ = graph_query(keyword, 'weibo')
+	df_weibo,_ = text_query(keyword, 'weibo')
 	if df_weibo is not None:
 		favorite_count = df_weibo.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 
@@ -136,7 +136,7 @@ def weibo_author(keyword): #need to change according to es data
 
 
 def twitter_author(keyword):
-	df_twitter,_ = graph_query(keyword, 'tweets')
+	df_twitter,_ = text_query(keyword, 'tweets')
 	df_twitter['fav_retweet'] = df_twitter['favorite_count'] + df_twitter['retweet_count']
 
 	if df_twitter is not None:
@@ -195,7 +195,7 @@ def twitter_author(keyword):
 
 def percentile(keyword, indexes):
 	if indexes == 'tweets':	
-		df_keyword,_ = graph_query(str(keyword), indexes)
+		df_keyword,_ = text_query(str(keyword), indexes)
 		if df_keyword is not None:
 			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 			df_keyword['fav_retweet'] = df_keyword['favorite_count'] + df_keyword['retweet_count']
@@ -203,14 +203,14 @@ def percentile(keyword, indexes):
 			top = len(df_positive)
 
 	elif indexes == 'weibo':	
-		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
+		df_keyword,_ = text_query(chi_translation(keyword), indexes)
 		if df_keyword is not None:
 			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 			df_positive = df_keyword[df_keyword.favorite_count >= 20]
 			top = len(df_positive)
 
 	elif indexes == 'zhihu':
-		df_keyword,_ = graph_query(chi_translation(keyword), indexes)
+		df_keyword,_ = text_query(chi_translation(keyword), indexes)
 		if df_keyword is not None:
 			df_keyword = df_keyword.groupby(['author']).sum().reset_index().sort_values('upvote_count', ascending=False)
 			df_positive = df_keyword[df_keyword.upvote_count >= 128]
@@ -226,9 +226,9 @@ def percentile(keyword, indexes):
 def overview_table(keyword):
 
 	
-	df_twitter,_ = graph_query(str(keyword), 'tweets')
-	df_zhihu,_ = graph_query(chi_translation(str(keyword)), 'zhihu')
-	df_weibo,_ = graph_query(chi_translation(str(keyword)), 'weibo')
+	df_twitter,_ = text_query(str(keyword), 'tweets')
+	df_zhihu,_ = text_query(chi_translation(str(keyword)), 'zhihu')
+	df_weibo,_ = text_query(chi_translation(str(keyword)), 'weibo')
 	try:
 		df_twitter = df_twitter.rename(columns = {'author':'author',
 		'url':'authorUrl'})

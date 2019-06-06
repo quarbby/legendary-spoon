@@ -20,7 +20,7 @@ from nltk.tokenize import sent_tokenize
 from ..config import location, es
 from .processing_dataframe import processing_df
 from .main_functions import chi_translation
-from .scroll_query import graph_query, processing_hits
+from .scroll_query import text_query, processing_hits
 from sklearn.feature_extraction.text import TfidfVectorizer
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import plotly.figure_factory as ff
@@ -32,7 +32,7 @@ import spacy
 
 def plot_pie_chart(keyword):
 
-	df,_= graph_query(keyword)
+	df,_= text_query(keyword)
 	if df is not None:
 		group_by = df.groupby("_index").size()
 		labels = []
@@ -53,7 +53,7 @@ def plot_pie_chart(keyword):
 		pass
 
 def count_year(keyword, indexes):
-	df,_ = graph_query(str(keyword), indexes)
+	df,_ = text_query(str(keyword), indexes)
 	df['published_year'] = df['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
 	df = df['published_year'].value_counts()
 	df = df.sort_index(ascending = False)
@@ -72,7 +72,7 @@ def count_year(keyword, indexes):
 	# , filename = "Paper count by year.html"
 
 def count_date(keyword, indexes):
-	df,_ = graph_query(str(keyword),indexes)
+	df,_ = text_query(str(keyword),indexes)
 	if df is not None:
 		df['published_date'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
 		df = df['published_date'].value_counts()
@@ -98,7 +98,7 @@ def count_date(keyword, indexes):
 
 def multi_year(keyword, index = "scholar"):
 	#setting the stopwords
-	df,_ = graph_query(str(keyword),index)
+	df,_ = text_query(str(keyword),index)
 	if df is not None:
 		df = processing_df(df)
 		stop_words = stopwords.words('english')
@@ -143,7 +143,7 @@ def multi_year(keyword, index = "scholar"):
 			name = "{}".format(str(keyword)))
 
 		
-		df0,_ = graph_query(tv.get_feature_names()[2],index)
+		df0,_ = text_query(tv.get_feature_names()[2],index)
 		df0['published_year'] = df0['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
 		df0 = df0['published_year'].value_counts()
 		df0 = df0.sort_index(ascending = False)
@@ -155,7 +155,7 @@ def multi_year(keyword, index = "scholar"):
 			mode = 'lines+markers',
 			name = "{}".format(str(tv.get_feature_names()[2])))
 
-		df1,_ = graph_query(tv.get_feature_names()[3],index)
+		df1,_ = text_query(tv.get_feature_names()[3],index)
 		df1['published_year'] = df1['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
 		df1 = df1['published_year'].value_counts()
 		df1 = df1.sort_index(ascending = False)
@@ -166,7 +166,7 @@ def multi_year(keyword, index = "scholar"):
 			mode = 'lines+markers',
 			name = "{}".format(str(tv.get_feature_names()[3])))
 
-		# df2,_ = graph_query(tv.get_feature_names()[2],index)
+		# df2,_ = text_query(tv.get_feature_names()[2],index)
 		# df2 = processing_df(df2)
 		# df2 = df2['published_year'].value_counts()
 		# df2 = df2.sort_index(ascending = False)
@@ -192,8 +192,8 @@ def multi_year(keyword, index = "scholar"):
 		pass
 
 def main_graph(keyword):
-	df_english,_ = graph_query(str(keyword))
-	df_chinese,_ = graph_query(str(chi_translation(keyword)))
+	df_english = text_query(str(keyword), dataframe = True)
+	df_chinese = text_query(str(chi_translation(keyword)), dataframe = True)
 	df = pd.concat([df_english,df_chinese], ignore_index = True)
 	dates = ['2017', '2018', '2019']
 	df = df.dropna(subset = ['date'])
@@ -291,7 +291,7 @@ def main_graph(keyword):
 		pass
 
 def top_hashtag(keyword):
-	df,_ = graph_query(chi_translation(keyword),'weibo')
+	df = text_query(chi_translation(keyword),'weibo')
 	df ['hashtags']= df['hashtags'].apply(lambda x:''.join(x))
 	df = df[df['hashtags']!='']
 	records = df.to_dict('records')
@@ -331,7 +331,7 @@ def top_hashtag(keyword):
 	plot(fig, filename='techscan/templates/graph/weibo_hashtag_count.html', auto_open=False)
 
 def twitter_bubble(keyword):
-	df,_ = graph_query(keyword, 'tweets')
+	df = text_query(keyword, 'tweets')
 	df2 = df.groupby(['hashtags']).sum().reset_index().sort_values('retweet_count', ascending = False)
 	df2 = df2.drop(columns = ['_score'])
 	df2 = df2[df2['retweet_count'] >= 10]
@@ -422,7 +422,7 @@ def twitter_bubble(keyword):
 	plot(fig, filename='techscan/templates/graph/twitter_hashtag_bubble.html', auto_open=False)
 
 def twitter_graph(keyword):
-	df,_ = graph_query(keyword, 'tweets')
+	df = text_query(keyword, 'tweets')
 	df_new = df.groupby(['user_screen_name']).sum().reset_index()
 	final = [df_new['favorite_count'].tolist()]
 	name_List = [df_new['user_screen_name'].tolist()]
@@ -432,8 +432,8 @@ def twitter_graph(keyword):
 	plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
 
 def wordcloud(keyword):
-	df_weibo,_ = graph_query(chi_translation(keyword),'weibo')
-	df_twitter,_ = graph_query(keyword, 'tweets')
+	df_weibo = text_query(chi_translation(keyword),'weibo')
+	df_twitter = text_query(keyword, 'tweets')
 	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
 		stopword_chinese = f.read()
 	df_weibo['summary'] = df_weibo['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
@@ -459,7 +459,7 @@ def wordcloud(keyword):
 	wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
 
 def detail_hashtag_frequency(keyword):
-	df_twitter,_ = graph_query(keyword, 'tweets')
+	df_twitter = text_query(keyword, 'tweets')
 	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  x).split()))
 	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x: x.replace("ai", "AI"))
 	df_twitter = df_twitter[df_twitter['hashtags'] != '']
@@ -479,7 +479,7 @@ def detail_hashtag_frequency(keyword):
 		text_list.append('Twitter')
 
 
-	df_weibo,_ = graph_query(chi_translation(keyword),'weibo')
+	df_weibo = text_query(chi_translation(keyword),'weibo')
 	df_weibo ['hashtags']= df_weibo['hashtags'].apply(lambda x:''.join(x))
 	df_weibo = df_weibo[df_weibo['hashtags']!='']
 	weibo_record = df_weibo.to_dict('records')
@@ -733,7 +733,7 @@ def heatmap(keyword):
     plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
 
 def top_companies(keyword, indexes = 'news', graph = False):
-	# df,_ = graph_query(chi_translation(keyword), indexes)
+	# df,_ = text_query(chi_translation(keyword), indexes)
 	# summary_list = df.summary.tolist()
 	# summary_string = "".join(summary_list)
 	# tokenised = psg.cut(summary_string)
@@ -948,8 +948,8 @@ def plot_stocks(keyword):
 
 def people_companies(keyword):
 	nlp = spacy.load('en_core_web_md')
-	df_news,_ = graph_query(chi_translation(keyword), 'news')
-	df_twitter,_ = graph_query(keyword, 'tweets')
+	df_news = text_query(chi_translation(keyword), 'news')
+	df_twitter = text_query(keyword, 'tweets')
 	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
 		stopword_chinese = f.read()
 	try:
@@ -1068,11 +1068,11 @@ def people_companies_wordcloud(keyword):
 
 
 def sort_by_dates(keyword):
-	df_weibo,_ = graph_query(chi_translation(keyword),'weibo')
-	df_news,_ = graph_query(chi_translation(keyword),'news')
-	df_scholar,_ = graph_query(keyword,'scholar')
-	df_tweets,_ = graph_query(keyword,'tweets')
-	df_zhihu,_ = graph_query(chi_translation(keyword),'zhihu')
+	df_weibo = text_query(chi_translation(keyword),'weibo')
+	df_news = text_query(chi_translation(keyword),'news')
+	df_scholar = text_query(keyword,'scholar')
+	df_tweets = text_query(keyword,'tweets')
+	df_zhihu = text_query(chi_translation(keyword),'zhihu')
 	
 	if df_weibo is None:
 		json_weibo = []
