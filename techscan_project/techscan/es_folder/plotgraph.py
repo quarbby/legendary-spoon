@@ -30,28 +30,6 @@ from .stocks_funct import NER_stocks
 import spacy
 
 
-def plot_pie_chart(keyword):
-
-	df,_= text_query(keyword)
-	if df is not None:
-		group_by = df.groupby("_index").size()
-		labels = []
-		values = []
-		colors = ['#FEBFB3', '#96D38C']
-		for key in group_by:
-			values.append(key)
-
-		for value in group_by.index:
-			labels.append(value)
-
-		trace = go.Pie(labels=labels, values=values, marker=dict(colors=colors, 
-							line=dict(color='#000000', width=2)))
-		data = [trace]
-		fig = dict(data=data)
-		graph = plot(fig, filename = 'search/templates/graph/basic_pie_chart.html', auto_open=False)
-	else:
-		pass
-
 def count_year(keyword, indexes):
 	df,_ = text_query(str(keyword), indexes)
 	df['published_year'] = df['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))

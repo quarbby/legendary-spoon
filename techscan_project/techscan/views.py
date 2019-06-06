@@ -54,7 +54,7 @@ def update(request):
 			static_file.write(content)
 
 	time_taken = " %s seconds " % (time.time() - start_time)
-	return HttpResponse('Done. Time taken to complete: {}. Generated {} different templates on {}'.format(time_taken, len(list_of_keywords), list_of_keywords))
+	return HttpResponse('Done. Time taken to complete: {}. Generated {} templates on {}'.format(time_taken, len(list_of_keywords), list_of_keywords))
 
 def main(request):
 	params = request.GET.get('q')
@@ -96,20 +96,16 @@ def details(request):
 		"scholar":es_scholar,
 		"tweets":es_tweets,
 		"zhihu":es_zhihu,
-		# "keywords": keywords
 		# "author_table":main_functions.overview_table(params),
 		# "company_table":plotgraph.top_companies(params)
 	}
 
 	return render(request,'details.html',context)
 
-
-
-
 def weibo(request):
 	params = request.GET.get('q')
-	plotgraph.top_hashtag(params)
-	plotgraph.wordcloud(main_functions.chi_translation(params))
+	# plotgraph.top_hashtag(params)
+	# plotgraph.wordcloud(main_functions.chi_translation(params))
 	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
@@ -149,7 +145,7 @@ def tweets(request):
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"tweets": es_tweets,
-		# "author_table": main_functions.twitter_author(params)
+		"author_table": main_functions.twitter_author(params)
 	}
 	return render(request, 'tweets.html', context)
 

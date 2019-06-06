@@ -33,7 +33,6 @@
 		<div class="main-sidebar">
 			<a class="main-category" href="/main?q={{search_word}}">Overview</a>
 			<a class="main-category" href="/details?q={{search_word}}">Details</a>
-			<!-- <a class="main-category" href="/overview2?q={{search_word}}">Overview 2</a> -->
 		</div>
 		<div class="sub-sidebar">
 			<a class="active-sub-category" href="/weibo?q={{search_word}}">Weibo</a>
@@ -41,8 +40,6 @@
 			<a class="sub-category" href="/news?q={{search_word}}">News</a>
 			<a class="sub-category" href="/tweets?q={{search_word}}">Tweets</a>
 			<a class="sub-category" href="/zhihu?q={{search_word}}">Zhihu</a>
-<!-- 			<a class="sub-category" href="/facial_recognition?q={{search_word}}">Facial Recognition</a>
-			<a class="sub-category" href="/speech_text?q={{search_word}}">Speech-to-Text</a> -->
 		</div>
 	</div>
 	<!-- Contents -->
@@ -53,10 +50,8 @@
 				<h3><b>Top 5 Posts</b></h3>
 				{% for i in weibo %}
 				<div class="card bg-light text-dark col-12">
-					<div class="sub-card-title py-2"><a href="{{i.url}}">@{{i.author}}</a></div>
+					<div class="sub-card-title py-2"><a href="{{i.summary_url}}">@{{i.author}}</a></div>
 					<div class="sub-card-body py-2">{{i.summary}}</div>
-					<!-- <div style="display: none;" id="hiddenText{{forloop.counter0}}">{{j}}</div>
-					<a href="#" onclick="$('#hiddenText{{forloop.counter0}}').show(); return false;">Translate</a> -->
 					<div class="row px-2">
 						<div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
 						<div class="sub-card-others p-2">Published Date: {{i.date}}</div>
