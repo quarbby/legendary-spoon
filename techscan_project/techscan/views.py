@@ -96,8 +96,8 @@ def details(request):
 		"scholar":es_scholar,
 		"tweets":es_tweets,
 		"zhihu":es_zhihu,
-		# "author_table":main_functions.overview_table(params),
-		# "company_table":plotgraph.top_companies(params)
+		"author_table":main_functions.overview_table(params),
+		"company_table":plotgraph.top_companies(params)
 	}
 
 	return render(request,'details.html',context)

@@ -231,7 +231,7 @@ def overview_table(keyword):
 	df_weibo = text_query(chi_translation(str(keyword)), 'weibo', dataframe = True)
 	try:
 		df_twitter = df_twitter.rename(columns = {'author':'author',
-		'url':'authorUrl'})
+		'url':'summary_url'})
 	except:
 		pass
 	try:
@@ -241,7 +241,7 @@ def overview_table(keyword):
 	try:
 		df_weibo = df_weibo.rename(columns = {
 		'author':'author',
-		'url':'authorUrl'
+		'url':'summary_url'
 		})
 	except:
 		pass
@@ -264,7 +264,7 @@ def overview_table(keyword):
 		author_list2 = [[i] for i in author_list]
 		zhihu_url = []
 		for i in range(len(author_list2)):
-			temp_zhihu_url = set(df_zhihu[df_zhihu['author'].isin(list(author_list2[i]))].authorUrl.values.tolist())
+			temp_zhihu_url = set(df_zhihu[df_zhihu['author'].isin(list(author_list2[i]))].summary_url.values.tolist())
 			if list(temp_zhihu_url)[0] not in zhihu_url:
 				zhihu_url.append(list(temp_zhihu_url)[0])
 		df_zhihu_new['url'] = zhihu_url
