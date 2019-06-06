@@ -12,3 +12,4 @@ jieba
 wordcloud
 googlemaps
 beautifulsoup4==4.6.3
+VaderSentiment
