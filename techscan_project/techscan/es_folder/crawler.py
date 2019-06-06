@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DC
 import re
 import bs4 as bs
-import datetime
+from datetime import datetime
 import dateparser
 import time
 import urllib.parse
@@ -135,12 +135,12 @@ def convert_to_posts(cards):
         date = date_html.get_text().split()[0].strip()
         try:
             if '今天' in str(date):
-                date = str(datetime.datetime.now())
+                date = str(datetime.now())
                 date = dateparser.parse(date)
                 date = date.isoformat()
 
             elif '年' not in str(date):
-                year = datetime.date.today().year
+                year = date.today().year
     #             date = str(year) + '年' + date
                 date = dateparser.parse(date)
                 date = date.replace(year=int(year)).isoformat()
@@ -149,7 +149,7 @@ def convert_to_posts(cards):
                 date = dateparser.parse(date)
                 date = date.isoformat()
         except:
-            date = datetime.datetime.now()
+            date = datetime.now()
 
 
         url_search = re.search(r'\/\/weibo.com\/([0-9]*\/[a-zA-z0-9]*)', date_html['href'])
