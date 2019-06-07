@@ -515,6 +515,8 @@ def detail_hashtag_frequency(keyword):
 
 def heatmap(keyword):
     search_term = chi_translation(keyword)
+    if 'heatmap' not in es.indices.get_alias().keys():
+        es.indices.create(index = 'heatmap')
     res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {
         "match" : {"labels" : search_term}
         }})
@@ -926,8 +928,8 @@ def plot_stocks(keyword):
 
 def people_companies(keyword):
 	nlp = spacy.load('en_core_web_md')
-	df_news = text_query(chi_translation(keyword), 'news')
-	df_twitter = text_query(keyword, 'tweets')
+	df_news = text_query(chi_translation(keyword), 'news', dataframe= True)
+	df_twitter = text_query(keyword, 'tweets', dataframe =True)
 	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
 		stopword_chinese = f.read()
 	try:
@@ -1005,6 +1007,8 @@ def people_companies(keyword):
 		pass
 		
 def people_companies_wordcloud(keyword):
+	if 'wordcloud' not in es.indices.get_alias().keys():
+		es.indices.create(index = 'wordcloud')
 	res = es.search(index = 'wordcloud' , size = int(10000), scroll = '2m', body = {"query" : {
         "match" : {"label" : keyword}
         }})
@@ -1045,11 +1049,11 @@ def people_companies_wordcloud(keyword):
 
 
 def sort_by_dates(keyword):
-	df_weibo = text_query(chi_translation(keyword),'weibo')
-	df_news = text_query(chi_translation(keyword),'news')
-	df_scholar = text_query(keyword,'scholar')
-	df_tweets = text_query(keyword,'tweets')
-	df_zhihu = text_query(chi_translation(keyword),'zhihu')
+	df_weibo = text_query(chi_translation(keyword),'weibo',dataframe = True)
+	df_news = text_query(chi_translation(keyword),'news',dataframe = True)
+	df_scholar = text_query(keyword,'scholar',dataframe = True)
+	df_tweets = text_query(keyword,'tweets',dataframe = True)
+	df_zhihu = text_query(chi_translation(keyword),'zhihu',dataframe = True)
 	
 	if df_weibo is None:
 		json_weibo = []

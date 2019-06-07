@@ -1,7 +1,7 @@
 from ..config import es
 from pandas import pandas as pd
 import collections
-from .scroll_query import graph_query
+from .scroll_query import text_query
 from pprint import pprint
 import jieba.posseg as psg
 import json
@@ -9,9 +9,9 @@ import googlemaps
 import requests
 
 def find_NER(keyword):
-	p,_ = graph_query(keyword,'news')
+	p = text_query(keyword,'news', dataframe = True)
 	words = p.summary.tolist()
-	publisher = p.authors.tolist()
+	publisher = p.author.tolist()
 	wordList = []
 
 	for i in range (len(words)):
