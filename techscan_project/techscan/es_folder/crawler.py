@@ -33,21 +33,16 @@ def disable_ssl():
     ctx.verify_mode = ssl.CERT_NONE
     return ctx
 
-
-
 def sentiment(sentence):
     analyzer = SentimentIntensityAnalyzer()
     VS = analyzer.polarity_scores(sentence)
 
     if VS['compound'] >= 0.05:
         return('Positive')
-
     elif VS['compound'] > -0.05 and VS['compound'] < 0.05:
         return('Neutral')
-
     else:
         return('Negative')
-
 
 def crawl_twitter(url):
     page_source = get_page_source(url)
@@ -126,7 +121,6 @@ def crawl_scholar(url):
         all_scholar.append(post)
     return all_scholar
 
-
 def convert_to_posts(cards):
     
     posts = list()
@@ -159,19 +153,16 @@ def convert_to_posts(cards):
                 date = str(datetime.now())
                 date = dateparser.parse(date)
                 date = date.isoformat()
-
             elif '年' not in str(date):
                 year = date.today().year
     #             date = str(year) + '年' + date
                 date = dateparser.parse(date)
                 date = date.replace(year=int(year)).isoformat()
-
             else:
                 date = dateparser.parse(date)
                 date = date.isoformat()
         except:
             date = datetime.now()
-
 
         url_search = re.search(r'\/\/weibo.com\/([0-9]*\/[a-zA-z0-9]*)', date_html['href'])
         if url_search:
@@ -187,20 +178,15 @@ def convert_to_posts(cards):
         like_count = like_html.get_text().strip()
         like_count = int(like_count) if like_count else 0
         
-     # Turn authors into a list of strings rather than a list of dicts 
         post['summary'] = text
         post['id'] = post_id
-
-        # In twitter there is only 1 author so a string, not a list, is returned
         post['user_id'] = uid
         post['author'] = name
         post['date'] = date
-
         post['links'] = links
         post['hashtags'] = hashtags
         post['hashtag_count'] = len(hashtags)
         post['favorite_count'] = like_count
-
         post['summary_url'] = url
 
        

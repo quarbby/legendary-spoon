@@ -229,12 +229,12 @@ def main_graph(keyword):
 		layout = go.Layout(
 			width = 780,
 			height = 300,
-			margin=go.layout.Margin(
-				l=0,
-				r=0,
-				b=0,
-				t=0,
-				pad=1),
+			# margin=go.layout.Margin(
+			# 	l=0,
+			# 	r=0,
+			# 	b=0,
+			# 	t=0,
+			# 	pad=1),
 			legend = dict(x = 0.1, y = 1.15, orientation = "h"),
 			updatemenus = list([
 				dict(
