@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from .main import main_functions, scroll_query, plotgraph, crawler, neo4jgraph
+from .main import main_functions, scroll_query, plotgraph, crawler, neo4jgraph, update_heatmap
 from .main.upload_delete import uploading_data
 from .crawl_list import keywords
 import time
@@ -19,7 +19,10 @@ def update(request):
 	        elif site['source'] == 'zhihu':
 	            uploading_data.upload_crawled_data(site['source'], crawler.crawl_zhihu(site['url']))
 	        elif site['source'] == 'news':
-	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_news(site['url']))
+	        	crawled_news = crawler.crawl_news(site['url'])
+	        	uploading_data.upload_crawled_data(site['source'], crawled_news)
+	        	update_heatmap.googlemaps_input(keyword, update_heatmap.findNER_Crawled_News(keyword,crawled_news))
+
 	        elif site['source'] == 'scholar':
 	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
 	        if site['source'] == 'weibo':

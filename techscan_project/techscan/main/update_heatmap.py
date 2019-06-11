@@ -7,8 +7,10 @@ import jieba.posseg as psg
 import json
 import googlemaps
 import requests
+import pandas as pd
+from .uploading_data import upload_data_ner
 
-def find_NER(keyword):
+def findNER_esNews(keyword):
 	p = text_query(keyword,'news', dataframe = True)
 	words = p.summary.tolist()
 	publisher = p.author.tolist()
@@ -43,14 +45,15 @@ def find_NER(keyword):
 					x.append(intemediate_list['publisher'][j])
 		final['publisher_companies'] = x
 		Final_List.append(final)
-
+	return Final_List
 ####################################### Import To GoogleMAPs ###########################################3
 
 
+def googlemaps_input(keyword, Final_List):
 
 	gmaps = googlemaps.Client(key='AIzaSyCHC6rS5ps845uN757_to_Py401MayV898')
 	# pprint(Final_List[0])
-	LABELS = Final_List[0]['label']
+	LABELS = keyword
 
 	## For publisher
 	Publisher = []
@@ -151,9 +154,52 @@ def find_NER(keyword):
 			IP['types'] = 'Institutions'
 			IP['labels'] = LABELS
 			FinalIP.append(IP)
-
+	upload_data_ner('heatmap',FinalIP)
 	print('Finish')
 	return (FinalIP)
+
+def findNER_Crawled_News (keyword,news_list):
+	words = []
+	publisher = []
+	for i in range (len(news_list)):
+		words.append(news_list[i]['summary'])
+		publisher.append(news_list[i]['author'])
+
+	# words = p.summary.tolist()
+	# publisher = p.author.tolist()
+	wordList = []
+
+	for i in range (len(words)):
+		wordList.append(psg.cut(words[i]))
+	
+	pos_tag = []
+	publisher_list = []
+	for j in range (len(wordList)):
+		for i in wordList[j]:
+			if i.flag == "nt":
+				pos_tag.append(i.word)
+				publisher_list.append(publisher[j])
+	Authorcount = collections.Counter(pos_tag)
+
+	intemediate_list = pd.DataFrame({"publisher": publisher_list, "mention_company": pos_tag})
+	dicAuthorcount = dict(Authorcount)
+
+	Final_List = []
+	for key,values in dicAuthorcount.items():
+		final = dict()
+		x = []
+		final['company'] = key 
+		final['count'] = values
+		final['label'] = keyword
+
+		for j in range (len(pos_tag)):
+			if key == intemediate_list['mention_company'][j]:
+				if intemediate_list['publisher'][j] not in x:
+					x.append(intemediate_list['publisher'][j])
+		final['publisher_companies'] = x
+		Final_List.append(final)
+	
+	return Final_List
 
 
 

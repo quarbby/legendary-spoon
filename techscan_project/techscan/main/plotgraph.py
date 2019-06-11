@@ -25,7 +25,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import plotly.figure_factory as ff
 from .uploading_data import upload_data_ner
-from .train_heatmap_index import find_NER
+from .update_heatmap import findNER_esNews, googlemaps_input
 import spacy
 
 
@@ -196,24 +196,6 @@ def main_graph(keyword):
 		#  y = df.values,
 		#  visible = True,
 		#  name = "Total count")
-		trace_2017 = go.Bar(
-			showlegend = True,
-			x = df_2017.index,
-			dx = 5,
-			y = df_2017.values,
-			visible = True,
-			name = "Total count (2017)",
-			marker=dict(
-				color='rgb(158,225,219)'))
-		trace_2018 = go.Bar(
-			showlegend = True,
-			x = df_2018.index,
-			dx = 5,
-			y = df_2018.values,
-			visible = True,
-			name = "Total count (2018)",
-			marker=dict(
-				color='rgb(160,225,158)'))
 		trace_2019 = go.Bar(
 			showlegend = True,
 			x = df_2019.index,
@@ -223,45 +205,38 @@ def main_graph(keyword):
 			name = "Total count (2019)",
 			marker=dict(
 				color='rgb(225,170,158)'))
-		data = [trace_2017, trace_2018, trace_2019]
+		data = [trace_2019]
 
 		layout = go.Layout(
 			width = 780,
 			height = 300,
-			# margin=go.layout.Margin(
-			# 	l=0,
-			# 	r=0,
-			# 	b=0,
-			# 	t=0,
-			# 	pad=1),
-			legend = dict(x = 0.1, y = 1.15, orientation = "h"),
+			# legend = dict(x = 1.0, y = 1.15, orientation = "h"),
 			updatemenus = list([
 				dict(
-					buttons = list([
-						dict(
-							args = [{'visible': [True,True,True]},],
-							label = "All",
-							method = "update",
-							),
-						dict(
-							args = [{'visible':[True,False,False]},],
-							label = "2017",
-							method = "update",
-							),
-						dict(
-							args = [{'visible':[False,True,False]},],
-							label = "2018",
-							method = "update",
-							),
-						dict(
-							args = [{'visible':[False,False,True]},],
-							label = "2019",
-							method = "update",
-							)
-						])
+				buttons = list([
+					dict(
+						args = [{'visible': [True,True,True]},],
+						label = "All",
+						method = "restyle",
+						),
+					
+					dict(
+						args = [{'visible':[True]},],
+						label = "2019",
+						method = "restyle",
+						)
+					]),
+				direction = 'down',
+				pad = {'r': 10, 't': 10},
+				showactive = True,
+				x = 0.1,
+				xanchor = 'left',
+				y = 1.5,
+				yanchor = 'top' 
+				)
+			])
 					)
-				])
-			)
+
 		fig = dict(data=data, layout=layout)
 		plot(fig, filename = 'techscan/templates/graph/main_graph_all.html', auto_open=False)
 	else:
@@ -514,8 +489,6 @@ def detail_hashtag_frequency(keyword):
 
 def heatmap(keyword):
     search_term = chi_translation(keyword)
-    if 'heatmap' not in es.indices.get_alias().keys():
-        es.indices.create(index = 'heatmap')
     res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {
         "match" : {"labels" : search_term}
         }})
@@ -541,7 +514,7 @@ def heatmap(keyword):
 
     if resItems == []:
         # return [] 
-        Items = find_NER(search_term)
+        Items = googlemaps_input(findNER_esNews(search_term))
         upload_data_ner(Items, 'heatmap')
         for i in range (len(Items)):
             companies.append(Items[i]['publisher'])
@@ -927,8 +900,8 @@ def plot_stocks(keyword):
 
 def people_companies(keyword):
 	nlp = spacy.load('en_core_web_md')
-	df_news = text_query(chi_translation(keyword), 'news', dataframe= True)
-	df_twitter = text_query(keyword, 'tweets', dataframe =True)
+	df_news = text_query(chi_translation(keyword), 'news')
+	df_twitter = text_query(keyword, 'tweets')
 	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
 		stopword_chinese = f.read()
 	try:
@@ -1006,8 +979,6 @@ def people_companies(keyword):
 		pass
 		
 def people_companies_wordcloud(keyword):
-	if 'wordcloud' not in es.indices.get_alias().keys():
-		es.indices.create(index = 'wordcloud')
 	res = es.search(index = 'wordcloud' , size = int(10000), scroll = '2m', body = {"query" : {
         "match" : {"label" : keyword}
         }})
@@ -1048,11 +1019,11 @@ def people_companies_wordcloud(keyword):
 
 
 def sort_by_dates(keyword):
-	df_weibo = text_query(chi_translation(keyword),'weibo',dataframe = True)
-	df_news = text_query(chi_translation(keyword),'news',dataframe = True)
-	df_scholar = text_query(keyword,'scholar',dataframe = True)
-	df_tweets = text_query(keyword,'tweets',dataframe = True)
-	df_zhihu = text_query(chi_translation(keyword),'zhihu',dataframe = True)
+	df_weibo = text_query(chi_translation(keyword),'weibo')
+	df_news = text_query(chi_translation(keyword),'news')
+	df_scholar = text_query(keyword,'scholar')
+	df_tweets = text_query(keyword,'tweets')
+	df_zhihu = text_query(chi_translation(keyword),'zhihu')
 	
 	if df_weibo is None:
 		json_weibo = []
