@@ -4,10 +4,8 @@ import ast
 from ..config import neo4jdriver
 from ..es_folder import main_functions
 
-# def related_field(keyword):
-#   with neo4jdriver.session() as session:
-#     relatedField = session.run("MATCH (f:Field:SubGraphCS)<-[:PART_OF_FIELD]-(f1:Field:SubGraphCS) WHERE f.fieldName =~ '(?i).*{}.*' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 10".format(keyword))
-#   return [{"fieldName" : record['f1.fieldName']} for record in relatedField]
+##### output related field in neo4j list format
+
 def related_field(keyword):
   with neo4jdriver.session() as session:
     relatedField = session.run("MATCH (f:Field)<-[:PART_OF_FIELD]-(f1:Field) WHERE f.fieldName =~ '(?i){}' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 6".format(keyword))
@@ -18,7 +16,8 @@ def related_field(keyword):
       relatedField = session.run("MATCH (f:Field)<-[:PART_OF_FIELD]-(f1:Field) WHERE f.fieldName =~ '(?i).*{}.*' RETURN DISTINCT f1.fieldName,f1.fieldPaperNum ORDER BY f1.fieldPaperNum DESC LIMIT 6".format(keyword))
       related_field_list = [{"fieldName" : record['f1.fieldName']} for record in relatedField]
       return related_field_list
-# ColorListArrays = ['rgb(0,0,0)','rgb(15,41,68)','rgb(254,144,4)','rgb(100,100,100)','rgb(300,0,214)','rgb(0,200,0)','rgb(0,0,100)','rgb(15,41,68)']
+
+##### output related field in nodes and relations format
 
 def search_field(Keyword):
   with neo4jdriver.session() as session:
@@ -30,7 +29,9 @@ def search_field(Keyword):
       output = session.run('MATCH f=(f1:Field)<-[r1:PART_OF_FIELD]-(q:Field) WHERE f1.fieldName =~ "(?i).*{}.*" OPTIONAL MATCH e=(q)<-[r2:PART_OF_FIELD]-(w:Field) RETURN f,e ORDER BY q.fieldPaperNum DESC LIMIT 100'.format(Keyword))
       result = [record for record in output]
       return result
-      
+
+###### From results of the nodes and relations, plot graph using plotly module
+
 def plotgraph(result):
   try:
     TotalNode = []
@@ -127,26 +128,26 @@ def plotgraph(result):
         if IDList[w] in TotalNode[l]["id"]:
           LabelList.append(TotalNode[l]["name"])
 
-    
+    ##### Re-index nodes labels for graph plot requirements
 
-    HELL=[]
+    nodes_input=[]
     count1 = -1
     for i in range (len(TotalNode)):
       count1 += 1 
-      HELL.append({"group": count1, "name": TotalNode[i]['name'], "id": TotalNode[i]['id'], "labels":TotalNode[i]['labels'], "Ranks": TotalNode[i]["Ranks"]})
+      nodes_input.append({"group": count1, "name": TotalNode[i]['name'], "id": TotalNode[i]['id'], "labels":TotalNode[i]['labels'], "Ranks": TotalNode[i]["Ranks"]})
 
-    YEAH = []
+    relations_input = []
     for j in range (len(relations)):
       x=[]  
       y=[]
-      for k in range (len(HELL)):
-        if relations[j]['source'] == HELL[k]['id']:
-          x.append(HELL[k]['group'])
-        if relations[j]['target'] == HELL[k]['id']:
-          y.append(HELL[k]['group'])
-      YEAH.append({"source": x[0], "target": y[0], "relsName": relations[j]['relsName'], "Linkcolor": relations[j]['Linkcolor']})
+      for k in range (len(nodes_input)):
+        if relations[j]['source'] == nodes_input[k]['id']:
+          x.append(nodes_input[k]['group'])
+        if relations[j]['target'] == nodes_input[k]['id']:
+          y.append(nodes_input[k]['group'])
+      relations_input.append({"source": x[0], "target": y[0], "relsName": relations[j]['relsName'], "Linkcolor": relations[j]['Linkcolor']})
 
-    graph = { 'nodes': HELL, 'edges': YEAH}
+    graph = { 'nodes': nodes_input, 'edges': relations_input}
 
     N=len(graph['nodes'])
 
@@ -176,7 +177,7 @@ def plotgraph(result):
 
 
     layt=G.layout('kk', dim=3)
-
+##### processed nodes and relations for graph inputs
     Xn=[layt[k][0] for k in range(N-1)]# x-coordinates of nodes
     Yn=[layt[k][1] for k in range(N-1)]# y-coordinates
     Zn=[layt[k][2] for k in range(N-1)]# z-coordinates
@@ -192,7 +193,7 @@ def plotgraph(result):
     import plotly.graph_objs as go
     from plotly.offline import download_plotlyjs, init_notebook_mode, plot
 
-
+    ##### plot nodes
     trace=go.Scatter3d(x=[Xn[0]],
                    y=[Yn[0]],
                    z=[Zn[0]],
@@ -207,6 +208,7 @@ def plotgraph(result):
     		           hoverinfo='text' 
 
                    	)
+    ##### plot relations
     trace1=go.Scatter3d(x=Xe,
                    y=Ye,
                    z=Ze,
@@ -246,9 +248,6 @@ def plotgraph(result):
               )
 
     layout = go.Layout(
-             # title="Related Fields and Authors",
-             # width = 550,
-             # height = 250,
              autosize = True,
              showlegend=False,
              scene=dict(
@@ -265,21 +264,6 @@ def plotgraph(result):
         ),
         hovermode='closest',
 
-        # annotations=[
-        #        dict(
-        #        showarrow=False,
-        #         text="Data source: <a href='http://bost.ocks.org/mike/miserables/miserables.json'>[1] miserables.json</a>",
-        #         xref='paper',
-        #         yref='paper',
-        #         x=0,
-        #         y=0.1,
-        #         xanchor='left',
-        #         yanchor='bottom',
-        #         font=dict(
-        #         size=14
-        #         )
-        #         )
-        #     ],  
               )
 
     data=[trace1, trace2,trace]
@@ -287,19 +271,10 @@ def plotgraph(result):
 
     plot(fig, filename = 'techscan/templates/graph/neo4jgraph.html', auto_open=False)
 
-    # IDList = [] 
-    # LabelList = []
-    # for w in range (len(relations)):
-    #   if relations[w]["target"] in TotalNode[0]["id"]:
-    #     if relations[w]["source"] not in IDList:
-    #       IDList.append(relations[w]["source"])
-    # for w in range (len(IDList)):
-    #   for l in range (len(TotalNode)):
-    #     if IDList[w] in TotalNode[l]["id"]:
-    #       LabelList.append(TotalNode[l]["name"])
   except:
     return 'False'
 
+##### match related field to data 
 
 def get_related_table(keyword):
   neo4j = related_field(keyword)
