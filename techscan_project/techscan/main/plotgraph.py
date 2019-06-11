@@ -1,172 +1,27 @@
 import re
 import plotly
-# import codecs
 import jieba
 import jieba.posseg as psg
 import nltk
 import math
 import numpy as np
 import pandas as pd
-from PIL import Image
 import plotly.plotly as py
 import plotly.graph_objs as go
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from textblob import TextBlob
-from textblob.inflect import singularize as _singularize
 from collections import Counter
 from nltk.corpus import stopwords
-from nltk.tokenize import sent_tokenize
+# from nltk.tokenize import sent_tokenize
 from ..config import es
-from .processing_dataframe import processing_df
 from .main_functions import chi_translation
 from .scroll_query import text_query, processing_hits
-from sklearn.feature_extraction.text import TfidfVectorizer
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import plotly.figure_factory as ff
 from .uploading_data import upload_data_ner
 from .train_heatmap_index import find_NER
 import spacy
 
-
-def count_year(keyword, indexes):
-	df,_ = text_query(str(keyword), indexes)
-	df['published_year'] = df['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
-	df = df['published_year'].value_counts()
-	df = df.sort_index(ascending = False)
-
-	trace = go.Scatter(
-		x = df.index,
-		dx = 5,
-		y = df.values,
-		mode = 'lines+markers',
-		name = 'number of papers by day',
-		)
-	data = [trace]
-	fig = dict(data=data)
-	plot(fig, filename = 'search/templates/graph/basic_line_graph_{}.html'.format(indexes), auto_open=False)
-		# chart = plot(fig, include_plotlyjs=False, output_type='div')
-	# , filename = "Paper count by year.html"
-
-def count_date(keyword, indexes):
-	df,_ = text_query(str(keyword),indexes)
-	if df is not None:
-		df['published_date'] = df['published'].apply(lambda x:  ' '.join(re.sub('T\S+', '', x).split()))
-		df = df['published_date'].value_counts()
-		df = df.sort_index(ascending = False)
-		trace = go.Bar(
-			x = df.index,
-			dx = 5,
-			y = df.values,
-			name = 'number of papers by day')
-		data = [trace]
-
-		layout = go.Layout(
-	    	margin=go.layout.Margin(
-	        l=60,
-	        r=60,
-	        b=50,
-	        t=50,
-	        pad=4))
-		fig = dict(data=data, layout=layout)
-		plot(fig, filename = 'search/templates/graph/basic_line_graph_{}.html'.format(indexes), auto_open=False)
-	else:
-		pass
-
-def multi_year(keyword, index = "scholar"):
-	#setting the stopwords
-	df,_ = text_query(str(keyword),index)
-	if df is not None:
-		df = processing_df(df)
-		stop_words = stopwords.words('english')
-		
-
-		"""
-		This portion is about making the terms to singular form such as:
-		machines --> machine to prevent the same term from appearing 
-		multiple times
-		"""
-		blob = TextBlob(df['processed'].iloc[1])
-		singular = [word.singularize() for word in blob.words]
-		#remove stop words then convert to singular
-		df['processed'] = df['processed'].apply(lambda x: ' '.join([word for word in x.split() if word not in stop_words]))
-		df['singular'] = df['processed'].apply(lambda x: ' '.join([word.singularize()
-			for word in TextBlob(x).words]))
-		df['singular'] = df['singular'].apply(lambda x: x.lower())
-		df['published_year'] = df['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
-
-
-		"""
-		Performing TFIDF to get important terms
-		ngram of 2-3 works better than 1-3 as it
-		provides terms such as neural network instead
-		of neural then network
-		"""
-		all_summary = df['singular'].tolist()
-		tv = TfidfVectorizer(analyzer = 'word', ngram_range = (2,3), stop_words = 'english',
-			max_features = 10)
-		tv.fit_transform(all_summary)
-
-		#Getting the paper count for the various terms
-
-		df = df['published_year'].value_counts()
-		df = df.sort_index(ascending = False)
-
-		trace = go.Scatter(
-			x = df.index,
-			dx = 5,
-			y = df.values,
-			mode = 'lines+markers',
-			name = "{}".format(str(keyword)))
-
-		
-		df0,_ = text_query(tv.get_feature_names()[2],index)
-		df0['published_year'] = df0['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
-		df0 = df0['published_year'].value_counts()
-		df0 = df0.sort_index(ascending = False)
-
-		trace0 = go.Scatter(
-			x = df0.index,
-			dx = 5,
-			y = df0.values,
-			mode = 'lines+markers',
-			name = "{}".format(str(tv.get_feature_names()[2])))
-
-		df1,_ = text_query(tv.get_feature_names()[3],index)
-		df1['published_year'] = df1['published'].apply(lambda x:  ' '.join(re.sub('-\S+', '', x).split()))
-		df1 = df1['published_year'].value_counts()
-		df1 = df1.sort_index(ascending = False)
-		trace1 = go.Scatter(
-			x = df1.index,
-			dx = 5,
-			y = df1.values,
-			mode = 'lines+markers',
-			name = "{}".format(str(tv.get_feature_names()[3])))
-
-		# df2,_ = text_query(tv.get_feature_names()[2],index)
-		# df2 = processing_df(df2)
-		# df2 = df2['published_year'].value_counts()
-		# df2 = df2.sort_index(ascending = False)
-
-		# trace2 = go.Scatter(
-		# 	x = df2.index,
-		# 	dx = 5,
-		# 	y = df2.values,
-		# 	mode = 'lines+markers',
-		# 	name = "{}".format(str(tv.get_feature_names()[2])))
-
-		layout = go.Layout(
-	    margin=go.layout.Margin(
-	        l=60,
-	        r=60,
-	        b=40,
-	        t=20,
-	        pad=4))
-		data = [trace, trace0, trace1]
-		fig = dict(data=data, layout = layout )
-		plot(fig, filename = "search/templates/graph/basic_line_graph_scholar.html", auto_open=False)
-	else:
-		pass
 
 def main_graph(keyword):
 	df_english = text_query(str(keyword), dataframe = True)
@@ -189,13 +44,7 @@ def main_graph(keyword):
 		df_2019 = df_2019.sort_index(ascending = False)
 		df = df['published_date'].value_counts()
 		df = df.sort_index(ascending = False)
-		# trace = go.Bar(
-		#  showlegend = True,
-		#  x = df.index,
-		#  dx = 5,
-		#  y = df.values,
-		#  visible = True,
-		#  name = "Total count")
+		
 		trace_2017 = go.Bar(
 			showlegend = True,
 			x = df_2017.index,
@@ -228,12 +77,7 @@ def main_graph(keyword):
 		layout = go.Layout(
 			width = 780,
 			height = 300,
-			# margin=go.layout.Margin(
-			# 	l=0,
-			# 	r=0,
-			# 	b=0,
-			# 	t=0,
-			# 	pad=1),
+			
 			legend = dict(x = 0.1, y = 1.15, orientation = "h"),
 			updatemenus = list([
 				dict(
@@ -268,7 +112,7 @@ def main_graph(keyword):
 		pass
 
 def top_hashtag(keyword):
-	df = text_query(chi_translation(keyword),'weibo')
+	df = text_query(chi_translation(keyword),'weibo', dataframe = True)
 	df ['hashtags']= df['hashtags'].apply(lambda x:''.join(x))
 	df = df[df['hashtags']!='']
 	records = df.to_dict('records')
@@ -308,8 +152,8 @@ def top_hashtag(keyword):
 	plot(fig, filename='techscan/templates/graph/weibo_hashtag_count.html', auto_open=False)
 
 def twitter_bubble(keyword):
-	df = text_query(keyword, 'tweets')
-	df2 = df.groupby(['hashtags']).sum().reset_index().sort_values('retweet_count', ascending = False)
+	df = text_query(keyword, 'tweets', dataframe = True)
+	df2 = df.groupby('hashtags').sum().reset_index().sort_values('retweet_count', ascending = False)
 	df2 = df2.drop(columns = ['_score'])
 	df2 = df2[df2['retweet_count'] >= 10]
 	df2 = df2[df2['hashtags'] != '[]']
@@ -399,21 +243,22 @@ def twitter_bubble(keyword):
 	plot(fig, filename='techscan/templates/graph/twitter_hashtag_bubble.html', auto_open=False)
 
 def twitter_graph(keyword):
-	df = text_query(keyword, 'tweets')
-	df_new = df.groupby(['user_screen_name']).sum().reset_index()
+	df = text_query(keyword, 'tweets',dataframe = True)
+	df_new = df.groupby(['author']).sum().reset_index()
 	final = [df_new['favorite_count'].tolist()]
-	name_List = [df_new['user_screen_name'].tolist()]
+	name_List = [df_new['author'].tolist()]
 	group_label = ['Favorite Count']
 	fig = ff.create_distplot(final, group_label,bin_size = .1, curve_type='normal',rug_text = name_List,show_hist=False)
 	fig['layout'].update(title='Distplot with Normal Distribution')
 	plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
 
 def wordcloud(keyword):
-	df_weibo = text_query(chi_translation(keyword),'weibo')
-	df_twitter = text_query(keyword, 'tweets')
+	df_weibo = text_query(chi_translation(keyword),'weibo', dataframe = True)
+	df_twitter = text_query(keyword, 'tweets', dataframe = True)
 	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
 		stopword_chinese = f.read()
 	df_weibo['summary'] = df_weibo['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
+
 	if df_twitter is not None:
 		stopword_english = stopwords.words('english')
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
@@ -424,11 +269,7 @@ def wordcloud(keyword):
 	df_all = df_all[df_all['summary']!='']
 	summary_list = df_all['summary'].tolist()
 	summary_string = ''.join(summary_list)
-	# if indexes == 'weibo' or indexes == 'zhihu':
-	# 	mask = np.array(Image.open('techscan/static/word_cloud/circle.png'))
-	# else:
-	# 	mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
-			
+
 	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
 	wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
 		max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2).generate(summary_string)
@@ -436,8 +277,8 @@ def wordcloud(keyword):
 	wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
 
 def detail_hashtag_frequency(keyword):
-	df_twitter = text_query(keyword, 'tweets')
-	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  x).split()))
+	df_twitter = text_query(keyword, 'tweets',dataframe = True)
+	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
 	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x: x.replace("ai", "AI"))
 	df_twitter = df_twitter[df_twitter['hashtags'] != '']
 	twitter_record = df_twitter.to_dict('records')
@@ -456,8 +297,8 @@ def detail_hashtag_frequency(keyword):
 		text_list.append('Twitter')
 
 
-	df_weibo = text_query(chi_translation(keyword),'weibo')
-	df_weibo ['hashtags']= df_weibo['hashtags'].apply(lambda x:''.join(x))
+	df_weibo = text_query(chi_translation(keyword),'weibo', dataframe = True)
+	df_weibo ['hashtags']= df_weibo['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
 	df_weibo = df_weibo[df_weibo['hashtags']!='']
 	weibo_record = df_weibo.to_dict('records')
 	weibo_hashtag_count = Counter(hashtag['hashtags'] for hashtag in weibo_record)
@@ -540,7 +381,6 @@ def heatmap(keyword):
     countx4 = 0
 
     if resItems == []:
-        # return [] 
         Items = find_NER(search_term)
         upload_data_ner(Items, 'heatmap')
         for i in range (len(Items)):
@@ -549,23 +389,18 @@ def heatmap(keyword):
             longtitude.append(Items[i]['Address'][0]['geometry']['location']['lng'])
             address.append(Items[i]['Address'][0]['formatted_address'])
             if 0 < int(Items[i]['weighting']) <= 5:
-                # colouring.append("#00284d")
                 weight.append(100)
 
             elif 5 < int(Items[i]['weighting']) <= 20:
-                # colouring.append("#004f99")
                 weight.append(200)
 
             elif 20 < int(Items[i]['weighting']) <= 50:
-                # colouring.append("#0077e6")
                 weight.append(500)
 
             elif 50 < int(Items[i]['weighting']) <= 100:
-                # colouring.append("#339cff")
                 weight.append(1000)
 
             elif 100 < int(Items[i]['weighting'] ):
-                # colouring.append("#ff3333")
                 weight.append(3000)
 
             if Items[i]['types'] == 'Institutions':
@@ -593,24 +428,20 @@ def heatmap(keyword):
             Latitude.append(resItems[i]['_source']['Address'][0]['geometry']['location']['lat'])
             longtitude.append(resItems[i]['_source']['Address'][0]['geometry']['location']['lng'])
             address.append(resItems[i]['_source']['Address'][0]['formatted_address'])
+
             if 0 < int(resItems[i]['_source']['weighting']) <= 5:
-                # colouring.append("#00284d")
                 weight.append(100)
 
             elif 5 < int(resItems[i]['_source']['weighting']) <= 20:
-                # colouring.append("#004f99")
                 weight.append(200)
 
             elif 20 < int(resItems[i]['_source']['weighting']) <= 50:
-                # colouring.append("#0077e6")
                 weight.append(500)
 
             elif 50 < int(resItems[i]['_source']['weighting']) <= 100:
-                # colouring.append("#339cff")
                 weight.append(1000)
 
             elif 100 < int(resItems[i]['_source']['weighting']  ):
-                # colouring.append("#ff3333")
                 weight.append(3000)
 
             if resItems[i]['_source']['types'] == 'Institutions':
@@ -648,7 +479,6 @@ def heatmap(keyword):
         df_colors = colors[i]
         city = go.Scattergeo(
             locationmode = 'ISO-3',
-            # locations = ['asia'],
             lon = df_sub['Lng'],
             lat = df_sub['Lat'],
             text = colors[i]+": "+df_sub['companies']+"  |  Location: "+df_sub['address'],
@@ -660,7 +490,7 @@ def heatmap(keyword):
                 ),
                 sizemode = 'area'
             ),
-            # name = '{0} - {1}'.format(lim[0],lim[1]) 
+            
             name = '{}'.format(df_colors) 
             )
         cities.append(city)
@@ -679,17 +509,16 @@ def heatmap(keyword):
 				b=0,
 				t=0,
 				pad=1),
-            # Tickformatstops = go.layout.tickformatstops(dtickrange = [50,100]),
+            
             xaxis = dict (fixedrange = True),
             yaxis = dict (fixedrange = True),
-                # fixedrange = True),
+                
                 geo = go.layout.Geo(
                 	scope = 'world',
                 	projection = go.layout.geo.Projection(
                 		type='equirectangular'  
                 		),
-                #center = go.layout.geo.Center( lat = 50, lon = 50),
-                ##Map Features##
+               
                 showcoastlines = True,
                 showland = True,
                 showocean = True,
@@ -711,37 +540,10 @@ def heatmap(keyword):
     fig = go.Figure(data=cities, layout=layout)
     plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
 
-def top_companies(keyword, indexes = 'news', graph = False):
-	# df,_ = text_query(chi_translation(keyword), indexes)
-	# summary_list = df.summary.tolist()
-	# summary_string = "".join(summary_list)
-	# tokenised = psg.cut(summary_string)
-	# org_list = []
-	# for token in tokenised:
-	# 	if token.flag == "nt":
-	# 		org_list.append(token.word)
-
-	# companies = []
-	# for org in org_list:
-	# 	if '公司' in org or '集团'in org:
-	# 		companies.append(org)
-
-	# companies_count = Counter(companies)
-	# top_companies = companies_count.most_common(20)
-
-	# count = []
-	# company_name = []
-	# for company in top_companies:
-	# 	count.append(company[1])
-	# 	company_name.append(company[0])
-	# data = {'company' : company_name, 'count' : count}
-	# df_new = pd.DataFrame(data)
-	# json_frame = df_new.to_dict('index').values()
-	# print(json_frame)
-	
+def top_companies(keyword, indexes = 'news', graph = False):		
 	search_term = chi_translation(keyword)
 	res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {"match" : {"labels" : search_term}}})
-	#机器学习
+	
 
 	res_input = res['hits']['hits']
 	resItems = []
@@ -805,125 +607,7 @@ def top_companies(keyword, indexes = 'news', graph = False):
 	else:
 		return json_frame
 
-def plot_stocks(keyword):
-	keyword = chi_translation(keyword)
-	res = es.search(index = 'stocks_store', size = 10000, scroll = '2m' , body= {"query": {"match_all": {}}})
-	res_input = res['hits']['hits']
-	resitems = []
-	for i in range (len(res_input)):
-	    if res_input[i]['_source']['label'] == keyword:
-	        resitems.append(res_input[i])
-	stock_price = []
-	date = []
-	company = []
-	count = []
-	color = ["rgba(234,174,163,1)", "rgba(222,193,158,1)","rgba(140,84,97,1)","rgba(132,153,116,1)","rgba(78,81,109,1)"]
-	if resitems == []:
-		# return []
-		items = NER_stocks(keyword)
-		if items != []:
-			upload_data_ner(items, 'stocks_store')
-			for i in range(len(items)):
-				company.append(items[i]['english company'])
-				stock_price.append(items[i]['close'])
-				date.append(items[i]['date'])
-				count.append(items[i]['count'])
-		else:
-			return []
-	else:
-		for i in range(len(resitems)):
-			company.append(resitems[i]['_source']['english company'])
-			date.append(resitems[i]['_source']['date'])
-			stock_price.append(resitems[i]['_source']['close'])
-			count.append(resitems[i]['_source']['count'])
 
-	company_details = pd.DataFrame({'company':company, 'date':date, 'stock price' :stock_price, 'count':count})
-	company_details =  company_details.sort_values('count', ascending = False)
-
-
-	company_sorted = company_details.company.tolist()
-	stock_sorted = company_details['stock price'].tolist()
-	date_sorted = company_details['date'].tolist()
-
-	data = list() 	
-
-	if len(company_sorted) >= 5:
-
-		for i in range(5):
-			trace = {
-			   "x": date_sorted[i],
-			   "y": stock_sorted[i],
-			  "line": {"color": color[i]}, 
-			  "mode": "lines", 
-			  "name": company_sorted[i], 
-			  "type": "scatter", 
-			  "xaxis": "x", 
-			  "yaxis": "y"
-			}
-			data.append(trace)
-	else:
-		for i in range(len(company_sorted)):
-			trace = {
-			   "x": date_sorted[i],
-			   "y": stock_sorted[i],
-			  "line": {"color": color[i]}, 
-			  "mode": "lines", 
-			  "name": company_sorted[i], 
-			  "type": "scatter", 
-			  "xaxis": "x", 
-			  "yaxis": "y"
-			}
-			data.append(trace)
-
-
-
-	layout = {
-			"showlegend" : True,
-		  "margin": {
-		    "r": 10, 
-		    "t": 25, 
-		    "b": 40, 
-		    "l": 60
-		  }, 
-		  "title": "Stock Prices", 
-		  "xaxis": {
-		    "domain": [0, 1], 
-		    "rangeselector": {"buttons": [
-		        {
-		          "count": 3, 
-		          "label": "3 mo", 
-		          "step": "month", 
-		          "stepmode": "backward"
-		        }, 
-		        {
-		          "count": 6, 
-		          "label": "6 mo", 
-		          "step": "month", 
-		          "stepmode": "backward"
-		        }, 
-		        {
-		          "count": 1, 
-		          "label": "1 yr", 
-		          "step": "year", 
-		          "stepmode": "backward"
-		        }, 
-		        {
-		          "count": 1, 
-		          "label": "YTD", 
-		          "step": "year", 
-		          "stepmode": "todate"
-		        }, 
-		        {"step": "all"}
-		      ]}, 
-		    "title": "Date"
-		  }, 
-		  "yaxis": {
-		    "domain": [0, 1], 
-		    "title": "Price"
-		  }
-		}
-	fig = go.Figure(data=data, layout=layout)
-	plot(fig, filename = 'techscan/templates/graph/stock_graph.html', auto_open=False)
 
 def people_companies(keyword):
 	nlp = spacy.load('en_core_web_md')
@@ -945,25 +629,20 @@ def people_companies(keyword):
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: x.lower())
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
-		# df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
-	    # df_twitter['mentions'] = df_twitter['mentions'].apply(lambda x: re.sub("['\[\]']", '', x))
 		df_twitter['company'] = df_twitter['summary'].apply(lambda x: nlp(x))
 		df_twitter['company'] = df_twitter['company'].apply(lambda x:' '.join( [word.text for word in x.ents if word.label_ == 'ORG']))
 		
 		tweets_companies = df_twitter['company'].tolist()
 		total_company.extend(tweets_companies)
+		
 		tweets_summary_list = df_twitter.summary.tolist()
-		# tweets_summary_string = " ".join(tweets_summary_list)
 		total_tech.extend(tweets_summary_list)
-	    # tweets_tokenised = nlp(tweets_summary_string)
-	    # tweets_companies = []
+	 
 		tweets_people = df_twitter.mentions.tolist() + df_twitter.user_screen_name.tolist()
 		total_people.extend(tweets_people)
 	except:
 		pass
-	    # for ents in tweets_tokenised.ents:
-	    #     if ents.label_ == 'ORG':
-	    #         tweets_companies.append(ents.text)
+	    
 	if df_news is not None:
 		news_summary_list = df_news.summary.tolist()
 		news_summary_string = "".join(news_summary_list)
@@ -984,13 +663,8 @@ def people_companies(keyword):
 		total_company.extend(news_companies)
 
 	try:
-		# total_tech = news_summary_string + tweets_summary_string
 		total_tech = ' '.join(total_tech)
-
-		# total_company = tweets_companies + news_companies
 		total_company = ' '.join(total_company)
-
-		# total_people = tweets_people + news_people
 		total_people = ' '.join(total_people)
 
 		wordcloud_info = dict()
@@ -1059,7 +733,6 @@ def sort_by_dates(keyword):
 	else:
 		df_weibo = df_weibo.drop_duplicates(subset = 'summary', keep = 'first')
 		df_weibo = df_weibo.sort_values(['published','favorite_count'], ascending = [False,False]).head(100)
-		# df_weibo = df_weibo.sort_values('favorite_count', ascending = False)
 		json_weibo = df_weibo.head(20).to_dict('records')
 	
 	if df_zhihu is None:

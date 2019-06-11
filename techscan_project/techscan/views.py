@@ -57,11 +57,11 @@ def update(request):
 def main(request):
 	params = request.GET.get('q')
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
-	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	plotgraph.main_graph(params)
 	# plotgraph.plot_stocks(params)
-	# plotgraph.heatmap(params)
-	# plotgraph.people_companies_wordcloud(params)
+	plotgraph.heatmap(params)
+	plotgraph.people_companies_wordcloud(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
@@ -70,15 +70,15 @@ def main(request):
 		"summary_length": summary_length,
 		"hit_count": main_functions.get_count(params),
 		"related_table": neo4jgraph.get_related_table(params),
-		# "author_table":main_functions.overview_table(params),
+		"author_table":main_functions.overview_table(params),
 		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	}
 	return render(request, 'main.html', context)
 
 def details(request):
 	params = request.GET.get('q')
-	# plotgraph.detail_hashtag_frequency(params)
-	# plotgraph.top_companies(params, graph = True)
+	plotgraph.detail_hashtag_frequency(params)
+	plotgraph.top_companies(params, graph = True)
 	# plotgraph.twitter_bubble(params)
 
 	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
@@ -102,8 +102,8 @@ def details(request):
 
 def weibo(request):
 	params = request.GET.get('q')
-	# plotgraph.top_hashtag(params)
-	# plotgraph.wordcloud(main_functions.chi_translation(params))
+	plotgraph.top_hashtag(params)
+	plotgraph.wordcloud(params)
 	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
@@ -136,8 +136,8 @@ def news(request):
 def tweets(request):
 	params = request.GET.get('q')
 	# plotgraph.twitter_bubble(params)
-	# plotgraph.twitter_graph(params)
-	# plotgraph.wordcloud((params), indexes = 'tweets')
+	plotgraph.twitter_graph(params)
+	plotgraph.wordcloud(params)
 	es_tweets = scroll_query.text_query(params,'tweets')
 	context = {
 		"search_word": params,

@@ -58,6 +58,7 @@ def crawl_twitter(url):
             "author": tweet.select('b')[0].text,
             "author_url": 'https://twitter.com/' + tweet.select('b')[0].text,
             "summary": tweet.select('p.tweet-text')[0].get_text(),
+            "hashtags" : re.findall(r'#(\w+)', tweet.select('p.tweet-text')[0].get_text()),
             "date": date,
             "summary_url": 'https://twitter.com/' + tweet.select('b')[0].text + '/status/' + tweet['data-item-id'],
             "reply_count": int(tweet.select('span.ProfileTweet-actionCount')[0]['data-tweet-stat-count']),
