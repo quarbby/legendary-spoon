@@ -54,7 +54,7 @@ def update(request):
 			static_file.write(content)
 
 	time_taken = " %s seconds " % (time.time() - start_time)
-	return HttpResponse('Done. Time taken to complete: {}. Generated {} templates on {}'.format(time_taken, len(list_of_keywords), list_of_keywords))
+	return HttpResponse('Done. Generated {} templates on {}. Time taken to complete: {}.'.format(time_taken, len(list_of_keywords), list_of_keywords))
 
 def main(request):
 	params = request.GET.get('q')
