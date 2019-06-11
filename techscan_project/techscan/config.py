@@ -1,9 +1,6 @@
 from elasticsearch import Elasticsearch
 from neo4j import GraphDatabase
 
-
-location = 'data/AI_tweets_03.json'
-
 # Connect to ES
 es = Elasticsearch([{'host' : 'localhost', 'port' : 9200}])
 

@@ -4,12 +4,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DC
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import re
 import bs4 as bs
+import urllib.parse
 from datetime import datetime
 import dateparser
 import time
-import urllib.parse
+import re
 import ssl
 
 def get_page_source(url):

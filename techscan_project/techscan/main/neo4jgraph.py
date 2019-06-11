@@ -2,7 +2,7 @@
 import igraph as ig
 import ast
 from ..config import neo4jdriver
-from ..es_folder import main_functions
+from ..main import main_functions
 
 ##### output related field in neo4j list format
 

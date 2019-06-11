@@ -1,11 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.generic import RedirectView
 from django.template.loader import render_to_string
-from .es_folder import main_functions, scroll_query, plotgraph, crawler
-from .es_folder.upload_delete import uploading_data
-from .neo4j_folder import neo4jgraph
-from .crawler_list import keywords
+from .main import main_functions, scroll_query, plotgraph, crawler, neo4jgraph
+from .main.upload_delete import uploading_data
+from .crawl_list import keywords
 import time
 
 def index(request):

@@ -17,7 +17,7 @@ from textblob.inflect import singularize as _singularize
 from collections import Counter
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
-from ..config import location, es
+from ..config import es
 from .processing_dataframe import processing_df
 from .main_functions import chi_translation
 from .scroll_query import text_query, processing_hits
@@ -26,7 +26,6 @@ from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import plotly.figure_factory as ff
 from .uploading_data import upload_data_ner
 from .train_heatmap_index import find_NER
-from .stocks_funct import NER_stocks
 import spacy
 
 

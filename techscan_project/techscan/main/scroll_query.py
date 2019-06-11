@@ -5,14 +5,15 @@ from pandasticsearch import Select
 import re
 from ..config import es
 
-#convert query results to pandas dataframe
+
 def processing_hits(res):
+#convert query results to pandas dataframe
+
 	df = Select.from_dict(res).to_pandas()
 	return df
 
 def text_query(keyword, indexes = '_all', sizes = 100, dataframe = False):
-
-	#Query from all indexes available
+#Query from all indexes available, output either in dataframe or json by default will return json
 
 	res = es.search(index = str(indexes) , size = int(sizes), scroll = '2m', body = {"query" : {
 		"match" : {"summary" : keyword}
@@ -36,21 +37,6 @@ def text_query(keyword, indexes = '_all', sizes = 100, dataframe = False):
 			json_frame = df.to_dict('records')
 			return json_frame
 
-	
-
-	# if indexes == 'weibo' or indexes == 'tweets':
-	# 	df = df.sort_values(['favorite_count'], ascending = False)
-	# 	df = df.reset_index(drop = True)
-	# 	json_frame = df.to_dict('index').values()
-	# elif indexes == 'zhihu':
-	# 	df = df.sort_values(['upvote_count'], ascending = False)
-	# 	df = df.reset_index(drop = True)
-	# 	json_frame = df.to_dict('index').values()
-	# else:
-	# 	df = df.reset_index(drop = True)
-	# 	json_frame = df.to_dict('index').values()
-	# return df
-	
 
 
 def graph_query(keyword, indexes = '_all'):
