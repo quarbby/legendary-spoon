@@ -9,10 +9,12 @@
 *.pyc
 *.pyo
 
-# Data
-techscan_project/techscan/es_folder/upload_delete/data/*
-techscan_project/techscan/speech_text/data/*
+# Generated Pages
 techscan_project/techscan/pages/*.html
+
+# Graph templates
+techscan_project/techscan/templates/graph/*
+techscan_project/techscan/static/word_cloud/*.png
 
 #Chromedriver
 techscan_project/chromedriver.exe
@@ -39,5 +41,3 @@ var/
 # Settings
 techscan_project/techscan/.vscode/settings.json
 
-# Graph templates
-techscan_project/techscan/templates/graph/*

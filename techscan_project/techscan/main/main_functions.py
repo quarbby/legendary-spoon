@@ -62,7 +62,7 @@ def get_zh_author(keyword, graph = False):
 
 	df = text_query(keyword, 'zhihu', dataframe = True)
 	if df is not None:
-		upvote_count = df.groupby(['author']).sum().reset_index().sort_values('upvote_count', ascending=False)
+		upvote_count = df.groupby(['author', 'author_url']).sum().reset_index().sort_values('upvote_count', ascending=False)
 
 		post_freq = df.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
 		post_freq.rename(columns={'author': 'author_1'}, inplace=True)
