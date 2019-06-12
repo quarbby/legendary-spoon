@@ -36,7 +36,7 @@ def get_wiki_data(keyword):
 		sentence2 = '.'.join(sentences_list[2:])
 		return sentence1, sentence2, len(sentences_list)
 	except:
-		return('No summary found!')
+		return 'No summary found!','No summary found!', 0
 
 def get_count(keyword):
 	total_hits = []
@@ -105,7 +105,7 @@ def get_zh_author(keyword, graph = False):
 def weibo_author(keyword): #need to change according to es data
 
 	df_weibo = text_query(keyword, 'weibo', dataframe = True)
-	if df_weibo is not None:
+	try:
 		favorite_count = df_weibo.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 
 		post_freq = df_weibo.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
@@ -131,7 +131,7 @@ def weibo_author(keyword): #need to change according to es data
 
 		json_frame = df_weibo_new.to_dict('index').values()
 		return json_frame
-	else:
+	except:
 		pass
 
 

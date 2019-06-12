@@ -96,8 +96,13 @@
 
 		<div class="container p-3 ml-2 col-11 float-left">
 			<h3><b>Hashtag Frequency Graph</b></h3>
+			
 			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+				{% if weibo_hashtag == "False"%}
+					<h3> No Relations Found </h3>
+					{% else %}
 				<iframe src="{% url 'weibo_hashtag_graph' %}" class="graph-frame" ></iframe> 
+				{% endif %}
 			</div>
 		</div>
 	</div>

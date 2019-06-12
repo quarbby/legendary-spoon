@@ -16,7 +16,7 @@ def text_query(keyword, indexes = '_all', sizes = 100, dataframe = False):
 #Query from all indexes available, output either in dataframe or json by default will return json
 
 	res = es.search(index = str(indexes) , size = int(sizes), scroll = '2m', body = {"query" : {
-		"match_phrase" : {"summary" : keyword} # match_phrase for and match
+		"match" : {"summary" : keyword} # match_phrase for and match
 		}})
 
 	df = processing_hits(res)

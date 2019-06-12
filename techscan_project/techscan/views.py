@@ -104,7 +104,7 @@ def details(request):
 
 def weibo(request):
 	params = request.GET.get('q')
-	plotgraph.top_hashtag(params)
+	# plotgraph.top_hashtag(params)
 	plotgraph.wordcloud(params)
 	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	context = {
@@ -112,6 +112,7 @@ def weibo(request):
 		"chi_translation": main_functions.chi_translation(params),
 		"weibo":es_weibo,
 		"weibo_table":main_functions.weibo_author(main_functions.chi_translation(params)),
+		"weibo_hashtag":plotgraph.top_hashtag(params)
 	}
 	return render(request, 'weibo.html', context)
 

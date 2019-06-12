@@ -210,8 +210,8 @@ def weibo_login():
         credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
         username = credentials[0]
         password = credentials[1]
-        username.send_keys('weichao1995@gmail.com')
-        password.send_keys('31O55h95')
+        username.send_keys('dingymding@gmail.com')
+        password.send_keys('dingymding')
         login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
         login_button.click()
 
@@ -224,8 +224,8 @@ def weibo_login():
         credentials= browser.find_elements_by_css_selector(".form_login_register .W_input, .Bv6_layer .form_login_register .W_input")
         username = credentials[0]
         password = credentials[1]
-        username.send_keys('weichao1995@gmail.com')
-        password.send_keys('31O55h95')
+        username.send_keys('dingymding@gmail.com')
+        password.send_keys('dingymding')
         login_button = browser.find_element_by_css_selector(".Bv6_layer .W_btn_a")
         login_button.click()
 

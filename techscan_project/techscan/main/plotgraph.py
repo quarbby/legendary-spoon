@@ -112,44 +112,47 @@ def main_graph(keyword):
 		pass
 
 def top_hashtag(keyword):
-	df = text_query(chi_translation(keyword),'weibo', dataframe = True)
-	df ['hashtags']= df['hashtags'].apply(lambda x:''.join(x))
-	df = df[df['hashtags']!='']
-	records = df.to_dict('records')
-	hashtag_count = Counter(hashtag['hashtags'] for hashtag in records)
-	tophashtags = hashtag_count.most_common(15)
-	hashtag=[]
-	counts=[]
-	for i in tophashtags:
-		hashtag.append(i[0])
-		counts.append(i[1])
+	try:
+		df = text_query(chi_translation(keyword),'weibo', dataframe = True)
+		df ['hashtags']= df['hashtags'].apply(lambda x:''.join(x))
+		df = df[df['hashtags']!='']
+		records = df.to_dict('records')
+		hashtag_count = Counter(hashtag['hashtags'] for hashtag in records)
+		tophashtags = hashtag_count.most_common(15)
+		hashtag=[]
+		counts=[]
+		for i in tophashtags:
+			hashtag.append(i[0])
+			counts.append(i[1])
 
-	data = [go.Bar(
-		x = hashtag,
-		y = counts,
-		marker=dict(
-			color='rgb(246,156,99)')
-		)]
-	layout = go.Layout(
-		yaxis=dict(
-			title='Frequency of Hashtags',
-			titlefont=dict(
-				family = '-webkit-body',
-				size=16,
-				color='rgb(107, 107, 107)'
-				)
-			),
-		legend=dict(
-			x=0,
-			y=1.0,
-			bgcolor='rgba(255, 255, 255, 0)',
-			bordercolor='rgba(255, 255, 255, 0)'
-			),
-		bargap=0.15,
-		)
+		data = [go.Bar(
+			x = hashtag,
+			y = counts,
+			marker=dict(
+				color='rgb(246,156,99)')
+			)]
+		layout = go.Layout(
+			yaxis=dict(
+				title='Frequency of Hashtags',
+				titlefont=dict(
+					family = '-webkit-body',
+					size=16,
+					color='rgb(107, 107, 107)'
+					)
+				),
+			legend=dict(
+				x=0,
+				y=1.0,
+				bgcolor='rgba(255, 255, 255, 0)',
+				bordercolor='rgba(255, 255, 255, 0)'
+				),
+			bargap=0.15,
+			)
 
-	fig = dict(data = data , layout=layout)
-	plot(fig, filename='techscan/templates/graph/weibo_hashtag_count.html', auto_open=False)
+		fig = dict(data = data , layout=layout)
+		plot(fig, filename='techscan/templates/graph/weibo_hashtag_count.html', auto_open=False)
+	except:
+		return "False"
 
 def twitter_bubble(keyword):
 	df = text_query(keyword, 'tweets', dataframe = True)
@@ -258,17 +261,14 @@ def twitter_graph(keyword):
 def wordcloud(keyword):
 	df_weibo = text_query(chi_translation(keyword),'weibo', dataframe = True)
 	df_twitter = text_query(keyword, 'tweets', dataframe = True)
-	if df_weibo is not None:
+	try:
 		with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
 			stopword_chinese = f.read()
 		df_weibo['summary'] = df_weibo['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
-
-	if df_twitter is not None:
 		stopword_english = stopwords.words('english')
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
-	try:
 		df_all = pd.concat([df_weibo, df_twitter], axis = 0, ignore_index = True)
 		df_all = df_all[df_all['summary']!='']
 		summary_list = df_all['summary'].tolist()
