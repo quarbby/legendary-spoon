@@ -62,7 +62,6 @@ def main(request):
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
 	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
 	plotgraph.main_graph(params)
-	# plotgraph.plot_stocks(params)
 	plotgraph.heatmap(params)
 	plotgraph.people_companies_wordcloud(params)
 	context = {
@@ -152,6 +151,7 @@ def tweets(request):
 
 def zhihu(request):
 	params = request.GET.get('q')
+	main_functions.get_zh_author(main_functions.chi_translation(params), graph = True)
 	es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
