@@ -1,44 +1,14 @@
-# Setup 
-
-
-- git
-- neo4j
-- elasticsearch
-
-## Git Setup
-
-- First, try 
-
-  ```
-  git clone git@github.com:quarbby/legendary-spoon.git TECHSCAN_BACKEND
-  ```
-
-- It will fail because permission have not been set. First we need to generate a key, and add your terminal to Github as a trusted source.
-
-- Generate a key
-
-  ```
-  generate ssh key ` ssh-keygen -t rsa -b 4096 -C "yourGithubEmail@email.com"
-  ```
-
-- ```eval $(ssh-agent -s)``` should print ```Agent pid ___```
-
-- copy SSH key `clip < ~/.ssh/id_rsa.pub`
-
-- go to *Github > account > settings > SSH and GPG keys > New SSH keys > New SSH key >* any title, paste into Key
-
-- this will work now: `git clone git@github.com:quarbby/legendary-spoon.git TECHSCAN_BACKEND`
-
 ## Sourcetree Setup
 
-- Clone the project, `fetch`/`pull`/`push` won't work, same reason as before
-- `Tools`  > `Create or Import SSH Key` to open **PuTTy Key Generator**
-  - Generate key (move mouse over area to generate randomness)
-  - Under `Key`>`Public key for pasting into OpenSSH authorized_keys file:` copy entire public key (starts with `ssh-rsa...`)
-    - Like above, add to _**Github** > account > settings > SSH and GPG keys > New SSH keys > New SSH key >_ any title, paste into Key
-  - `Save public key` and `Save private key` in **PuTTy Key Generator**
-  - In the windows toolbar / system tray, open **Pagaent** (icon of computer wearing a hat), add in the *private key* file
-- Sourcetree should work now
+1. Download and Install Sourcetree from [here](<https://www.sourcetreeapp.com/>). This will require to create a dummy Bitbucket account. It will be link to github eventually
+
+2. Open Sourcetree and link github account. Clone the project
+
+   ```
+   git@github.com:quarbby/legendary-spoon.git
+   ```
+
+3. Follow the guide [here](<https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html#SetupanSSHkey-ssh3>) for setting up SSH keys.
 
 #### Basic Stuff
 
@@ -48,22 +18,12 @@
 - **PUSH** : Push your commit **! NOTE** Untick all branches, and push ONLY to your branch
 - **MERGE** : right click any other branch, to *merge* into your current branch
 - **CHECKOUT** : Right click another branch to *checkout*. Make sure that there are no local unsaved changes first.
-- **STASH** : Stash *uncommited changes*
+- **STASH** : Stash *uncommitted changes*
 
-## Neo4J
+## ElasticSearch 6.70 Setup
 
-Download from https://neo4j.com/download/ 
-
-## ElasticSearch 6.7
-
-Download from <https://www.elastic.co/downloads/elasticsearch>
-
-Installation https://www.elastic.co/guide/en/elasticsearch/reference/6.7/windows.html
-
-
-
-
-_Download Java SE Development Kit_
+- Download Elasticsearch from [here](<https://www.elastic.co/downloads/past-releases/elasticsearch-6-7-0>) 
+- Download Java JDK 11.0.3 from [here](<https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html>)
 
 in `elasticsearch-6.7.0/bin/elasticsearch.bat`, under `SET params='%*'`add `SET "JAVA_HOME=C:\Program Files\Java\jdk-11.0.2"`
 
@@ -82,78 +42,43 @@ SET "JAVA_HOME=C:\Program Files\Java\jdk-11.0.2"
 set `JAVA_HOME=C:\Program Files\Java\jdk-11.0.2` 
 
 
+## Neo4j Setup
 
-## Anaconda
+- Download neo4j [here](https://neo4j.com/download/ )
 
-<https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/>
+- Download data 
 
+  http://www.sharecsv.com/dl/83328676c09c77d0b9265e679aedcb3e/Field.csv> 
+
+  <http://www.sharecsv.com/dl/ece29217aca59ad56eb31a49e79edcda/fieldPartOf.csv>
+
+-  Store them in imports folder. Create graph using cypher queries.
+
+```cypher
+CREATE CONSTRAINT ON (field:Field) ASSERT field.fieldID IS UNIQUE
+
+LOAD CSV WITH HEADERS FROM "file:///Field.csv" AS line
+CREATE (:Field {fieldID: line.fieldID, fieldName: line.fieldName, fieldLevel: line.fieldLevel, fieldPaperNum: line.fieldPaperNum, fieldReferenceCount:line.fieldReferenceCount})
+
+LOAD CSV WITH HEADERS FROM "file:///fieldPartOf.csv" AS line
+MATCH (f:Field{fieldID:line.fieldID}), (f1:Field{fieldID:line.fieldID2})
+CREATE (f)-[:PART_OF_FIELD]->(f1)
 ```
-conda -V
-conda update conda
-```
-
-Check your python version
-
-```
-conda search "^python$"
-```
-
-Create a conda environment for this project
-
-```
-conda create -n yourenvname python=x.x anaconda
-```
-
-
-Pip install all dependencies from requirements.txt in the virtual environment
 
 
 
-
-
-
-# Running TechScan 1.0
-
-#### 1. Start Neo4J Server
-
-Open Neo4j, start a new project and create new graph. Set the graph password to 123.
-
-2. Start Elasticsearch server
-
-<https://www.elastic.co/guide/en/elasticsearch/reference/6.7/windows.html>
+## Installing Dependencies
 
 ```bash
-cd c:\elastic-search-6.7.0
-
-.\bin\elasticsearch.bat
-
+pip install -r requirements.txt
 ```
 
+Download [chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=74.0.3729.6/) and place it at the the same directory as `manage.py` 
 
+Start the server by running 
 
-#### 3. Run Python scripts
-
-
-In the root folder,  ``` python manage.py runserver``` 
-
-Django project is available at ```<http://localhost:8000/>```
-
-
-
-
-
-
-
-
-## Running TechScan 2.0
-
-#### 3. Run npm
-
-- ensure node modules are updated
-- run ```npm start```
-- 
-
-
-
-
+```
+cd techscan_project
+python manage.py runserver
+```
 
