@@ -2,12 +2,12 @@
 
 Techscan is  a project combining multiple technologies to give comprehensive survey of technology trends.
 
-#### Technologies
+Technologies
 
 - Neo4j
 - Elasticsearch
 
-#### Libraries
+### Libraries
 
 - Django (Web app)
 - Selenium + beautifulsoup4 (Web crawling)
@@ -32,13 +32,13 @@ urlpatterns = [
 ]
 ```
 
-##### update
+### update
 
 The intended use of `/update` is to update data to Elasticsearch periodically, process it and render static html files that can be hosted on Heroku. 
 
 On loading `localhost:8000/update` , selenium will run chrome driver and begin crawling data according to the list stored at `\techscan_project\techscan\crawl_list.py`.  Data will be stored into Elasticsearch and static html templates will be saved at`\techscan_project\techscan\pages` 
 
-##### main
+### main
 
 To start using the app, go to `localhost:8000/main` , search for keywords and information regarding it will appear. 
 
@@ -55,12 +55,12 @@ The current functionalities for `/main` are:
 
 Clicking on any link on the side navigation bar will direct to their respective URLs 
 
-##### details
+### details
 
 This page provides a more detailed view of the keyword, displaying post from all platforms we crawled from. 
 
 In addition, it provides a list of top companies mentioned, the most influential authors from twitter, weibo and zhihu.  
 
-##### weibo, scholar, news, tweets, zhihu
+### weibo, scholar, news, tweets, zhihu
 
 These pages provides more information on each platform respectively.
