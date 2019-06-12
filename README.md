@@ -2,7 +2,7 @@
 
 Techscan is  a project combining multiple technologies to give comprehensive survey of technology trends.
 
-Technologies
+### Technologies
 
 - Neo4j
 - Elasticsearch
@@ -34,7 +34,7 @@ urlpatterns = [
 
 ### update
 
-The intended use of `/update` is to update data to Elasticsearch periodically, process it and render static html files that can be hosted on Heroku. 
+The intended use of `/update` is to update data to Elasticsearch periodically and render static html files that can be hosted on Heroku. 
 
 On loading `localhost:8000/update` , selenium will run chrome driver and begin crawling data according to the list stored at `\techscan_project\techscan\crawl_list.py`.  Data will be stored into Elasticsearch and static html templates will be saved at`\techscan_project\techscan\pages` 
 
@@ -49,7 +49,7 @@ The current functionalities for `/main` are:
 - Word Cloud 
 - Related Fields (obtained from neo4j database, source from [Acemap](<https://www.acemap.info/acekg/index#data-description>))
 - Time-Series Graph (obtained using plotly)
-  - To show to popularity of keyword over time from all platforms
+  - To show the popularity of keyword over time from all platforms
 - Heatmap (obtained using NER and Google API)
   - To show areas that are mentioned in news and the frequency of it
 
@@ -64,3 +64,8 @@ In addition, it provides a list of top companies mentioned, the most influential
 ### weibo, scholar, news, tweets, zhihu
 
 These pages provides more information on each platform respectively.
+
+
+## Additional Information
+
+Currently there are two ways to use this application. The first way will be running it locally to have the full functionalities. Secondly will be browsing static HTML files via Heroku of **fixed keywords** that are determined on `crawl_list.py` on mobile device. However, these static files do not have any graph or tables in it. Moving on, it should be possible to add them in.
