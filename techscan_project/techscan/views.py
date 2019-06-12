@@ -139,13 +139,14 @@ def tweets(request):
 	params = request.GET.get('q')
 	# plotgraph.twitter_bubble(params)
 	plotgraph.twitter_graph(params)
-	plotgraph.twitter_wordcloud(params)
+	# plotgraph.twitter_wordcloud(params)
 	es_tweets = scroll_query.text_query(params,'tweets')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"tweets": es_tweets,
-		"author_table": main_functions.twitter_author(params)
+		"author_table": main_functions.twitter_author(params),
+		"tweets_wordcloud": plotgraph.twitter_wordcloud(params)
 	}
 	return render(request, 'tweets.html', context)
 

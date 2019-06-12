@@ -89,7 +89,11 @@
 				<div class="container p-3 ml-2 centered">
 					<h3><b>Wordcloud</b></h3>
 					<div style="text-align: left">
+						{% if tweets_wordcloud == "False"%}
+					<h3> No Relations Found </h3>
+					{% else %}
 						<img src="{% static 'word_cloud/tweets_wordcloud.png' %}" class="graph-frame" style="width:400px; height:300px"></img>
+					{% endif %}
 					</div>
 				</div>
 			</div>

@@ -137,20 +137,23 @@ def weibo_author(keyword): #need to change according to es data
 
 def twitter_author(keyword):
 	df_twitter = text_query(keyword, 'tweets', dataframe = True)
-	df_twitter['fav_retweet'] = df_twitter['favorite_count'] + df_twitter['retweet_count']
+	try:
+		df_twitter['fav_retweet'] = df_twitter['favorite_count'] + df_twitter['retweet_count']
 
-	if df_twitter is not None:
-		twitter_fav_retweet = df_twitter.groupby(['author']).sum().reset_index().sort_values('fav_retweet', ascending=False)
-		post_freq = df_twitter.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
-		post_freq.rename(columns = {'author': 'author_1'}, inplace = True)
-		df_twitter_new = pd.concat([twitter_fav_retweet, post_freq], axis = 1).drop(columns = ['author_1'])
-		df_twitter_new['average'] = (df_twitter_new['fav_retweet']/df_twitter_new['size']).astype(int)
-		df_twitter_new['max'] = df_twitter.groupby('author', as_index = False)['fav_retweet'].max()['fav_retweet']
-		df_twitter_new['weighted'] = (0.6 * df_twitter_new['max']) + (0.15*df_twitter_new['fav_retweet']) + (0.25*df_twitter_new['average'])
-		df_twitter_new = df_twitter_new.sort_values('weighted',ascending = False).reset_index()[:10]
-		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
-		json_frame = df_twitter_new.to_dict('index').values()
-	return json_frame
+		if df_twitter is not None:
+			twitter_fav_retweet = df_twitter.groupby(['author']).sum().reset_index().sort_values('fav_retweet', ascending=False)
+			post_freq = df_twitter.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
+			post_freq.rename(columns = {'author': 'author_1'}, inplace = True)
+			df_twitter_new = pd.concat([twitter_fav_retweet, post_freq], axis = 1).drop(columns = ['author_1'])
+			df_twitter_new['average'] = (df_twitter_new['fav_retweet']/df_twitter_new['size']).astype(int)
+			df_twitter_new['max'] = df_twitter.groupby('author', as_index = False)['fav_retweet'].max()['fav_retweet']
+			df_twitter_new['weighted'] = (0.6 * df_twitter_new['max']) + (0.15*df_twitter_new['fav_retweet']) + (0.25*df_twitter_new['average'])
+			df_twitter_new = df_twitter_new.sort_values('weighted',ascending = False).reset_index()[:10]
+			df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
+			json_frame = df_twitter_new.to_dict('index').values()
+		return json_frame
+	except:
+		return []
 
 # def get_percentile(indexes):
 # 	res = es.search(index = indexes , size = 5, scroll = '2m', body = {"query" : {

@@ -244,53 +244,62 @@ def twitter_bubble(keyword):
 
 def twitter_graph(keyword):
 	df = text_query(keyword, 'tweets',dataframe = True)
-	df_new = df.groupby(['author']).sum().reset_index()
-	final = [df_new['favorite_count'].tolist()]
-	name_List = [df_new['author'].tolist()]
-	group_label = ['Favorite Count']
-	fig = ff.create_distplot(final, group_label,bin_size = .1, curve_type='normal',rug_text = name_List,show_hist=False)
-	fig['layout'].update(title='Distplot with Normal Distribution')
-	plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
+	try:
+		df_new = df.groupby(['author']).sum().reset_index()
+		final = [df_new['favorite_count'].tolist()]
+		name_List = [df_new['author'].tolist()]
+		group_label = ['Favorite Count']
+		fig = ff.create_distplot(final, group_label,bin_size = .1, curve_type='normal',rug_text = name_List,show_hist=False)
+		fig['layout'].update(title='Distplot with Normal Distribution')
+		plot(fig, filename='techscan/templates/graph/twitter_graph.html', auto_open=False)
+	except:
+		pass
 
 def wordcloud(keyword):
 	df_weibo = text_query(chi_translation(keyword),'weibo', dataframe = True)
 	df_twitter = text_query(keyword, 'tweets', dataframe = True)
-	with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
-		stopword_chinese = f.read()
-	df_weibo['summary'] = df_weibo['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
+	if df_weibo is not None:
+		with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
+			stopword_chinese = f.read()
+		df_weibo['summary'] = df_weibo['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
 
 	if df_twitter is not None:
 		stopword_english = stopwords.words('english')
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
-	
-	df_all = pd.concat([df_weibo, df_twitter], axis = 0, ignore_index = True)
-	df_all = df_all[df_all['summary']!='']
-	summary_list = df_all['summary'].tolist()
-	summary_string = ''.join(summary_list)
+	try:
+		df_all = pd.concat([df_weibo, df_twitter], axis = 0, ignore_index = True)
+		df_all = df_all[df_all['summary']!='']
+		summary_list = df_all['summary'].tolist()
+		summary_string = ''.join(summary_list)
 
-	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
-	wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
-		max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2).generate(summary_string)
-	
-	wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
+		font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
+			max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2).generate(summary_string)
+		
+		wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
+	except:
+		pass
 
 def twitter_wordcloud(keyword):
 	df_twitter = text_query(keyword,'tweets', dataframe = True)
-	stopword_english = stopwords.words('english')
-	df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
-	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
-	df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
-	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
-	df_twitter['summary'] = df_twitter['summary'][df_twitter['summary']!='']
-	summary_list = df_twitter['summary'].tolist()
-	summary_string = ''.join(summary_list)
-	mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
-	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
-	wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
-		max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, mask = mask).generate(summary_string)
-	wordcloud.to_file("techscan/static/word_cloud/tweets_wordcloud.png")
+	try:
+		stopword_english = stopwords.words('english')
+		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
+		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
+		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
+		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
+		df_twitter['summary'] = df_twitter['summary'][df_twitter['summary']!='']
+		summary_list = df_twitter['summary'].tolist()
+		summary_string = ''.join(summary_list)
+		mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
+		font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
+			max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, mask = mask).generate(summary_string)
+		wordcloud.to_file("techscan/static/word_cloud/tweets_wordcloud.png")
+	except:
+		return "False"
 
 
 def detail_hashtag_frequency(keyword):
@@ -756,7 +765,7 @@ def people_companies_wordcloud(keyword):
 	if res_input == [] :
 	
 		details = people_companies(keyword)
-		upload_data_ner(details, 'wordcloud')
+		upload_data_ner('wordcloud',details)
 		total_tech = details[0]['tech']
 		total_company = details[0]['company']
 		total_people = details[0]['people']
