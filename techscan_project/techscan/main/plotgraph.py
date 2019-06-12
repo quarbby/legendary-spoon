@@ -296,6 +296,7 @@ def twitter_wordcloud(keyword):
 def detail_hashtag_frequency(keyword):
 	df_twitter = text_query(keyword, 'tweets',dataframe = True)
 	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
+	# print (df_twitter)
 	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x: x.replace("ai", "AI"))
 	df_twitter = df_twitter[df_twitter['hashtags'] != '']
 	twitter_record = df_twitter.to_dict('records')
@@ -371,191 +372,239 @@ def detail_hashtag_frequency(keyword):
 	plot(fig, filename = 'techscan/templates/graph/detail_hashtag_frequency.html', auto_open = False)
 
 def heatmap(keyword):
-    search_term = chi_translation(keyword)
-    if 'heatmap' not in es.indices.get_alias().keys():
-        es.indices.create(index = 'heatmap')
-    res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {
-        "match" : {"labels" : search_term}
-        }})
-    res_input = res['hits']['hits']
 
-    resItems = []
-    for i in range (len(res_input)):
-        if res_input[i]['_source']['labels'] == search_term :
-            resItems.append(res_input[i])
+	search_term = chi_translation(keyword)
+	if 'heatmap' not in es.indices.get_alias().keys():
+		es.indices.create(index = 'heatmap')
+	res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {
+		"match" : {"labels" : search_term}}})
+	res_input = res['hits']['hits']
 
-    address = []
-    weight = []
-    companies = []
-    Latitude = []
-    longtitude = []
-    colouring = []
-    institude = []
+	resItems = []
+	for i in range (len(res_input)):
+		if res_input[i]['_source']['labels'] == search_term :
+			resItems.append(res_input[i])
 
-    countx1 = 0
-    countx2 = 0
-    countx3 = 0
-    countx4 = 0
+	address = []
+	weight = []
+	companies = []
+	Latitude = []
+	longtitude = []
+	colouring = []
+	institude = []
 
-    if resItems == []:
-        Items = googlemaps_input(keyword,findNER_esNews(keyword))
-        upload_data_ner(Items, 'heatmap')
-        for i in range (len(Items)):
-            companies.append(Items[i]['publisher'])
-            Latitude.append(Items[i]['Address'][0]['geometry']['location']['lat'])
-            longtitude.append(Items[i]['Address'][0]['geometry']['location']['lng'])
-            address.append(Items[i]['Address'][0]['formatted_address'])
-            if 0 < int(Items[i]['weighting']) <= 5:
-                weight.append(100)
+	countx1 = 0
+	countx2 = 0
+	countx3 = 0
+	countx4 = 0
 
-            elif 5 < int(Items[i]['weighting']) <= 20:
-                weight.append(200)
+	if resItems == []:
+		try:
+			Items = googlemaps_input(keyword,findNER_esNews(keyword))
+			upload_data_ner(Items, 'heatmap')
+		except:
+			layout = go.Layout(
+				legend = dict(x = 1.02, y = 0.5, orientation = "v"),
+				showlegend = True,
+				font = go.layout.Font(size = 15,
+					family = 'roboto'),
+				autosize = True,
+				width = 780,
+				height = 300,
+				margin=go.layout.Margin(
+						l=0,
+						r=0,
+						b=0,
+						t=0,
+						pad=1),
+					
+					xaxis = dict (fixedrange = True),
+					yaxis = dict (fixedrange = True),
+						
+						geo = go.layout.Geo(
+							scope = 'world',
+							projection = go.layout.geo.Projection(
+								type='equirectangular'  
+								),
 
-            elif 20 < int(Items[i]['weighting']) <= 50:
-                weight.append(500)
+					showcoastlines = True,
+					showland = True,
+					showocean = True,
+					showcountries = True,
+					showsubunits = False,
+					# size and width
+					subunitwidth=1,
+					countrywidth=1,
+					# colorings ^^
+					landcolor = '#e1eaea',
+					oceancolor = "#ffffff",
+					subunitcolor="#9ae59a", 
+					countrycolor="#b3b3b3",
+					coastlinecolor  = "#b3b3b3", 
+		                
+					)
+				)
 
-            elif 50 < int(Items[i]['weighting']) <= 100:
-                weight.append(1000)
+			fig = go.Figure(layout=layout)
+			plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
+			return None
 
-            elif 100 < int(Items[i]['weighting'] ):
-                weight.append(3000)
+		for i in range (len(Items)):
+			companies.append(Items[i]['publisher'])
+			Latitude.append(Items[i]['Address'][0]['geometry']['location']['lat'])
+			longtitude.append(Items[i]['Address'][0]['geometry']['location']['lng'])
+			address.append(Items[i]['Address'][0]['formatted_address'])
+			if 0 < int(Items[i]['weighting']) <= 5:
+				weight.append(100)
 
-            if Items[i]['types'] == 'Institutions':
-                colouring.append("#00cc66")
-                institude.append(Items[i]['types'])
-                countx1 += 1
+			elif 5 < int(Items[i]['weighting']) <= 20:
+				weight.append(200)
 
-            elif Items[i]['types'] == 'Private_Companies':    
-                colouring.append("#000080")
-                institude.append(Items[i]['types'])
-                countx2 += 1
+			elif 20 < int(Items[i]['weighting']) <= 50:
+				weight.append(500)
 
-            elif Items[i]['types'] == 'Government_Sectors':
-                colouring.append("#ff3333")
-                institude.append(Items[i]['types'])
-                countx3 += 1
+			elif 50 < int(Items[i]['weighting']) <= 100:
+				weight.append(1000)
 
-            elif Items[i]['types'] == 'news':
-                colouring.append("#cc6600")
-                institude.append(Items[i]['types'])
-                countx4 += 1
-    else :
-        for i in range (len(resItems)):
-            companies.append(resItems[i]['_source']['publisher'])
-            Latitude.append(resItems[i]['_source']['Address'][0]['geometry']['location']['lat'])
-            longtitude.append(resItems[i]['_source']['Address'][0]['geometry']['location']['lng'])
-            address.append(resItems[i]['_source']['Address'][0]['formatted_address'])
+			elif 100 < int(Items[i]['weighting'] ):
+				weight.append(3000)
 
-            if 0 < int(resItems[i]['_source']['weighting']) <= 5:
-                weight.append(100)
+			if Items[i]['types'] == 'Institutions':
+				colouring.append("#00cc66")
+				institude.append(Items[i]['types'])
+				countx1 += 1
 
-            elif 5 < int(resItems[i]['_source']['weighting']) <= 20:
-                weight.append(200)
+			elif Items[i]['types'] == 'Private_Companies':    
+				colouring.append("#000080")
+				institude.append(Items[i]['types'])
+				countx2 += 1
 
-            elif 20 < int(resItems[i]['_source']['weighting']) <= 50:
-                weight.append(500)
+			elif Items[i]['types'] == 'Government_Sectors':
+				colouring.append("#ff3333")
+				institude.append(Items[i]['types'])
+				countx3 += 1
 
-            elif 50 < int(resItems[i]['_source']['weighting']) <= 100:
-                weight.append(1000)
+			elif Items[i]['types'] == 'news':
+				colouring.append("#cc6600")
+				institude.append(Items[i]['types'])
+				countx4 += 1
+	else :
+		for i in range (len(resItems)):
+			companies.append(resItems[i]['_source']['publisher'])
+			Latitude.append(resItems[i]['_source']['Address'][0]['geometry']['location']['lat'])
+			longtitude.append(resItems[i]['_source']['Address'][0]['geometry']['location']['lng'])
+			address.append(resItems[i]['_source']['Address'][0]['formatted_address'])
 
-            elif 100 < int(resItems[i]['_source']['weighting']  ):
-                weight.append(3000)
+			if 0 < int(resItems[i]['_source']['weighting']) <= 5:
+				weight.append(100)
 
-            if resItems[i]['_source']['types'] == 'Institutions':
-                colouring.append("#00cc66")
-                institude.append(resItems[i]['_source']['types'])
-                countx1 += 1
+			elif 5 < int(resItems[i]['_source']['weighting']) <= 20:
+				weight.append(200)
 
-            elif resItems[i]['_source']['types'] == 'Private_Companies':    
-                colouring.append("#000080")
-                institude.append(resItems[i]['_source']['types'])
-                countx2 += 1
+			elif 20 < int(resItems[i]['_source']['weighting']) <= 50:
+				weight.append(500)
 
-            elif resItems[i]['_source']['types'] == 'Government_Sectors':
-                colouring.append("#ff3333")
-                institude.append(resItems[i]['_source']['types'])
-                countx3 += 1
+			elif 50 < int(resItems[i]['_source']['weighting']) <= 100:
+				weight.append(1000)
 
-            elif resItems[i]['_source']['types'] == 'news':
-                colouring.append("#cc6600")
-                institude.append(resItems[i]['_source']['types'])
-                countx4 += 1
-    ds = pd.DataFrame({'companies': companies, 'Lat': Latitude, 'Lng': longtitude , 'address': address, 'weight': weight, 'colors': colouring, 'institude': institude})
-    df = ds.sort_values(['colors'])
+			elif 100 < int(resItems[i]['_source']['weighting']  ):
+				weight.append(3000)
+
+			if resItems[i]['_source']['types'] == 'Institutions':
+				colouring.append("#00cc66")
+				institude.append(resItems[i]['_source']['types'])
+				countx1 += 1
+
+			elif resItems[i]['_source']['types'] == 'Private_Companies':    
+				colouring.append("#000080")
+				institude.append(resItems[i]['_source']['types'])
+				countx2 += 1
+
+			elif resItems[i]['_source']['types'] == 'Government_Sectors':
+				colouring.append("#ff3333")
+				institude.append(resItems[i]['_source']['types'])
+				countx3 += 1
+
+			elif resItems[i]['_source']['types'] == 'news':
+				colouring.append("#cc6600")
+				institude.append(resItems[i]['_source']['types'])
+				countx4 += 1
+	ds = pd.DataFrame({'companies': companies, 'Lat': Latitude, 'Lng': longtitude , 'address': address, 'weight': weight, 'colors': colouring, 'institude': institude})
+	df = ds.sort_values(['colors'])
 
 
-    colors = ['Private Companies','Institutions','News Publishers','Government Sectors']
-    limits = [(0,countx2),(countx2,countx2+countx1),(countx2+countx1,countx2+countx1+countx4),(countx2+countx1+countx4,countx2+countx1+countx4+countx3)]
+	colors = ['Private Companies','Institutions','News Publishers','Government Sectors']
+	limits = [(0,countx2),(countx2,countx2+countx1),(countx2+countx1,countx2+countx1+countx4),(countx2+countx1+countx4,countx2+countx1+countx4+countx3)]
 
-    cities = []
-    scale = 5000
+	cities = []
+	scale = 5000
 
-    for i in range(len(limits)):
-        lim = limits[i]
-        df_sub = df[lim[0]:lim[1]]
-        df_colors = colors[i]
-        city = go.Scattergeo(
-            locationmode = 'ISO-3',
-            lon = df_sub['Lng'],
-            lat = df_sub['Lat'],
-            text = colors[i]+": "+df_sub['companies']+"  |  Location: "+df_sub['address'],
-            marker = go.scattergeo.Marker(
-                size = df_sub['weight'],
-                color = df_sub['colors'],
-                line = go.scattergeo.marker.Line(
-                    width=0, color='rgb(40,40,40)'
-                ),
-                sizemode = 'area'
-            ),
-            
-            name = '{}'.format(df_colors) 
-            )
-        cities.append(city)
+	for i in range(len(limits)):
+		lim = limits[i]
+		df_sub = df[lim[0]:lim[1]]
+		df_colors = colors[i]
+		city = go.Scattergeo(
+			locationmode = 'ISO-3',
+			lon = df_sub['Lng'],
+			lat = df_sub['Lat'],
+			text = colors[i]+": "+df_sub['companies']+"  |  Location: "+df_sub['address'],
+			marker = go.scattergeo.Marker(
+				size = df_sub['weight'],
+				color = df_sub['colors'],
+				line = go.scattergeo.marker.Line(
+					width=0, color='rgb(40,40,40)'
+				),
+				sizemode = 'area'
+			),
 
-    layout = go.Layout(
-    	legend = dict(x = 1.02, y = 0.5, orientation = "v"),
-    	showlegend = True,
-    	font = go.layout.Font(size = 15,
-    		family = 'roboto'),
-    	autosize = True,
-    	width = 780,
-    	height = 300,
-    	margin=go.layout.Margin(
+			name = '{}'.format(df_colors) 
+			)
+		cities.append(city)
+
+	layout = go.Layout(
+		legend = dict(x = 1.02, y = 0.5, orientation = "v"),
+		showlegend = True,
+		font = go.layout.Font(size = 15,
+			family = 'roboto'),
+		autosize = True,
+		width = 780,
+		height = 300,
+		margin=go.layout.Margin(
 				l=0,
 				r=0,
 				b=0,
 				t=0,
 				pad=1),
-            
-            xaxis = dict (fixedrange = True),
-            yaxis = dict (fixedrange = True),
-                
-                geo = go.layout.Geo(
-                	scope = 'world',
-                	projection = go.layout.geo.Projection(
-                		type='equirectangular'  
-                		),
-               
-                showcoastlines = True,
-                showland = True,
-                showocean = True,
-                showcountries = True,
-                showsubunits = False,
-                # size and width
-                subunitwidth=1,
-                countrywidth=1,
-                # colorings ^^
-                landcolor = '#e1eaea',
-                oceancolor = "#ffffff",
-                subunitcolor="#9ae59a", 
-                countrycolor="#b3b3b3",
-                coastlinecolor  = "#b3b3b3", 
-                
-                )
-        )
+			
+			xaxis = dict (fixedrange = True),
+			yaxis = dict (fixedrange = True),
+				
+				geo = go.layout.Geo(
+					scope = 'world',
+					projection = go.layout.geo.Projection(
+						type='equirectangular'  
+						),
 
-    fig = go.Figure(data=cities, layout=layout)
-    plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
+			showcoastlines = True,
+			showland = True,
+			showocean = True,
+			showcountries = True,
+			showsubunits = False,
+			# size and width
+			subunitwidth=1,
+			countrywidth=1,
+			# colorings ^^
+			landcolor = '#e1eaea',
+			oceancolor = "#ffffff",
+			subunitcolor="#9ae59a", 
+			countrycolor="#b3b3b3",
+			coastlinecolor  = "#b3b3b3", 
+                
+			)
+		)
+
+	fig = go.Figure(data=cities, layout=layout)
+	plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
 
 def top_companies(keyword, indexes = 'news', graph = False):		
 	search_term = chi_translation(keyword)
