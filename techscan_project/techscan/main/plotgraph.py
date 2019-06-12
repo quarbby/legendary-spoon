@@ -12,14 +12,14 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from collections import Counter
 from nltk.corpus import stopwords
-# from nltk.tokenize import sent_tokenize
+from PIL import Image
 from ..config import es
 from .main_functions import chi_translation
 from .scroll_query import text_query, processing_hits
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import plotly.figure_factory as ff
 from .uploading_data import upload_data_ner
-from .train_heatmap_index import find_NER
+from .update_heatmap import  findNER_esNews, googlemaps_input
 import spacy
 
 
@@ -276,6 +276,23 @@ def wordcloud(keyword):
 	
 	wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
 
+def twitter_wordcloud(keyword):
+	df_twitter = text_query(keyword,'tweets', dataframe = True)
+	stopword_english = stopwords.words('english')
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
+	df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
+	df_twitter['summary'] = df_twitter['summary'][df_twitter['summary']!='']
+	summary_list = df_twitter['summary'].tolist()
+	summary_string = ''.join(summary_list)
+	mask = np.array(Image.open('techscan/static/word_cloud/tweet.png'))
+	font_path = 'techscan/static/word_cloud/STFangSong.ttf'
+	wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
+		max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, mask = mask).generate(summary_string)
+	wordcloud.to_file("techscan/static/word_cloud/tweets_wordcloud.png")
+
+
 def detail_hashtag_frequency(keyword):
 	df_twitter = text_query(keyword, 'tweets',dataframe = True)
 	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
@@ -381,7 +398,7 @@ def heatmap(keyword):
     countx4 = 0
 
     if resItems == []:
-        Items = find_NER(search_term)
+        Items = googlemaps_input(keyword,findNER_esNews(keyword))
         upload_data_ner(Items, 'heatmap')
         for i in range (len(Items)):
             companies.append(Items[i]['publisher'])
@@ -547,6 +564,7 @@ def top_companies(keyword, indexes = 'news', graph = False):
 
 	res_input = res['hits']['hits']
 	resItems = []
+
 	for i in range (len(res_input)):
 		if res_input[i]['_source']['labels'] == search_term :
 			resItems.append(res_input[i])
