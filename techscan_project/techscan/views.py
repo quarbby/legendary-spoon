@@ -21,7 +21,7 @@ def update(request):
 	        elif site['source'] == 'news':
 	        	crawled_news = crawler.crawl_news(site['url'])
 	        	uploading_data.upload_crawled_data(site['source'], crawled_news)
-	        	update_heatmap.googlemaps_input(keyword, update_heatmap.findNER_Crawled_News(keyword,crawled_news))
+	        	update_heatmap.googlemaps_input(main_functions.chi_translation(keyword), update_heatmap.findNER_Crawled_News(main_functions.chi_translation(keyword),crawled_news))
 
 	        elif site['source'] == 'scholar':
 	        	uploading_data.upload_crawled_data(site['source'], crawler.crawl_scholar(site['url']))
@@ -60,10 +60,10 @@ def update(request):
 def main(request):
 	params = request.GET.get('q')
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
-	neo4jgraph.plotgraph(neo4jgraph.search_field(params))
-	plotgraph.main_graph(params)
+	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+	# plotgraph.main_graph(params)
 	plotgraph.heatmap(params)
-	plotgraph.people_companies_wordcloud(params)
+	# plotgraph.people_companies_wordcloud(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
@@ -73,13 +73,15 @@ def main(request):
 		"hit_count": main_functions.get_count(params),
 		"related_table": neo4jgraph.get_related_table(params),
 		"author_table":main_functions.overview_table(params),
-		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params))
+		"network": neo4jgraph.plotgraph(neo4jgraph.search_field(params)),
+		"main_graph": plotgraph.main_graph(params),
+		"people_companies_wordcloud": plotgraph.people_companies_wordcloud(params)
 	}
 	return render(request, 'main.html', context)
 
 def details(request):
 	params = request.GET.get('q')
-	plotgraph.detail_hashtag_frequency(params)
+	# plotgraph.detail_hashtag_frequency(params)
 	plotgraph.top_companies(params, graph = True)
 	# plotgraph.twitter_bubble(params)
 
@@ -97,7 +99,9 @@ def details(request):
 		"tweets":es_tweets,
 		"zhihu":es_zhihu,
 		"author_table":main_functions.overview_table(params),
-		"company_table":plotgraph.top_companies(params)
+		"company_table":plotgraph.top_companies(params),
+		"hashtag_frequency": plotgraph.detail_hashtag_frequency(params)
+
 	}
 
 	return render(request,'details.html',context)
@@ -105,14 +109,15 @@ def details(request):
 def weibo(request):
 	params = request.GET.get('q')
 	# plotgraph.top_hashtag(params)
-	plotgraph.wordcloud(params)
+	# plotgraph.wordcloud(params)
 	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"weibo":es_weibo,
 		"weibo_table":main_functions.weibo_author(main_functions.chi_translation(params)),
-		"weibo_hashtag":plotgraph.top_hashtag(params)
+		"weibo_hashtag":plotgraph.top_hashtag(params),
+		"weibo_wordcloud" : plotgraph.wordcloud(params)
 	}
 	return render(request, 'weibo.html', context)
 

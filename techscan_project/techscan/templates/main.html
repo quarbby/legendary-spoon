@@ -161,21 +161,33 @@
 						<h5 class="font-weight-light">
 							Technologies
 						</h5></span></u>
+						{% if people_companies_wordcloud == "False"%}
+					<h3> No wordcloud found </h3>
+					{% else %}
 						<img src="{% static 'word_cloud/tech_wordcloud.png' %}" class="graph-frame" style="width:240px; height:300px"></img>
+					{% endif %}
 					</div>
 					<div class="container col-4">
 						<u><span class="wordcloud_font">
 						<h5 class="font-weight-light">
 							Companies
 						</h5></span></u>
+						{% if people_companies_wordcloud == "False"%}
+					<h3> No wordcloud found </h3>
+					{% else %}
 						<img src="{% static 'word_cloud/company_wordcloud.png' %}" class="graph-frame" style="width:240px; height:300px"></img>
+						{% endif %}
 					</div>
 					<div class="container col-4">
 						<u><span class="wordcloud_font">
 						<h5 class="font-weight-light">
 							People
 						</h5></span></u>
+						{% if people_companies_wordcloud == "False"%}
+					<h3> No wordcloud found </h3>
+					{% else %}
 						<img src="{% static 'word_cloud/people_wordcloud.png' %}" class="graph-frame" style="width:240px; height:300px"></img>
+					{% endif %}
 					</div>
 				</div>
 			</div>
@@ -186,7 +198,7 @@
 				<div class="row" style="width: 100%">
 
 					{% if network == "False" %}
-					<h3> No Relations Found </h3>
+					<h3> No Graph Found </h3>
 					{% else %}
 
 					<div class="embed-responsive embed-responsive-16by9 col-sm-7 ml-3 mt-0" style="height:300px">
@@ -251,7 +263,11 @@
 				<span class="section-title"><h3 class="font-weight-light" style="font-size: 25px">Time Series Graph</h3></span>
 				<h5 class="font-weight-light" style="font-size:18px">Total post across all platforms over time.</h5>
 				<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
+<!-- 					{% if main_graph == "False"%}
+				<h3> No Relation Found </h3>
+				{% else %} -->
 					<iframe src="{% url 'plotgraphall' %}" class="graph-frame" ></iframe> 
+				<!-- {% endif %} -->
 				</div>
 			</div>
 			<div class="container col-md p-0 m-1">

@@ -252,7 +252,7 @@ def overview_table(keyword):
 	Final_List_size = []
 	Color_List = []
 	Medias = []
-	if df_zhihu is not None:
+	try:
 		upvote_count = df_zhihu.groupby(['author']).sum().reset_index().sort_values('upvote_count', ascending=False)
 		post_freq = df_zhihu.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
 		post_freq.rename(columns = {'author': 'author_1'}, inplace = True)
@@ -273,8 +273,10 @@ def overview_table(keyword):
 		df_zhihu_new['url'] = zhihu_url
 		df_zhihu_new['color'] = 'rgb(85,118,154)'
 		Medias.append(df_zhihu_new)
+	except:
+		pass
 
-	if df_weibo is not None:
+	try:
 		weibo_favorite_count = df_weibo.groupby(['author']).sum().reset_index().sort_values('favorite_count', ascending=False)
 		post_freq = df_weibo.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
 		post_freq.rename(columns = {'author': 'author_1'}, inplace = True)
@@ -296,8 +298,10 @@ def overview_table(keyword):
 		df_weibo_new['url'] = 'https://www.weibo.com/' + df_weibo_new['id']
 		df_weibo_new['color'] = 'rgb(246,156,99)'
 		Medias.append(df_weibo_new)
+	except:
+		pass
 
-	if df_twitter is not None:
+	try:
 		twitter_fav_retweet = df_twitter.groupby(['author']).sum().reset_index().sort_values('fav_retweet', ascending=False)
 		post_freq = df_twitter.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
 		post_freq.rename(columns = {'author': 'author_1'}, inplace = True)
@@ -310,48 +314,52 @@ def overview_table(keyword):
 		df_twitter_new['url'] = 'https://twitter.com/' + df_twitter_new['author']
 		df_twitter_new['color'] = 'rgb(106,167,156)'
 		Medias.append(df_twitter_new)
+	except:
+		pass
+	try:
+		df_all = pd.concat(Medias, axis = 0, ignore_index = True)
+		df_all = df_all.sort_values(['favorite_count'], ascending = False)
+		df_graph = df_all.sort_values(['size'], ascending = False)
+		df_all = df_all.fillna('N.A')
+		json_frame = df_all.to_dict('records')
+		
+		#Graph portion
+		color_list = df_graph['color'].tolist()
+		size_list = df_graph['size'].tolist()
+		author_list = df_graph['author'].tolist()
+		hover_text = df_graph['source'].tolist()
+		trace = go.Bar(
+				marker = dict(color = color_list),
+				x = size_list,
+				y = author_list,
+				text = hover_text,
+				orientation = 'h',
+				)
 
-	df_all = pd.concat(Medias, axis = 0, ignore_index = True)
-	df_all = df_all.sort_values(['favorite_count'], ascending = False)
-	df_graph = df_all.sort_values(['size'], ascending = False)
-	df_all = df_all.fillna('N.A')
-	json_frame = df_all.to_dict('index').values()
-	
-	#Graph portion
-	color_list = df_graph['color'].tolist()
-	size_list = df_graph['size'].tolist()
-	author_list = df_graph['author'].tolist()
-	hover_text = df_graph['source'].tolist()
-	trace = go.Bar(
-			marker = dict(color = color_list),
-			x = size_list,
-			y = author_list,
-			text = hover_text,
-			orientation = 'h',
+		data = [trace]
+		layout = go.Layout(
+			barmode = "group",
+			yaxis = dict(
+				title = go.layout.yaxis.Title(
+					font = dict(
+						family = 'roboto',
+						size = 18,
+						)
+					)
+				),
+			legend = dict(
+				x = 0,
+				y = 1.0,
+				bgcolor = 'rgba(255, 255, 255, 0)',
+				bordercolor = 'rgba(255, 255, 255, 0)'
+				),
 			)
 
-	data = [trace]
-	layout = go.Layout(
-		barmode = "group",
-		yaxis = dict(
-			title = go.layout.yaxis.Title(
-				font = dict(
-					family = 'roboto',
-					size = 18,
-					)
-				)
-			),
-		legend = dict(
-			x = 0,
-			y = 1.0,
-			bgcolor = 'rgba(255, 255, 255, 0)',
-			bordercolor = 'rgba(255, 255, 255, 0)'
-			),
-		)
-
-	fig = dict(data = data, layout = layout)
-	plot(fig, filename='techscan/templates/graph/detail_post_frequency.html', auto_open=False)
+		fig = dict(data = data, layout = layout)
+		plot(fig, filename='techscan/templates/graph/detail_post_frequency.html', auto_open=False)
 
 
-	return json_frame
-	
+		return json_frame
+	except:
+		return "False"
+		

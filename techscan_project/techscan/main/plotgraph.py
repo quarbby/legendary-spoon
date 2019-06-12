@@ -24,14 +24,15 @@ import spacy
 
 
 def main_graph(keyword):
-	df_english = text_query(str(keyword), dataframe = True)
-	df_chinese = text_query(str(chi_translation(keyword)), dataframe = True)
-	df = pd.concat([df_english,df_chinese], ignore_index = True)
-	dates = ['2017', '2018', '2019']
-	df = df.dropna(subset = ['date'])
-	df = df[df.date.str.contains('|'.join(dates))]
+	try:
+		df_english = text_query(str(keyword), dataframe = True)
+		df_chinese = text_query(str(chi_translation(keyword)), dataframe = True)
+		df = pd.concat([df_english,df_chinese], ignore_index = True)
+		dates = ['2017', '2018', '2019']
+		df = df.dropna(subset = ['date'])
+		df = df[df.date.str.contains('|'.join(dates))]
 
-	if df is not None:
+	
 		df['published_date'] = df['date'].apply(lambda x:  x[:7])
 		df_2017 = df[df.published_date.str.contains('2017')]
 		df_2017 = df_2017['published_date'].value_counts()
@@ -108,8 +109,8 @@ def main_graph(keyword):
 			)
 		fig = dict(data=data, layout=layout)
 		plot(fig, filename = 'techscan/templates/graph/main_graph_all.html', auto_open=False)
-	else:
-		pass
+	except:
+		return "False"
 
 def top_hashtag(keyword):
 	try:
@@ -260,27 +261,24 @@ def twitter_graph(keyword):
 
 def wordcloud(keyword):
 	df_weibo = text_query(chi_translation(keyword),'weibo', dataframe = True)
-	df_twitter = text_query(keyword, 'tweets', dataframe = True)
 	try:
 		with open('techscan/static/word_cloud/stopword.txt', encoding = 'utf-8') as f:
 			stopword_chinese = f.read()
 		df_weibo['summary'] = df_weibo['summary'].apply(lambda x: ' '.join([word for word in jieba.cut(x,cut_all=False) if word not in stopword_chinese]))
-		stopword_english = stopwords.words('english')
-		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
-		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
-		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: ' '.join([word for word in x.split(' ') if word not in stopword_english]))
-		df_all = pd.concat([df_weibo, df_twitter], axis = 0, ignore_index = True)
-		df_all = df_all[df_all['summary']!='']
-		summary_list = df_all['summary'].tolist()
+		
+		
+		df_weibo = df_weibo[df_weibo['summary']!='']
+		summary_list = df_weibo['summary'].tolist()
 		summary_string = ''.join(summary_list)
 
 		font_path = 'techscan/static/word_cloud/STFangSong.ttf'
 		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path=font_path,
 			max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2).generate(summary_string)
 		
-		wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
+		wordcloud.to_file("techscan/static/word_cloud/weibo_wordcloud.png")
 	except:
-		pass
+		return "False"
+
 
 def twitter_wordcloud(keyword):
 	df_twitter = text_query(keyword,'tweets', dataframe = True)
@@ -303,82 +301,87 @@ def twitter_wordcloud(keyword):
 
 
 def detail_hashtag_frequency(keyword):
-	df_twitter = text_query(keyword, 'tweets',dataframe = True)
-	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
-	# print (df_twitter)
-	df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x: x.replace("ai", "AI"))
-	df_twitter = df_twitter[df_twitter['hashtags'] != '']
-	twitter_record = df_twitter.to_dict('records')
-	twitter_hashtag_count = Counter(hashtag['hashtags'] for hashtag in twitter_record)
-	twitter_tophashtags = twitter_hashtag_count.most_common(15)
-
 	Total_hashtag = []
 	Total_count = []
 	color_list = []
 	text_list = []
+	try:
+		df_twitter = text_query(keyword, 'tweets',dataframe = True)
+		df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
+		
+		df_twitter['hashtags'] = df_twitter['hashtags'].apply(lambda x: x.replace("ai", "AI"))
+		df_twitter = df_twitter[df_twitter['hashtags'] != '']
+		twitter_record = df_twitter.to_dict('records')
+		twitter_hashtag_count = Counter(hashtag['hashtags'] for hashtag in twitter_record)
+		twitter_tophashtags = twitter_hashtag_count.most_common(15)
 
-	for i in twitter_tophashtags:
-		Total_hashtag.append(i[0])
-		Total_count.append(i[1])
-		color_list.append('rgb(106,167,156)')
-		text_list.append('Twitter')
+		for i in twitter_tophashtags:
+			Total_hashtag.append(i[0])
+			Total_count.append(i[1])
+			color_list.append('rgb(106,167,156)')
+			text_list.append('Twitter')
+	except:
+		pass
 
-
-	df_weibo = text_query(chi_translation(keyword),'weibo', dataframe = True)
-	df_weibo ['hashtags']= df_weibo['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
-	df_weibo = df_weibo[df_weibo['hashtags']!='']
-	weibo_record = df_weibo.to_dict('records')
-	weibo_hashtag_count = Counter(hashtag['hashtags'] for hashtag in weibo_record)
-	weibo_tophashtags = weibo_hashtag_count.most_common(15)
-	weibo_hashtag = []
-	weibo_count = []
-	for i in weibo_tophashtags:
-		Total_hashtag.append(i[0])
-		Total_count.append(i[1])
-		color_list.append('rgb(246,156,99)')
-		text_list.append('Weibo')
-
-	hashtags_counting = pd.DataFrame({'hashtags': Total_hashtag, "counts": Total_count , "color": color_list, "texts": text_list})
-	hashtags_count = hashtags_counting.sort_values('counts', ascending = False)
-
-
-
-	trace1 = go.Bar(
-		x = hashtags_count['hashtags'],
-		y = hashtags_count['counts'],
-		name='Weibo',
-		marker=dict(
-			color=hashtags_count['color'],
-			),
-		hoverinfo = 'text',
-		text = "source: " + hashtags_count['texts'] + "<br>Hashtag: " + hashtags_count['hashtags'],
-		)
-
-	data = [trace1]
-	layout = go.Layout(
-		yaxis = dict(
-			title = 'Frequency of Hashtags',
-			titlefont = dict(
-				family = 'roboto',
-				size = 16,
-				color = 'rgb(107, 107, 107)'
-				)
-			),
-		legend = dict(
-			x = 0,
-			y = 1.0,
-			bgcolor = 'rgba(255, 255, 255, 0)',
-			bordercolor = 'rgba(255, 255, 255, 0)'
-			),
-		barmode ='group',
-		bargap = 0.15,
-		bargroupgap = 0.1,
-	
+	try:
+		df_weibo = text_query(chi_translation(keyword),'weibo', dataframe = True)
+		df_weibo ['hashtags']= df_weibo['hashtags'].apply(lambda x:''.join(re.sub('[^\w]', '',  str(x)).split()))
+		df_weibo = df_weibo[df_weibo['hashtags']!='']
+		weibo_record = df_weibo.to_dict('records')
+		weibo_hashtag_count = Counter(hashtag['hashtags'] for hashtag in weibo_record)
+		weibo_tophashtags = weibo_hashtag_count.most_common(15)
+		
+		for i in weibo_tophashtags:
+			Total_hashtag.append(i[0])
+			Total_count.append(i[1])
+			color_list.append('rgb(246,156,99)')
+			text_list.append('Weibo')
+	except:
+		pass
+	try:
+		hashtags_counting = pd.DataFrame({'hashtags': Total_hashtag, "counts": Total_count , "color": color_list, "texts": text_list})
+		hashtags_count = hashtags_counting.sort_values('counts', ascending = False)
 
 
-		)
-	fig = dict(data = data , layout = layout)
-	plot(fig, filename = 'techscan/templates/graph/detail_hashtag_frequency.html', auto_open = False)
+
+		trace1 = go.Bar(
+			x = hashtags_count['hashtags'],
+			y = hashtags_count['counts'],
+			name='Weibo',
+			marker=dict(
+				color=hashtags_count['color'],
+				),
+			hoverinfo = 'text',
+			text = "source: " + hashtags_count['texts'] + "<br>Hashtag: " + hashtags_count['hashtags'],
+			)
+
+		data = [trace1]
+		layout = go.Layout(
+			yaxis = dict(
+				title = 'Frequency of Hashtags',
+				titlefont = dict(
+					family = 'roboto',
+					size = 16,
+					color = 'rgb(107, 107, 107)'
+					)
+				),
+			legend = dict(
+				x = 0,
+				y = 1.0,
+				bgcolor = 'rgba(255, 255, 255, 0)',
+				bordercolor = 'rgba(255, 255, 255, 0)'
+				),
+			barmode ='group',
+			bargap = 0.15,
+			bargroupgap = 0.1,
+		
+
+
+			)
+		fig = dict(data = data , layout = layout)
+		plot(fig, filename = 'techscan/templates/graph/detail_hashtag_frequency.html', auto_open = False)
+	except:
+		return "False"
 
 def heatmap(keyword):
 
@@ -719,7 +722,7 @@ def people_companies(keyword):
 	except:
 		pass
 	    
-	if df_news is not None:
+	try:
 		news_summary_list = df_news.summary.tolist()
 		news_summary_string = "".join(news_summary_list)
 		total_tech.extend(news_summary_list)
@@ -737,6 +740,8 @@ def people_companies(keyword):
 			if '公司' in org or '集团'in org:
 				news_companies.append(org)
 		total_company.extend(news_companies)
+	except:
+		pass
 
 	try:
 		total_tech = ' '.join(total_tech)
@@ -782,19 +787,19 @@ def people_companies_wordcloud(keyword):
 	    	max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="copper").generate(total_tech)
 		wordcloud.to_file("techscan/static/word_cloud/tech_wordcloud.png")
 	except:
-		pass
+		return "False"
 	try:
 		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
 	        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="winter").generate(total_company)
 		wordcloud.to_file("techscan/static/word_cloud/company_wordcloud.png")
 	except:
-		pass
+		return "False"
 	try:
 		wordcloud = WordCloud( background_color = "white", collocations = False, max_words = 100, font_path = font_path,
 	        max_font_size = 100, random_state = 42, width = 600, height = 400, margin = 2, colormap="twilight_shifted").generate(total_people)
 		wordcloud.to_file("techscan/static/word_cloud/people_wordcloud.png")
 	except:
-		pass
+		return "False"
 
 
 def sort_by_dates(keyword):
