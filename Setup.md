@@ -1,6 +1,6 @@
 ## Sourcetree Setup
 
-1. Download and Install Sourcetree from [here](<https://www.sourcetreeapp.com/>). This will require to create a dummy Bitbucket account. It will be link to github eventually
+1. Download and Install [Sourcetree](<https://www.sourcetreeapp.com/>). This will require to create a dummy Bitbucket account. It will be link to github eventually
 
 2. Open Sourcetree and link github account. Clone the project
 
@@ -8,7 +8,7 @@
    git@github.com:quarbby/legendary-spoon.git
    ```
 
-3. Follow the guide [here](<https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html#SetupanSSHkey-ssh3>) for setting up SSH keys.
+3. Follow this [guide](<https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html#SetupanSSHkey-ssh3>) for setting up SSH keys.
 
 #### Basic Stuff
 
@@ -22,8 +22,8 @@
 
 ## ElasticSearch 6.70 Setup
 
-- Download Elasticsearch from [here](<https://www.elastic.co/downloads/past-releases/elasticsearch-6-7-0>) 
-- Download Java JDK 11.0.3 from [here](<https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html>)
+- Download [Elasticsearch](<https://www.elastic.co/downloads/past-releases/elasticsearch-6-7-0>) 
+- Download [Java JDK 11.0.3](<https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html>)
 
 in `elasticsearch-6.7.0/bin/elasticsearch.bat`, under `SET params='%*'`add `SET "JAVA_HOME=C:\Program Files\Java\jdk-11.0.2"`
 
@@ -44,7 +44,7 @@ set `JAVA_HOME=C:\Program Files\Java\jdk-11.0.2`
 
 ## Neo4j Setup
 
-- Download neo4j [here](https://neo4j.com/download/ )
+- Download [Neo4j](https://neo4j.com/download/ )
 
 - Download data 
 
@@ -72,6 +72,8 @@ CREATE (f)-[:PART_OF_FIELD]->(f1)
 ```bash
 pip install -r requirements.txt
 ```
+
+igraph may have problems. Best to manually download the .whl file and install it.
 
 Download [chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=74.0.3729.6/) and place it at the the same directory as `manage.py` 
 
