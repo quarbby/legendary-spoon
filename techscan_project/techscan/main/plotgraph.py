@@ -415,6 +415,9 @@ def heatmap(keyword):
 			Items = googlemaps_input(keyword,findNER_esNews(keyword))
 			upload_data_ner(Items, 'heatmap')
 		except:
+			city = [go.Scattergeo(
+				locationmode = 'ISO-3',)]
+
 			layout = go.Layout(
 				legend = dict(x = 1.02, y = 0.5, orientation = "v"),
 				showlegend = True,
@@ -457,7 +460,7 @@ def heatmap(keyword):
 					)
 				)
 
-			fig = go.Figure(layout=layout)
+			fig = go.Figure(data = city, layout=layout)
 			plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
 			return None
 
