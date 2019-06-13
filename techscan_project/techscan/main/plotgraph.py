@@ -288,6 +288,9 @@ def twitter_wordcloud(keyword):
 	df_twitter = text_query(keyword,'tweets', dataframe = True)
 	try:
 		stopword_english = stopwords.words('english')
+		extra = ['twitter']
+		stopword_english.extend(extra)
+
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x: re.sub('[\W]', ' ', x))
 		df_twitter['summary'] = df_twitter['summary'].apply(lambda x:' '.join(re.sub('http\S+\s*', '', x).split()))
@@ -467,7 +470,8 @@ def heatmap(keyword):
 			Items = googlemaps_input(keyword,findNER_esNews(keyword))
 		except:
 			empty_heatmap()
-
+			return []
+			
 		for i in range (len(Items)):
 			companies.append(Items[i]['publisher'])
 			Latitude.append(Items[i]['Address'][0]['geometry']['location']['lat'])

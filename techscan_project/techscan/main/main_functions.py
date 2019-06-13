@@ -61,7 +61,7 @@ def check(keyword, indexes):
 def get_zh_author(keyword, graph = False):
 
 	df = text_query(keyword, 'zhihu', dataframe = True)
-	if df is not None:
+	try:
 		upvote_count = df.groupby(['author', 'author_url']).sum().reset_index().sort_values('upvote_count', ascending=False)
 
 		post_freq = df.groupby(['author']).size().rename('size').reset_index().sort_values('size', ascending = False)
@@ -84,10 +84,20 @@ def get_zh_author(keyword, graph = False):
 			layout = go.Layout(
 				yaxis = go.layout.YAxis(
 					title = go.layout.yaxis.Title(
-						text = 'User',
+						# text = 'User',
+						# font = dict(
+						# 	family = '-webkit-body',
+						# 	size = 18,
+						# 	)
+						)
+					),
+				
+				xaxis = go.layout.XAxis(
+					title = go.layout.xaxis.Title(
+						text = 'Post Frequency',
 						font = dict(
 							family = '-webkit-body',
-							size = 18,
+							size = 25,
 							)
 						)
 					)
@@ -99,8 +109,8 @@ def get_zh_author(keyword, graph = False):
 			# df_new = df_new.reset_index(drop = True)
 			json_frame = df_new.to_dict('index').values()
 			return json_frame
-	else:
-		pass
+	except:
+		return "False"
 
 def weibo_author(keyword): #need to change according to es data
 

@@ -342,7 +342,7 @@
           <div class="card border-success mb-2 tweeter-border" id ="tweets_positive">
             <!-- <div class="card-body bg-light text-success col-12"> -->
             <div class="card bg-light text-dark col-12 mb-2">
-              <div class="sub-card-title"><a href="{{i.url}}">@{{ i.author }}</a></div>
+              <div class="sub-card-title"><a href="{{i.author_url}}">@{{ i.author }}</a></div>
               <div class="sub-card-body">{{i.summary}}</div>
               <div class="row px-2">
                 <div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
@@ -355,7 +355,7 @@
 
           <div class="card border-danger mb-2 tweeter-border" id = "tweets_negative">
             <div class="card-body bg-light text-danger col-12">
-              <div class="sub-card-title"><a href="{{i.url}}">@{{ i.author }}</a></div>
+              <div class="sub-card-title"><a href="{{i.author_url}}">@{{ i.author }}</a></div>
               <div class="sub-card-body">{{i.summary}}</div>
               <div class="row px-2">
                 <div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
@@ -367,7 +367,7 @@
           {%else%}
           <div class="card border-dark mb-2 tweeter-border" id = "tweets_neutral">
             <div class="card-body bg-light text-dark col-12">
-              <div class="sub-card-title"><a href="{{i.url}}">@{{ i.author }}</a></div>
+              <div class="sub-card-title"><a href="{{i.author_url}}">@{{ i.author }}</a></div>
               <div class="sub-card-body">{{i.summary}}</div>
               <div class="row px-2">
                 <div class="sub-card-others p-2">Favorite Count: {{i.favorite_count}}</div>
@@ -386,7 +386,7 @@
           <h3 class="font-weight-light" style="font-size: 25px"><b>Zhihu</b></h3>
           {% for i in zhihu %}
           <div class="card bg-light text-dark col-12 mb-2">
-            <div class="sub-card-title py-2"><a href="{{i.headlineUrl}}">{{i.title}}</a></div>
+            <div class="sub-card-title py-2"><a href="{{i.summary_url}}">{{i.title}}</a></div>
             <div class="sub-card-body py-2">{{i.summary}}</div>
             <div class="row px-2">
               <div class="sub-card-others p-2"><a href="{{i.author_url}}">

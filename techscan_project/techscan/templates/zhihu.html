@@ -87,9 +87,11 @@
 		</div>
 		<div class="container p-3 ml-2 col-11 float-left">
 		<h3><b>Post Frequency Graph</b></h3>
+		{% if zhihu_graph != "False" %}
 			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
 				<iframe src="{% url 'zhihu_graph' %}" class="graph-frame" ></iframe> 
 			</div>
+		{% endif %}
 		</div>
 
 	</div>

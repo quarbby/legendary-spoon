@@ -159,13 +159,13 @@ def tweets(request):
 
 def zhihu(request):
 	params = request.GET.get('q')
-	main_functions.get_zh_author(main_functions.chi_translation(params), graph = True)
 	es_zhihu = scroll_query.text_query(main_functions.chi_translation(params),'zhihu')
 	context = {
 		"search_word": params,
 		"chi_translation": main_functions.chi_translation(params),
 		"zhihu":es_zhihu,
 		"author_table":main_functions.get_zh_author(main_functions.chi_translation(params)),
+		"zhihu_graph": main_functions.get_zh_author(main_functions.chi_translation(params), graph = True)
 	}
 	return render(request, 'zhihu.html', context)
 
