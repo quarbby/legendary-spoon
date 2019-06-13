@@ -152,7 +152,8 @@ def tweets(request):
 		"chi_translation": main_functions.chi_translation(params),
 		"tweets": es_tweets,
 		"author_table": main_functions.twitter_author(params),
-		"tweets_wordcloud": plotgraph.twitter_wordcloud(params)
+		"tweets_wordcloud": plotgraph.twitter_wordcloud(params),
+		"twitter_bubble": plotgraph.twitter_bubble(params)
 	}
 	return render(request, 'tweets.html', context)
 

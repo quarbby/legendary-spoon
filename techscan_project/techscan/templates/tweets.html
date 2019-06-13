@@ -101,10 +101,15 @@
 		
 		<div class="container p-3 ml-2 col-11">
 			<h3><b>Top 10 Hashtag</b></h3>
+				{% if twitter_bubble == "False" %}
+			<h3> No Top Hashtags </h3>
+			{% else %}
 			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
 				<iframe src="{% url 'twitter_hashtag_bubble' %}" class="graph-frame" ></iframe> 
 			</div>
+			{% endif %}
 		</div>
+		
 		<div class="container p-3 ml-2 col-11">
 			<h3><b>Twitter Favorite Distribution Graph</b></h3>
 			<div class="embed-responsive embed-responsive-21by9" id="responsive-bar">
