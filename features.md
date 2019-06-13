@@ -14,7 +14,7 @@ plotly - nodes and relations must re-index to have id. Start node id must be zer
 
 ## Heatmap
 
-important functions: chi_translation, googlemaps
+Important functions: chi_translation, googlemaps
 
 chi_translation - First function to plot heatmap is through NER on news data, which is dependent on language used. translation is subjected to type of news used.
 
@@ -24,16 +24,16 @@ googlemaps - requires Google API key to generate latitudes and longitudes
 
 ## Crawler 
 
-important nodes: Login, web-driver
+Important notes: Login, web-driver
 
 Login: some crawl functions like weibo requires login-id and password to run.
 
-web-driver: depends on internet search engine, requires different drivers what
+Uses chromedriver to run
 
 
 ## Wordcloud
 
-important functions: Wordcloud, text_query, numpy, Image , spacy and jieba 
+Important functions: Wordcloud, text_query, numpy, Image , spacy and jieba 
 
 Text file: Import Chinese stop word text file to remove Chinese stop words from text
 
@@ -43,6 +43,3 @@ text_query: From json format to data frame
 
 numpy and Image: Required for masking
 
-: 
-
- 
