@@ -387,18 +387,66 @@ def detail_hashtag_frequency(keyword):
 	except:
 		return "False"
 
+def empty_heatmap():
+	city = [go.Scattergeo(
+				locationmode = 'ISO-3',)]
+	layout = go.Layout(
+		legend = dict(x = 1.02, y = 0.5, orientation = "v"),
+		showlegend = True,
+		font = go.layout.Font(size = 15,
+			family = 'roboto'),
+		autosize = True,
+		width = 780,
+		height = 300,
+		margin=go.layout.Margin(
+				l=0,
+				r=0,
+				b=0,
+				t=0,
+				pad=1),
+			
+			xaxis = dict (fixedrange = True),
+			yaxis = dict (fixedrange = True),
+				
+				geo = go.layout.Geo(
+					scope = 'world',
+					projection = go.layout.geo.Projection(
+						type='equirectangular'  
+						),
+
+			showcoastlines = True,
+			showland = True,
+			showocean = True,
+			showcountries = True,
+			showsubunits = False,
+			# size and width
+			subunitwidth=1,
+			countrywidth=1,
+			# colorings ^^
+			landcolor = '#e1eaea',
+			oceancolor = "#ffffff",
+			subunitcolor="#9ae59a", 
+			countrycolor="#b3b3b3",
+			coastlinecolor  = "#b3b3b3", 
+                
+			)
+		)
+	fig = go.Figure(data = city, layout=layout)
+	plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
+	return None
+
 def heatmap(keyword):
 
-	search_term = chi_translation(keyword)
+	keyword = chi_translation(keyword)
 	if 'heatmap' not in es.indices.get_alias().keys():
 		es.indices.create(index = 'heatmap')
 	res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {
-		"match" : {"labels" : search_term}}})
+		"match" : {"labels" : keyword}}})
 	res_input = res['hits']['hits']
 
 	resItems = []
 	for i in range (len(res_input)):
-		if res_input[i]['_source']['labels'] == search_term :
+		if res_input[i]['_source']['labels'] == keyword :
 			resItems.append(res_input[i])
 
 	address = []
@@ -413,60 +461,12 @@ def heatmap(keyword):
 	countx2 = 0
 	countx3 = 0
 	countx4 = 0
-
+	print(resItems)
 	if resItems == []:
 		try:
 			Items = googlemaps_input(keyword,findNER_esNews(keyword))
-			upload_data_ner(Items, 'heatmap')
 		except:
-			city = [go.Scattergeo(
-				locationmode = 'ISO-3',)]
-
-			layout = go.Layout(
-				legend = dict(x = 1.02, y = 0.5, orientation = "v"),
-				showlegend = True,
-				font = go.layout.Font(size = 15,
-					family = 'roboto'),
-				autosize = True,
-				width = 780,
-				height = 300,
-				margin=go.layout.Margin(
-						l=0,
-						r=0,
-						b=0,
-						t=0,
-						pad=1),
-					
-					xaxis = dict (fixedrange = True),
-					yaxis = dict (fixedrange = True),
-						
-						geo = go.layout.Geo(
-							scope = 'world',
-							projection = go.layout.geo.Projection(
-								type='equirectangular'  
-								),
-
-					showcoastlines = True,
-					showland = True,
-					showocean = True,
-					showcountries = True,
-					showsubunits = False,
-					# size and width
-					subunitwidth=1,
-					countrywidth=1,
-					# colorings ^^
-					landcolor = '#e1eaea',
-					oceancolor = "#ffffff",
-					subunitcolor="#9ae59a", 
-					countrycolor="#b3b3b3",
-					coastlinecolor  = "#b3b3b3", 
-		                
-					)
-				)
-
-			fig = go.Figure(data = city, layout=layout)
-			plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
-			return None
+			empty_heatmap()
 
 		for i in range (len(Items)):
 			companies.append(Items[i]['publisher'])
@@ -548,93 +548,96 @@ def heatmap(keyword):
 				colouring.append("#cc6600")
 				institude.append(resItems[i]['_source']['types'])
 				countx4 += 1
-	ds = pd.DataFrame({'companies': companies, 'Lat': Latitude, 'Lng': longtitude , 'address': address, 'weight': weight, 'colors': colouring, 'institude': institude})
-	df = ds.sort_values(['colors'])
+	if companies == []:
+		empty_heatmap()
+	else:
+		ds = pd.DataFrame({'companies': companies, 'Lat': Latitude, 'Lng': longtitude , 'address': address, 'weight': weight, 'colors': colouring, 'institude': institude})
+		df = ds.sort_values(['colors'])
 
 
-	colors = ['Private Companies','Institutions','News Publishers','Government Sectors']
-	limits = [(0,countx2),(countx2,countx2+countx1),(countx2+countx1,countx2+countx1+countx4),(countx2+countx1+countx4,countx2+countx1+countx4+countx3)]
+		colors = ['Private Companies','Institutions','News Publishers','Government Sectors']
+		limits = [(0,countx2),(countx2,countx2+countx1),(countx2+countx1,countx2+countx1+countx4),(countx2+countx1+countx4,countx2+countx1+countx4+countx3)]
 
-	cities = []
-	scale = 5000
+		cities = []
+		scale = 5000
 
-	for i in range(len(limits)):
-		lim = limits[i]
-		df_sub = df[lim[0]:lim[1]]
-		df_colors = colors[i]
-		city = go.Scattergeo(
-			locationmode = 'ISO-3',
-			lon = df_sub['Lng'],
-			lat = df_sub['Lat'],
-			text = colors[i]+": "+df_sub['companies']+"  |  Location: "+df_sub['address'],
-			marker = go.scattergeo.Marker(
-				size = df_sub['weight'],
-				color = df_sub['colors'],
-				line = go.scattergeo.marker.Line(
-					width=0, color='rgb(40,40,40)'
+		for i in range(len(limits)):
+			lim = limits[i]
+			df_sub = df[lim[0]:lim[1]]
+			df_colors = colors[i]
+			city = go.Scattergeo(
+				locationmode = 'ISO-3',
+				lon = df_sub['Lng'],
+				lat = df_sub['Lat'],
+				text = colors[i]+": "+df_sub['companies']+"  |  Location: "+df_sub['address'],
+				marker = go.scattergeo.Marker(
+					size = df_sub['weight'],
+					color = df_sub['colors'],
+					line = go.scattergeo.marker.Line(
+						width=0, color='rgb(40,40,40)'
+					),
+					sizemode = 'area'
 				),
-				sizemode = 'area'
-			),
 
-			name = '{}'.format(df_colors) 
-			)
-		cities.append(city)
+				name = '{}'.format(df_colors) 
+				)
+			cities.append(city)
 
-	layout = go.Layout(
-		legend = dict(x = 1.02, y = 0.5, orientation = "v"),
-		showlegend = True,
-		font = go.layout.Font(size = 15,
-			family = 'roboto'),
-		autosize = True,
-		width = 780,
-		height = 300,
-		margin=go.layout.Margin(
-				l=0,
-				r=0,
-				b=0,
-				t=0,
-				pad=1),
-			
-			xaxis = dict (fixedrange = True),
-			yaxis = dict (fixedrange = True),
+		layout = go.Layout(
+			legend = dict(x = 1.02, y = 0.5, orientation = "v"),
+			showlegend = True,
+			font = go.layout.Font(size = 15,
+				family = 'roboto'),
+			autosize = True,
+			width = 780,
+			height = 300,
+			margin=go.layout.Margin(
+					l=0,
+					r=0,
+					b=0,
+					t=0,
+					pad=1),
 				
-				geo = go.layout.Geo(
-					scope = 'world',
-					projection = go.layout.geo.Projection(
-						type='equirectangular'  
-						),
+				xaxis = dict (fixedrange = True),
+				yaxis = dict (fixedrange = True),
+					
+					geo = go.layout.Geo(
+						scope = 'world',
+						projection = go.layout.geo.Projection(
+							type='equirectangular'  
+							),
 
-			showcoastlines = True,
-			showland = True,
-			showocean = True,
-			showcountries = True,
-			showsubunits = False,
-			# size and width
-			subunitwidth=1,
-			countrywidth=1,
-			# colorings ^^
-			landcolor = '#e1eaea',
-			oceancolor = "#ffffff",
-			subunitcolor="#9ae59a", 
-			countrycolor="#b3b3b3",
-			coastlinecolor  = "#b3b3b3", 
-                
+				showcoastlines = True,
+				showland = True,
+				showocean = True,
+				showcountries = True,
+				showsubunits = False,
+				# size and width
+				subunitwidth=1,
+				countrywidth=1,
+				# colorings ^^
+				landcolor = '#e1eaea',
+				oceancolor = "#ffffff",
+				subunitcolor="#9ae59a", 
+				countrycolor="#b3b3b3",
+				coastlinecolor  = "#b3b3b3", 
+	                
+				)
 			)
-		)
 
-	fig = go.Figure(data=cities, layout=layout)
-	plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
+		fig = go.Figure(data=cities, layout=layout)
+		plot(fig, filename='techscan/templates/graph/heatmap.html', auto_open=False)
 
 def top_companies(keyword, indexes = 'news', graph = False):		
-	search_term = chi_translation(keyword)
-	res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {"match" : {"labels" : search_term}}})
+	keyword = chi_translation(keyword)
+	res = es.search(index = 'heatmap' , size = int(10000), scroll = '2m', body = {"query" : {"match" : {"labels" : keyword}}})
 	
 
 	res_input = res['hits']['hits']
 	resItems = []
 
 	for i in range (len(res_input)):
-		if res_input[i]['_source']['labels'] == search_term :
+		if res_input[i]['_source']['labels'] == keyword:
 			resItems.append(res_input[i])
 
 	company_name = []
