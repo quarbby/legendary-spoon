@@ -25,6 +25,7 @@ beautifulsoup4 = "==4.6.3"
 dateparser = "*"
 python-igraph = {path = "./python_igraph-0.7.1.post6-cp37-cp37m-win_amd64.whl"}
 en-core-web-md = {path = "./en_core_web_md-2.1.0.tar.gz"}
+lxml = "==4.3.4"
 
 [requires]
 python_version = "3.7"
