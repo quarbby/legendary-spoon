@@ -2,17 +2,6 @@
 
 Techscan is  a project combining multiple technologies to give comprehensive survey of technology trends.
 
-### Technologies
-
-- Neo4j
-- Elasticsearch
-
-### Libraries
-
-- Django (Web app)
-- Selenium + beautifulsoup4 (Web crawling)
-  
-
 ## URLs
 
 List of URLs available after running server. 

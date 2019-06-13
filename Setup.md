@@ -48,7 +48,7 @@ set `JAVA_HOME=C:\Program Files\Java\jdk-11.0.2`
 
 - Download data 
 
-  http://www.sharecsv.com/dl/83328676c09c77d0b9265e679aedcb3e/Field.csv> 
+  http://www.sharecsv.com/dl/83328676c09c77d0b9265e679aedcb3e/Field.csv
 
   <http://www.sharecsv.com/dl/ece29217aca59ad56eb31a49e79edcda/fieldPartOf.csv>
 
@@ -69,18 +69,26 @@ CREATE (f)-[:PART_OF_FIELD]->(f1)
 
 ## Installing Dependencies
 
+First create a virtual environment with pipenv.
+
 ```bash
-pip install -r requirements.txt
+pip install pipenv
+cd [project_location]
+pipenv shell
 ```
 
-igraph may have problems. Best to manually download the .whl file and install it.
+Next, download and place these 2 files in the root directory
 
-Download [chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=74.0.3729.6/) and place it at the the same directory as `manage.py` 
+- [python i-graph cp37](<https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-igraph>) (for python 3.7)
+- [spacy-models](https://github.com/explosion/spacy-models/releases/download/en_core_web_md-2.1.0/en_core_web_md-2.1.0.tar.gz)
 
-Start the server by running 
+Run `pipenv install` This will install all requirements from Pipfile. 
 
-```
-cd techscan_project
-python manage.py runserver
-```
+Finally, download [chromedriver](https://chromedriver.storage.googleapis.com/index.html?path=74.0.3729.6/) and place it at the the same directory as `manage.py` 
 
+
+## Starting Server
+
+Start Elasticsearch and Neo4j, then run `python manage.py runserver` 
+
+Open chrome and load `localhost:8000` 
