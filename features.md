@@ -30,3 +30,19 @@ Login: some crawl functions like weibo requires login-id and password to run.
 
 web-driver: depends on internet search engine, requires different drivers what
 
+
+## Wordcloud
+
+important functions: Wordcloud, text_query, numpy, Image , spacy and jieba 
+
+Text file: Import Chinese stop word text file to remove Chinese stop words from text
+
+font:  Import STFangSong.ttf for Chinese words to be displayed in wordcloud
+
+text_query: From json format to data frame
+
+numpy and Image: Required for masking
+
+: 
+
+ 
