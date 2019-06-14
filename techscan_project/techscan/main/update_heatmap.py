@@ -51,7 +51,7 @@ def findNER_esNews(keyword):
 
 def googlemaps_input(keyword, Final_List):
 
-	gmaps = googlemaps.Client(key='AIzaSyCHC6rS5ps845uN757_to_Py401MayV898')
+	gmaps = googlemaps.Client(key='') # Set googlemap API to key
 	# pprint(Final_List[0])
 	LABELS = keyword
 
