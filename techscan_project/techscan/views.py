@@ -60,10 +60,7 @@ def update(request):
 def main(request):
 	params = request.GET.get('q')
 	wiki_result_short, wiki_result_long, summary_length = main_functions.get_wiki_data(params)
-	# neo4jgraph.plotgraph(neo4jgraph.search_field(params))
-	# plotgraph.main_graph(params)
 	plotgraph.heatmap(params)
-	# plotgraph.people_companies_wordcloud(params)
 	context = {
 		"chi_translation": main_functions.chi_translation(params),
 		"search_word": ' '.join([word.capitalize() for word in params.split()]),
@@ -81,10 +78,7 @@ def main(request):
 
 def details(request):
 	params = request.GET.get('q')
-	# plotgraph.detail_hashtag_frequency(params)
 	plotgraph.top_companies(params, graph = True)
-	# plotgraph.twitter_bubble(params)
-
 	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	es_scholar = scroll_query.text_query(params,'scholar')
 	es_news = scroll_query.text_query(main_functions.chi_translation(params),'news')
@@ -108,8 +102,6 @@ def details(request):
 
 def weibo(request):
 	params = request.GET.get('q')
-	# plotgraph.top_hashtag(params)
-	# plotgraph.wordcloud(params)
 	es_weibo = scroll_query.text_query(main_functions.chi_translation(params),'weibo')
 	context = {
 		"search_word": params,
@@ -143,9 +135,7 @@ def news(request):
 
 def tweets(request):
 	params = request.GET.get('q')
-	# plotgraph.twitter_bubble(params)
 	plotgraph.twitter_graph(params)
-	# plotgraph.twitter_wordcloud(params)
 	es_tweets = scroll_query.text_query(params,'tweets')
 	context = {
 		"search_word": params,

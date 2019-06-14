@@ -25,9 +25,17 @@ import spacy
 
 def main_graph(keyword):
 	try:
-		df_english = text_query(str(keyword), dataframe = True)
 		df_chinese = text_query(str(chi_translation(keyword)), dataframe = True)
-		df = pd.concat([df_english,df_chinese], ignore_index = True)
+		chinese_boolean = True
+	except Exception as e:
+		chinese_boolean = False
+
+	try:
+		df_english = text_query(str(keyword), dataframe = True)
+		if chinese_boolean != False:
+			df = pd.concat([df_english,df_chinese], ignore_index = True)
+		else:
+			df = df_english
 		dates = ['2017', '2018', '2019']
 		df = df.dropna(subset = ['date'])
 		df = df[df.date.str.contains('|'.join(dates))]
@@ -109,7 +117,8 @@ def main_graph(keyword):
 			)
 		fig = dict(data=data, layout=layout)
 		plot(fig, filename = 'techscan/templates/graph/main_graph_all.html', auto_open=False)
-	except:
+	except Exception as e:
+		print(str(e))
 		return "False"
 
 def top_hashtag(keyword):
